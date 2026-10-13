@@ -2,7 +2,7 @@ import { MAX_PARTNERS } from "@shared/constants";
 import { BriefRequestSchema, BusinessInputSchema, ExpandRequestSchema, HeatmapQuerySchema } from "@shared/schemas";
 import type { AgentEvent, StoredEvent } from "@shared/types";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
-import { renderBrief } from "../brief/template.js";
+import { writeAiBrief } from "../brief/ai.js";
 import { config } from "../config.js";
 import { getProvider } from "../providers/index.js";
 import { attachRelated } from "../providers/mock/engine.js";
@@ -218,10 +218,15 @@ export function registerRuns(app: FastifyInstance): void {
     const partner = result.partners.find((item) => item.id === parsed.data.partnerId);
     if (!partner) return reply.code(404).send({ error: "That partner is not in this search." });
     const variant = parsed.data.variant % 3;
-    const key = `${partner.id}:${variant}`;
-    const cached = run.briefs.get(key);
-    if (cached) return cached;
-    const brief = renderBrief(result, partner, variant);
+    const tone = parsed.data.tone ?? "warm";
+    const length = parsed.data.length ?? "standard";
+    const regenerate = parsed.data.regenerate === true;
+    const key = `${partner.id}:${variant}:${tone}:${length}`;
+    if (!regenerate) {
+      const cached = run.briefs.get(key);
+      if (cached) return cached;
+    }
+    const brief = await writeAiBrief(result, partner, { variant, tone, length });
     run.briefs.set(key, brief);
     return brief;
   });

@@ -18,3 +18,11 @@
 - About dialog `#about` + footer; `QLOO_CAPABILITIES` + drift test.
 - Config: OpenAI / queue / DATA_DIR / circuit env vars; `.env.example` updated.
 - Tests: 21 passing.
+
+## Phase 2 — OpenAI LLM briefs (2026-10-13)
+
+- `server/llm/` openai / none / fake; health `llm.enabled` when key or fake.
+- Evidence-cited AI briefs with validate/repair/template fallback + per-run budget.
+- Brief UI: tone/length, regenerate, citation superscripts, editable outreach.
+- Models: `gpt-4.1-mini`. Tests: 31 passing.
+- Reminder: set `OPENAI_API_KEY` in local `.env` and rotate any key that appeared in chat.

@@ -75,6 +75,9 @@ export const BusinessInputSchema = z
 export const BriefRequestSchema = z.object({
   partnerId: z.string().min(1),
   variant: z.number().int().min(0).max(9),
+  tone: z.enum(["warm", "direct", "playful"]).optional(),
+  length: z.enum(["short", "standard"]).optional(),
+  regenerate: z.boolean().optional(),
 });
 
 export const ExpandRequestSchema = z.object({
@@ -207,6 +210,13 @@ export const HeatmapSchema = z.object({
   caption: z.string(),
 });
 
+const BriefSourceSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  value: z.string(),
+  origin: z.enum(["data", "interpretation"]),
+});
+
 export const BriefSchema = z.object({
   runId: z.string(),
   partnerId: z.string(),
@@ -224,6 +234,9 @@ export const BriefSchema = z.object({
   outreach: z.object({ subject: z.string(), body: z.string() }),
   limits: z.string(),
   generatedBy: z.enum(["template", "llm"]),
+  tone: z.enum(["warm", "direct", "playful"]).optional(),
+  length: z.enum(["short", "standard"]).optional(),
+  sources: z.array(BriefSourceSchema).optional(),
 });
 
 export const AgentEventSchema: z.ZodType<AgentEvent> = z.discriminatedUnion("type", [

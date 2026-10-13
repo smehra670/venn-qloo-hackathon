@@ -226,7 +226,10 @@ function fill(template: string, values: Record<string, string>): string {
   return template.replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? "");
 }
 
-function businessLabel(input: BusinessInput): string {
+export const LIMITS_TEXT =
+  "Match scores describe group-level taste patterns, not individual customers. This brief is a starting point, not a guarantee.";
+
+export function businessLabel(input: BusinessInput): string {
   if (input.businessName) return input.businessName;
   if (input.businessType === "other" && input.businessTypeCustom) return input.businessTypeCustom;
   return `your ${BUSINESS_TYPE_LABELS[input.businessType]}`;
@@ -316,7 +319,7 @@ export function renderBrief(result: RunResult, partner: Partner, variant: number
       "If the room is thin, change the night or the format before you decide the partner was wrong.",
     ],
     outreach: { subject, body },
-    limits: "Match scores describe group-level taste patterns, not individual customers. This brief is a starting point, not a guarantee.",
+    limits: LIMITS_TEXT,
     generatedBy: "template",
   };
 }

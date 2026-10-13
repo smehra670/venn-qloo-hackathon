@@ -162,6 +162,16 @@ export interface Heatmap {
   caption: string;
 }
 
+export type BriefTone = "warm" | "direct" | "playful";
+export type BriefLength = "short" | "standard";
+
+export interface BriefSource {
+  id: string;
+  label: string;
+  value: string;
+  origin: "data" | "interpretation";
+}
+
 export interface Brief {
   runId: string;
   partnerId: string;
@@ -179,6 +189,10 @@ export interface Brief {
   outreach: { subject: string; body: string };
   limits: string;
   generatedBy: "template" | "llm";
+  tone?: BriefTone;
+  length?: BriefLength;
+  /** Evidence a reader can trace whyItFits citations back to. Present on LLM-written briefs. */
+  sources?: BriefSource[];
 }
 
 export type AgentEvent =

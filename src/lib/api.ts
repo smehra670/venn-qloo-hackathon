@@ -1,5 +1,5 @@
 import { BriefSchema, HeatmapSchema, PartnerSchema, RunResultSchema } from "@shared/schemas";
-import type { Brief, BusinessInput, BusinessType, ExampleInput, Heatmap, Partner, ProviderName, RunResult, RunStatus } from "@shared/types";
+import type { Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ExampleInput, Heatmap, Partner, ProviderName, RunResult, RunStatus } from "@shared/types";
 import { z } from "zod";
 
 export class ApiError extends Error {
@@ -127,10 +127,17 @@ export function getHeatmap(id: string, partnerId: string): Promise<Heatmap | nul
   });
 }
 
-export function createBrief(id: string, partnerId: string, variant: number): Promise<Brief> {
+export interface CreateBriefOptions {
+  variant: number;
+  tone?: BriefTone;
+  length?: BriefLength;
+  regenerate?: boolean;
+}
+
+export function createBrief(id: string, partnerId: string, options: CreateBriefOptions): Promise<Brief> {
   return request(
     `/api/runs/${id}/brief`,
-    { method: "POST", body: JSON.stringify({ partnerId, variant }) },
+    { method: "POST", body: JSON.stringify({ partnerId, ...options }) },
     (value) => BriefSchema.parse(value),
   );
 }

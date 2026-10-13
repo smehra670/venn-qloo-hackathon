@@ -1,5 +1,5 @@
 import { STEP_TITLES } from "@shared/constants";
-import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BusinessInput, type Heatmap, type PartnerKind, type RunResult, type StepId, type StoredEvent } from "@shared/types";
+import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BriefLength, type BriefTone, type BusinessInput, type Heatmap, type PartnerKind, type RunResult, type StepId, type StoredEvent } from "@shared/types";
 import { toast } from "sonner";
 import { create } from "zustand";
 import { ApiError, cancelRun, createBrief, createRun, expandRun, getHealth, getHeatmap, getMeta, getRun, type Health, type Meta } from "@/lib/api";
@@ -73,6 +73,9 @@ interface VennState {
   briefOpen: boolean;
   briefPartnerId: string | null;
   briefVariant: number;
+  briefTone: BriefTone;
+  briefLength: BriefLength;
+  briefLoading: boolean;
   briefs: Record<string, Brief>;
   heatmaps: Record<string, Heatmap | null>;
   error: string | null;
@@ -89,6 +92,9 @@ interface VennState {
   openBrief: (partnerId: string) => Promise<void>;
   closeBrief: () => void;
   nextBriefVariant: () => Promise<void>;
+  setBriefTone: (tone: BriefTone) => Promise<void>;
+  setBriefLength: (length: BriefLength) => Promise<void>;
+  regenerateBrief: () => Promise<void>;
   expandPartner: (partnerId: string) => Promise<void>;
   loadHeatmap: (partnerId: string) => Promise<Heatmap | null>;
   setInput: (input: BusinessInput) => void;
@@ -155,6 +161,9 @@ export const useVenn = create<VennState>((set, get) => ({
   briefOpen: false,
   briefPartnerId: null,
   briefVariant: 0,
+  briefTone: "warm",
+  briefLength: "standard",
+  briefLoading: false,
   briefs: {},
   heatmaps: {},
   error: null,
@@ -211,6 +220,8 @@ export const useVenn = create<VennState>((set, get) => ({
       settling: false,
       selectedId: null,
       briefOpen: false,
+      briefTone: "warm",
+      briefLength: "standard",
       briefs: {},
       heatmaps: {},
       pinnedIds: new Set(),
@@ -275,17 +286,38 @@ export const useVenn = create<VennState>((set, get) => ({
 
   openBrief: async (partnerId) => {
     set({ briefOpen: true, briefPartnerId: partnerId, briefVariant: 0 });
-    await loadBrief(partnerId, 0, get, set);
+    const { briefTone, briefLength } = get();
+    await loadBrief(partnerId, 0, briefTone, briefLength, get, set);
   },
 
   closeBrief: () => set({ briefOpen: false }),
 
   nextBriefVariant: async () => {
-    const { briefPartnerId, briefVariant } = get();
+    const { briefPartnerId, briefVariant, briefTone, briefLength } = get();
     if (!briefPartnerId) return;
     const next = (briefVariant + 1) % 3;
     set({ briefVariant: next });
-    await loadBrief(briefPartnerId, next, get, set);
+    await loadBrief(briefPartnerId, next, briefTone, briefLength, get, set);
+  },
+
+  setBriefTone: async (tone) => {
+    const { briefPartnerId, briefVariant, briefLength } = get();
+    set({ briefTone: tone });
+    if (!briefPartnerId) return;
+    await loadBrief(briefPartnerId, briefVariant, tone, briefLength, get, set);
+  },
+
+  setBriefLength: async (length) => {
+    const { briefPartnerId, briefVariant, briefTone } = get();
+    set({ briefLength: length });
+    if (!briefPartnerId) return;
+    await loadBrief(briefPartnerId, briefVariant, briefTone, length, get, set);
+  },
+
+  regenerateBrief: async () => {
+    const { briefPartnerId, briefVariant, briefTone, briefLength } = get();
+    if (!briefPartnerId) return;
+    await loadBrief(briefPartnerId, briefVariant, briefTone, briefLength, get, set, { force: true });
   },
 
   expandPartner: async (partnerId) => {
@@ -320,17 +352,23 @@ export const useVenn = create<VennState>((set, get) => ({
 async function loadBrief(
   partnerId: string,
   variant: number,
+  tone: BriefTone,
+  length: BriefLength,
   get: () => VennState,
   set: (partial: Partial<VennState>) => void,
+  opts?: { force?: boolean },
 ): Promise<void> {
   const { runId, briefs } = get();
   if (!runId) return;
-  const key = `${partnerId}:${variant}`;
-  if (briefs[key]) return;
+  const key = `${partnerId}:${variant}:${tone}:${length}`;
+  if (!opts?.force && briefs[key]) return;
+  set({ briefLoading: true });
   try {
-    const brief = await createBrief(runId, partnerId, variant);
+    const brief = await createBrief(runId, partnerId, { variant, tone, length, regenerate: opts?.force });
     set({ briefs: { ...get().briefs, [key]: brief } });
   } catch (error) {
     toast(error instanceof ApiError ? error.message : "The brief could not be written.");
+  } finally {
+    set({ briefLoading: false });
   }
 }

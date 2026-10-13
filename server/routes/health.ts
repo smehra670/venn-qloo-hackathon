@@ -4,6 +4,7 @@ import type { FastifyInstance } from "fastify";
 import { accessSync, constants as fsConstants, mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { config } from "../config.js";
+import { isLlmEnabled } from "../llm/index.js";
 import { getProvider } from "../providers/index.js";
 import { getCircuitState } from "../providers/qloo/client.js";
 import { hashInput } from "../providers/snapshot/hash.js";
@@ -54,7 +55,7 @@ export function registerHealth(app: FastifyInstance): void {
       queue: scheduler.status(),
       circuit: getCircuitState(),
       store: getStoreStats(),
-      llm: { enabled: false, provider: config.llmProvider },
+      llm: { enabled: isLlmEnabled(), provider: config.llmProvider },
       dataDir: { path: config.dataDir, ok: dataDirOk() },
     };
   });
