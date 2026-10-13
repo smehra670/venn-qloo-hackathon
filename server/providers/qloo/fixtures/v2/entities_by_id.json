@@ -1,0 +1,10 @@
+{
+  "status": 400,
+  "ms": 101,
+  "rateHeaders": {},
+  "keys": [
+    "error"
+  ],
+  "resultsKeys": [],
+  "shapeHint": "entities"
+}

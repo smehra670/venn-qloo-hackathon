@@ -1,16 +1,14 @@
-import { STEP_TITLES } from "@shared/constants";
+import { DEMO_LIMITS, STEP_TITLES, UNKNOWN_CITY_LIMIT } from "@shared/constants";
 import type { PartnerKind, RunResult, StepId } from "@shared/types";
 import { nanoid } from "nanoid";
 import { getProvider } from "../providers/index.js";
 import type { Candidate, ProviderContext } from "../providers/types.js";
-import { matchCity } from "../providers/mock/cities.js";
 import {
   chooseTopPicks,
   headlineFor,
   keepForKind,
   limitsFor,
   notesFor,
-  cityFor,
   strongCount,
   widenKinds,
 } from "../providers/mock/engine.js";
@@ -98,12 +96,14 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     append(run, { type: "step_started", step, title: STEP_TITLES.plan });
     const planned = await provider.planKinds(run.input, resolved, ctx);
     ensure(run);
+    const city = await provider.resolveCity(run.input, ctx);
+    ensure(run);
     append(run, { type: "step_note", step, text: `Looking at: ${planned.join(", ")}.` });
-    if (!matchCity(run.input.city)) {
+    if (!city?.hasLocalData) {
       append(run, {
         type: "step_note",
         step,
-        text: `No local places for ${run.input.city.trim()} in the demo set. Showing global brands and artists instead.`,
+        text: `No local geography for ${run.input.city.trim()}. Showing broader brands and artists instead.`,
       });
     }
     append(run, { type: "step_completed", step, summary: `Will search ${planned.length} types.` });
@@ -111,7 +111,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     step = "discover";
     append(run, { type: "step_started", step, title: STEP_TITLES.discover });
     let pool = (
-      await mapPool(planned, 3, async (kind, index) => {
+      await mapPool(planned, provider.name === "qloo" ? 2 : 3, async (kind, index) => {
         const found = await provider.discover(run.input, resolved, kind, ctx);
         return keepForKind(found, index);
       })
@@ -181,6 +181,14 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     append(run, { type: "step_started", step, title: STEP_TITLES.assemble });
     const topPicks = chooseTopPicks(partners);
     const elapsedMs = Date.now() - started;
+    const limits =
+      provider.name === "mock"
+        ? limitsFor(run.input)
+        : [
+            "Match scores are relative to this search and describe group-level taste, not individuals.",
+            "Partner ideas come from Qloo Insights. Briefs are templates — check them before you send one.",
+            ...(city?.hasLocalData ? [] : [UNKNOWN_CITY_LIMIT]),
+          ];
     const result: RunResult = {
       runId: run.id,
       createdAt: run.createdAt,
@@ -191,10 +199,10 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       plannedKinds: searchedKinds(planned, extra, retries),
       partners,
       topPicks,
-      city: cityFor(run.input),
+      city,
       headline: headlineFor(partners, topPicks),
       notes: notesFor(run.input, resolved, retries),
-      limits: limitsFor(run.input),
+      limits: provider.name === "mock" ? limits : limits.length > 0 ? limits : [...DEMO_LIMITS],
       stats: {
         candidatesConsidered: pool.length,
         retries,
@@ -217,6 +225,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       if (run.status === "running") append(run, { type: "cancelled" });
       return;
     }
+    const detail = error instanceof Error ? error.message : "unknown error";
     log({
       runId: run.id,
       provider: provider.name,
@@ -224,9 +233,14 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       city: run.input.city,
       anchorCount: run.input.anchors.length,
       elapsedMs: Date.now() - started,
+      error: detail,
     });
     if (run.status === "running") {
-      append(run, { type: "error", message: "The search stopped before it finished. Please try again." });
+      const friendly =
+        detail.includes("Qloo") || detail.includes("rate limit") || detail.includes("API key")
+          ? detail
+          : "The search stopped before it finished. Please try again.";
+      append(run, { type: "error", message: friendly });
     }
   }
 }

@@ -1,8 +1,29 @@
-import type { BusinessInput, PartnerKind, ProviderName } from "@shared/types";
-import type { CatalogEntry } from "./mock/catalog.js";
+import type {
+  BusinessInput,
+  CityInfo,
+  EntityType,
+  PartnerKind,
+  ProviderName,
+} from "@shared/types";
+
+/** Provider-agnostic entity used as a discover/score candidate. */
+export interface ProviderEntity {
+  id: string;
+  name: string;
+  kind: PartnerKind;
+  entityType: EntityType;
+  blurb: string;
+  tags: Record<string, number>;
+  audienceTags: string[];
+  popularity: number;
+  trend: number;
+  city?: string;
+  neighbourhood?: string;
+  aliases?: string[];
+}
 
 export interface Candidate {
-  entry: CatalogEntry;
+  entry: ProviderEntity;
   local: boolean;
   provisional: number;
 }
@@ -16,6 +37,7 @@ export interface TasteProvider {
   readonly name: ProviderName;
   readonly label: string;
   resolveAnchors(input: BusinessInput, ctx: ProviderContext): Promise<import("@shared/types").ResolvedAnchor[]>;
+  resolveCity(input: BusinessInput, ctx: ProviderContext): Promise<CityInfo | null>;
   planKinds(
     input: BusinessInput,
     resolved: import("@shared/types").ResolvedAnchor[],

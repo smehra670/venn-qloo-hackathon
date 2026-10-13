@@ -48,7 +48,7 @@ if (result.topPicks.length !== 3) fail(`Expected 3 top picks, got ${result.topPi
 
 const partnerId = result.topPicks[0]?.partnerId;
 const heatmap = await fetch(`${base}/api/runs/${runId}/heatmap?partnerId=${partnerId}`);
-if (!heatmap.ok) fail(`Heatmap failed: ${heatmap.status}`);
+if (!(heatmap.ok || heatmap.status === 204)) fail(`Heatmap failed: ${heatmap.status}`);
 const brief = await fetch(`${base}/api/runs/${runId}/brief`, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
@@ -56,7 +56,8 @@ const brief = await fetch(`${base}/api/runs/${runId}/brief`, {
 });
 if (!brief.ok) fail(`Brief failed: ${brief.status}`);
 const briefBody = await brief.json();
+const provider = result.provider ?? "unknown";
 console.log(
-  `Smoke ok: ${result.partners.length} partners, top ${result.topPicks.map((pick) => pick.role).join(", ")}, heatmap ${heatmap.status}, brief "${briefBody.title}"`,
+  `Smoke ok (${provider}): ${result.partners.length} partners, top ${result.topPicks.map((pick) => pick.role).join(", ")}, heatmap ${heatmap.status}, brief "${briefBody.title}"`,
 );
 process.exit(0);

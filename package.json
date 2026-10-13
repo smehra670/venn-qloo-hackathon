@@ -15,6 +15,9 @@
     "typecheck": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.server.json --noEmit",
     "test": "vitest run",
     "smoke": "node scripts/smoke.mjs",
+    "smoke:remote": "node scripts/smoke.mjs",
+    "qloo:probe": "node scripts/qloo-probe-v2.mjs",
+    "snapshot": "tsx --tsconfig tsconfig.server.json scripts/snapshot.ts",
     "og": "node scripts/make-og.mjs",
     "format": "prettier --write ."
   },

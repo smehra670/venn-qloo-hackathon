@@ -1,0 +1,215 @@
+{
+  "status": 200,
+  "ms": 248,
+  "rateHeaders": {},
+  "success": true,
+  "keys": [
+    "success",
+    "results"
+  ],
+  "resultsKeys": [
+    "entities"
+  ],
+  "entitySample": [
+    {
+      "name": "Rains",
+      "entity_id": "9082F37F-5FFC-44A5-84C3-5C1CFD68F47A",
+      "type": "urn:entity",
+      "subtype": "urn:entity:brand",
+      "popularity": 0.8538421115085352,
+      "tags": [
+        {
+          "id": "urn:tag:genre:brand:fashion:formalwear",
+          "name": "Formalwear",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:genre:brand:fashion:accessories",
+          "name": "Accessories",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:genre:brand:fashion:accessories:bags_and_leather",
+          "name": "Bags & Leather",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:genre:brand:fashion",
+          "name": "Fashion",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:matte_finishes",
+          "name": "Matte Finishes",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:clean_lines",
+          "name": "Clean Lines",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:monochromatic_palettes",
+          "name": "Monochromatic Palettes",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:minimalist_hardware",
+          "name": "Minimalist Hardware",
+          "type": "urn:tag:aesthetic_property:qloo"
+        }
+      ],
+      "query": {
+        "affinity": 0.92849703931661,
+        "measurements": {
+          "audience_growth": 0
+        }
+      },
+      "disambiguation": "",
+      "external": {
+        "instagram": [
+          {
+            "id": "rains"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Patagonia",
+      "entity_id": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+      "type": "urn:entity",
+      "subtype": "urn:entity:brand",
+      "popularity": 0.995923106914614,
+      "tags": [
+        {
+          "id": "urn:tag:genre:brand:fashion:casual",
+          "name": "Casual",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:genre:brand:fashion",
+          "name": "Fashion",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:genre:brand:fashion:athletic",
+          "name": "Athletic",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:functional",
+          "name": "Functional",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:earthy_color_palettes",
+          "name": "Earthy Color Palettes",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:minimalist_branding",
+          "name": "Minimalist Branding",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:rugged_utility",
+          "name": "Rugged Utility",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:technical_performance_design",
+          "name": "Technical Performance Design",
+          "type": "urn:tag:aesthetic_property:qloo"
+        }
+      ],
+      "query": {
+        "affinity": 0.9194673272415145,
+        "measurements": {
+          "audience_growth": 0
+        }
+      },
+      "disambiguation": "",
+      "external": {
+        "twitter": [
+          {
+            "id": "patagonia"
+          }
+        ],
+        "wikidata": [
+          {
+            "id": "Q1660552"
+          }
+        ],
+        "instagram": [
+          {
+            "id": "patagonia"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Le Labo Fragrances",
+      "entity_id": "25C88914-2BC2-4E6B-A787-A8DD2DD4F45E",
+      "type": "urn:entity",
+      "subtype": "urn:entity:brand",
+      "popularity": 0.9761319523317116,
+      "tags": [
+        {
+          "id": "urn:tag:genre:brand:health_and_beauty",
+          "name": "Health & Beauty",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:laboratory_inspired_packaging",
+          "name": "Laboratory-Inspired Packaging",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:typewriter_font",
+          "name": "Typewriter Font",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:minimalist_labeling",
+          "name": "Minimalist Labeling",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:industrial_aesthetic",
+          "name": "Industrial Aesthetic",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:neutral_tones",
+          "name": "Neutral Tones",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:lifestyle:qloo:creative_expression",
+          "name": "Creative Expression",
+          "type": "urn:tag:lifestyle:qloo"
+        },
+        {
+          "id": "urn:tag:lifestyle:qloo:sophisticated_travel",
+          "name": "Sophisticated Travel",
+          "type": "urn:tag:lifestyle:qloo"
+        }
+      ],
+      "query": {
+        "affinity": 0.9171284481960953,
+        "measurements": {
+          "audience_growth": 0
+        }
+      },
+      "disambiguation": "",
+      "external": {
+        "instagram": [
+          {
+            "id": "lelabofragrances"
+          }
+        ]
+      }
+    }
+  ],
+  "shapeHint": "insights_compare"
+}

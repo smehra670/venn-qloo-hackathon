@@ -1,0 +1,215 @@
+{
+  "status": 200,
+  "ms": 254,
+  "rateHeaders": {},
+  "success": true,
+  "keys": [
+    "success",
+    "results"
+  ],
+  "resultsKeys": [
+    "entities"
+  ],
+  "entitySample": [
+    {
+      "name": "Diptyque",
+      "entity_id": "EE6E5064-E9B8-4EB2-AD63-2E082EBF7726",
+      "type": "urn:entity",
+      "subtype": "urn:entity:brand",
+      "popularity": 0.960790629079012,
+      "tags": [
+        {
+          "id": "urn:tag:genre:brand:health_and_beauty",
+          "name": "Health & Beauty",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:minimalist_typography",
+          "name": "Minimalist Typography",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:oval_logo",
+          "name": "Oval Logo",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:black_and_white_palette",
+          "name": "Black And White Palette",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:artistic_illustration",
+          "name": "Artistic Illustration",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:refined_glassware",
+          "name": "Refined Glassware",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:lifestyle:qloo:artistic_intellectualism",
+          "name": "Artistic Intellectualism",
+          "type": "urn:tag:lifestyle:qloo"
+        },
+        {
+          "id": "urn:tag:lifestyle:qloo:european_travel",
+          "name": "European Travel",
+          "type": "urn:tag:lifestyle:qloo"
+        }
+      ],
+      "query": {
+        "affinity": 0.8902457469364926,
+        "measurements": {
+          "audience_growth": 0
+        }
+      },
+      "disambiguation": "",
+      "external": {
+        "twitter": [
+          {
+            "id": "diptyque"
+          }
+        ],
+        "instagram": [
+          {
+            "id": "diptyque"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Mansur Gavriel",
+      "entity_id": "902D8AE1-F74E-4D8F-8E52-FEABC35DBFC9",
+      "type": "urn:entity",
+      "subtype": "urn:entity:brand",
+      "popularity": 0.9663592751436659,
+      "tags": [
+        {
+          "id": "urn:tag:genre:brand:fashion:footwear:other",
+          "name": "Other",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:genre:brand:fashion:accessories:bags_and_leather",
+          "name": "Bags & Leather",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:genre:brand:fashion",
+          "name": "Fashion",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:genre:brand:fashion:accessories",
+          "name": "Accessories",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:genre:brand:fashion:footwear",
+          "name": "Footwear",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:clean_lines",
+          "name": "Clean Lines",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:vegetable_tanned_leather",
+          "name": "Vegetable-Tanned Leather",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:rich_color_palettes",
+          "name": "Rich Color Palettes",
+          "type": "urn:tag:aesthetic_property:qloo"
+        }
+      ],
+      "query": {
+        "affinity": 0.8772772034690651,
+        "measurements": {
+          "audience_growth": 0
+        }
+      },
+      "disambiguation": "",
+      "external": {
+        "twitter": [
+          {
+            "id": "mansurgavriel"
+          }
+        ],
+        "instagram": [
+          {
+            "id": "mansurgavriel"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Le Labo Fragrances",
+      "entity_id": "25C88914-2BC2-4E6B-A787-A8DD2DD4F45E",
+      "type": "urn:entity",
+      "subtype": "urn:entity:brand",
+      "popularity": 0.9761319523317116,
+      "tags": [
+        {
+          "id": "urn:tag:genre:brand:health_and_beauty",
+          "name": "Health & Beauty",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:laboratory_inspired_packaging",
+          "name": "Laboratory-Inspired Packaging",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:typewriter_font",
+          "name": "Typewriter Font",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:minimalist_labeling",
+          "name": "Minimalist Labeling",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:industrial_aesthetic",
+          "name": "Industrial Aesthetic",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:aesthetic_property:qloo:neutral_tones",
+          "name": "Neutral Tones",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "id": "urn:tag:lifestyle:qloo:creative_expression",
+          "name": "Creative Expression",
+          "type": "urn:tag:lifestyle:qloo"
+        },
+        {
+          "id": "urn:tag:lifestyle:qloo:sophisticated_travel",
+          "name": "Sophisticated Travel",
+          "type": "urn:tag:lifestyle:qloo"
+        }
+      ],
+      "query": {
+        "affinity": 0.8763025196452484,
+        "measurements": {
+          "audience_growth": 0
+        }
+      },
+      "disambiguation": "",
+      "external": {
+        "instagram": [
+          {
+            "id": "lelabofragrances"
+          }
+        ]
+      }
+    }
+  ],
+  "shapeHint": "insights_demographics"
+}

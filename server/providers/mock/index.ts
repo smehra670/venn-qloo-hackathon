@@ -1,4 +1,4 @@
-import type { BusinessInput, Heatmap, Partner, PartnerKind, ResolvedAnchor, RunResult } from "@shared/types";
+import type { BusinessInput, CityInfo, Heatmap, Partner, PartnerKind, ResolvedAnchor, RunResult } from "@shared/types";
 import type { Candidate, ProviderContext, TasteProvider } from "../types.js";
 import { tagLabel } from "./taxonomy.js";
 import {
@@ -54,6 +54,15 @@ export class MockTasteProvider implements TasteProvider {
         ),
     );
     return resolved;
+  }
+
+  async resolveCity(input: BusinessInput, ctx: ProviderContext): Promise<CityInfo | null> {
+    return ctx.trace(
+      "search_entities",
+      `city: ${input.city}`,
+      async () => cityFor(input),
+      (value) => (value ? `${value.name} · local data` : "no local map"),
+    );
   }
 
   async planKinds(input: BusinessInput, _resolved: ResolvedAnchor[], ctx: ProviderContext): Promise<PartnerKind[]> {

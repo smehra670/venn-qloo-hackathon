@@ -82,7 +82,8 @@ docker run --rm -p 8787:8787 -e TASTE_PROVIDER=mock venn
 - An unknown city returns `city: null` and a limits note. It does not invent a city record.
 - The graph SVG is `role="group"` so circles stay focusable. The shortlist is the accessible list of the same partners.
 - A kind filter hides a partner on the graph even if that partner is pinned. Pinned partners still appear in the shortlist.
-- Demo `hasLocalData` is decided in the runner from the mock city table. See `docs/QLOO_INTEGRATION.md` for the Qloo follow-up.
+- Mock `hasLocalData` uses the demo city table. Qloo `hasLocalData` follows whether `/search` returned geography for the city.
+- Hackathon Qloo calls use `https://hackathon.api.qloo.com` with the `X-Api-Key` header. `TASTE_PROVIDER=qloo` requires `QLOO_API_KEY`.
 - Helmet ships with CSP off because the map uses CARTO tiles. The theme is light only.
 - The blue token used for text and focus is `#3E49E6`. Circle fills stay `#FF6B57`, `#4F5BFF`, and `#6B3FA0`.
 - `sharp` is installed, but its native binary is blocked by Windows Application Control on this machine. `npm run og` draws `public/og.png` with Node's built-in zlib instead.
@@ -93,4 +94,4 @@ Match scores compare groups of taste for this search. They are relative to the o
 
 ## Taste data
 
-How a real Qloo provider would replace the mock is written in [docs/QLOO_INTEGRATION.md](docs/QLOO_INTEGRATION.md).
+Set `TASTE_PROVIDER=qloo` and `QLOO_API_KEY` to use live Insights. Details are in [docs/QLOO_INTEGRATION.md](docs/QLOO_INTEGRATION.md).

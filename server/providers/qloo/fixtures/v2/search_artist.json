@@ -1,0 +1,91 @@
+{
+  "status": 200,
+  "ms": 117,
+  "rateHeaders": {},
+  "keys": [
+    "results"
+  ],
+  "resultsKeys": [
+    "(array)"
+  ],
+  "entitySample": [
+    {
+      "name": "Radiohead",
+      "entity_id": "70CAE5BF-2F4C-445C-A3E5-4EDACFC3591C",
+      "types": [
+        "urn:entity:artist"
+      ],
+      "popularity": 0.9999966263060412,
+      "disambiguation": "Radiohead",
+      "tags": [
+        {
+          "name": "Electronic",
+          "tag_id": "urn:tag:genre:electronic",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:electronic"
+        },
+        {
+          "name": "Indie",
+          "tag_id": "urn:tag:genre:indie",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:indie"
+        },
+        {
+          "name": "Alternative Rock",
+          "tag_id": "urn:tag:genre:alternative_rock",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:alternative_rock"
+        },
+        {
+          "name": "Rock",
+          "tag_id": "urn:tag:genre:rock",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:rock"
+        },
+        {
+          "name": "Loyal",
+          "tag_id": "urn:tag:audience:qloo:loyal",
+          "type": "urn:tag:audience:qloo",
+          "value": "urn:tag:audience:qloo:loyal"
+        },
+        {
+          "name": "Intellectual",
+          "tag_id": "urn:tag:audience:qloo:intellectual",
+          "type": "urn:tag:audience:qloo",
+          "value": "urn:tag:audience:qloo:intellectual"
+        },
+        {
+          "name": "Eclectic",
+          "tag_id": "urn:tag:audience:qloo:eclectic",
+          "type": "urn:tag:audience:qloo",
+          "value": "urn:tag:audience:qloo:eclectic"
+        },
+        {
+          "name": "Passionate",
+          "tag_id": "urn:tag:audience:qloo:passionate",
+          "type": "urn:tag:audience:qloo",
+          "value": "urn:tag:audience:qloo:passionate"
+        }
+      ]
+    },
+    {
+      "name": "Radiohead Tribute",
+      "entity_id": "99ECEFED-B982-40C2-A2ED-EB042E9545FA",
+      "types": [
+        "urn:entity:artist"
+      ],
+      "popularity": 0.46901430783607895,
+      "disambiguation": "Radiohead Tribute"
+    },
+    {
+      "name": "Dub Tribute To Radiohead",
+      "entity_id": "BF711411-5659-4CEF-BC46-ADEAACEB52EA",
+      "types": [
+        "urn:entity:artist"
+      ],
+      "popularity": 0.7304081157581871,
+      "disambiguation": "Dub Tribute To Radiohead"
+    }
+  ],
+  "shapeHint": "search"
+}

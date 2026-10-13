@@ -36,7 +36,9 @@ export function MapView() {
   if (!result.city?.hasLocalData) {
     return (
       <div className="grid h-full place-items-center px-6 text-center">
-        <p className="max-w-md font-serif text-3xl leading-tight">Map preview is available for London, Manchester and New York in demo mode.</p>
+        <p className="max-w-md font-serif text-3xl leading-tight">
+          Map preview needs local place data for {result.input.city.trim() || "this city"}.
+        </p>
       </div>
     );
   }
@@ -65,7 +67,9 @@ export function MapView() {
         </div>
         <div className="min-h-[320px] overflow-hidden rounded-[20px] border border-line">
           {heatmap === undefined ? <Skeleton className="h-full min-h-[320px] rounded-none" /> : null}
-          {heatmap === null ? <p className="p-6 text-ink-soft">Map preview is available for London, Manchester and New York in demo mode.</p> : null}
+          {heatmap === null ? (
+            <p className="p-6 text-ink-soft">No neighbourhood heatmap came back for this partner. Try another partner or city.</p>
+          ) : null}
           {heatmap ? (
             <MapContainer center={heatmap.city.center} zoom={heatmap.city.zoom} zoomControl={false} className="h-full min-h-[320px]">
               <ZoomControl position="bottomright" />

@@ -1,0 +1,113 @@
+{
+  "status": 200,
+  "ms": 179,
+  "rateHeaders": {},
+  "keys": [
+    "results"
+  ],
+  "resultsKeys": [
+    "(array)"
+  ],
+  "entitySample": [
+    {
+      "name": "London",
+      "entity_id": "4F18635D-75D6-43EC-B8B9-8DFAEB8C5A29",
+      "types": [
+        "urn:entity:locality"
+      ],
+      "popularity": 0.9998790917799683,
+      "disambiguation": "London, Inner London - East, Greater London, England, United Kingdom",
+      "location": {
+        "lat": 51.50049650582372,
+        "lon": -0.10941546935661342
+      },
+      "tags": [
+        {
+          "name": "City",
+          "tag_id": "urn:tag:genre:locality:city",
+          "type": "urn:tag:genre:locality",
+          "value": "urn:tag:genre:locality:city"
+        }
+      ]
+    },
+    {
+      "name": "London",
+      "entity_id": "29D176AB-418C-4A6D-B4DA-18E1A9D5FC72",
+      "types": [
+        "urn:entity:destination"
+      ],
+      "popularity": 0.9986731534719151,
+      "disambiguation": "London",
+      "location": {
+        "lat": 51.5071148636,
+        "lon": -0.1273180524
+      },
+      "tags": [
+        {
+          "name": "Great Nightlife",
+          "tag_id": "18203810-1931-4F34-B7D4-69C63F8C7B1D",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:great_nightlife"
+        },
+        {
+          "name": "Foodie Destination",
+          "tag_id": "4F3E51D5-4BF4-4415-84DC-C760D6CE9812",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:foodie_destination"
+        },
+        {
+          "name": "Art & Culture",
+          "tag_id": "86BDB8C7-478E-4291-8D51-E9C64EB28E72",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:art_culture"
+        },
+        {
+          "name": "Urban Destinations",
+          "tag_id": "5191CB63-26EA-4637-A742-D9547110F2A1",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:urban_destinations"
+        },
+        {
+          "name": "Entertainment & Performing Arts",
+          "tag_id": "431E749F-FF80-4FA7-B8AC-0B2CDFA354BD",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:entertainment_performing_arts"
+        },
+        {
+          "name": "For the History",
+          "tag_id": "6861954D-25D3-4D9D-81DD-810378DEA6F0",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:for_the_history"
+        },
+        {
+          "name": "Romantic Getaways",
+          "tag_id": "6357A9A4-43CD-4290-B48F-6D8710744FE7",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:romantic_getaways"
+        }
+      ]
+    },
+    {
+      "name": "London",
+      "entity_id": "BCF60CA0-BC94-4761-B812-68986F7CB846",
+      "types": [
+        "urn:entity:locality"
+      ],
+      "popularity": 0.9767231746512595,
+      "disambiguation": "London, Laurel, Kentucky, United States of America",
+      "location": {
+        "lat": 37.12078051490879,
+        "lon": -84.07982753450531
+      },
+      "tags": [
+        {
+          "name": "City",
+          "tag_id": "urn:tag:genre:locality:city",
+          "type": "urn:tag:genre:locality",
+          "value": "urn:tag:genre:locality:city"
+        }
+      ]
+    }
+  ],
+  "shapeHint": "search_location"
+}

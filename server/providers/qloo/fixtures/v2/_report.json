@@ -1,0 +1,83 @@
+{
+  "probedAt": "2026-10-13T20:02:42.947Z",
+  "base": "https://hackathon.api.qloo.com",
+  "probes": [
+    {
+      "name": "search_brand",
+      "pathname": "/search",
+      "status": 200,
+      "ms": 393,
+      "rateHeaders": {}
+    },
+    {
+      "name": "search_artist",
+      "pathname": "/search",
+      "status": 200,
+      "ms": 117,
+      "rateHeaders": {}
+    },
+    {
+      "name": "search_location",
+      "pathname": "/search",
+      "status": 200,
+      "ms": 179,
+      "rateHeaders": {}
+    },
+    {
+      "name": "tags_search",
+      "pathname": "/v2/tags",
+      "status": 200,
+      "ms": 126,
+      "rateHeaders": {}
+    },
+    {
+      "name": "insights_brand",
+      "pathname": "/v2/insights",
+      "status": 200,
+      "ms": 233,
+      "rateHeaders": {}
+    },
+    {
+      "name": "insights_heatmap",
+      "pathname": "/v2/insights",
+      "status": 200,
+      "ms": 597,
+      "rateHeaders": {}
+    },
+    {
+      "name": "insights_compare",
+      "pathname": "/v2/insights",
+      "status": 200,
+      "ms": 248,
+      "rateHeaders": {}
+    },
+    {
+      "name": "insights_demographics",
+      "pathname": "/v2/insights",
+      "status": 200,
+      "ms": 254,
+      "rateHeaders": {}
+    },
+    {
+      "name": "insights_trends",
+      "pathname": "/v2/insights",
+      "status": 200,
+      "ms": 236,
+      "rateHeaders": {}
+    },
+    {
+      "name": "entities_by_id",
+      "pathname": "/entities",
+      "status": 400,
+      "ms": 101,
+      "rateHeaders": {}
+    },
+    {
+      "name": "v2_entities",
+      "pathname": "/v2/entities",
+      "status": 404,
+      "ms": 104,
+      "rateHeaders": {}
+    }
+  ]
+}

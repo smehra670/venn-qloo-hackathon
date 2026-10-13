@@ -1,0 +1,65 @@
+{
+  "status": 200,
+  "ms": 393,
+  "rateHeaders": {},
+  "keys": [
+    "results"
+  ],
+  "resultsKeys": [
+    "(array)"
+  ],
+  "entitySample": [
+    {
+      "name": "Aesop",
+      "entity_id": "32F867B9-E6DF-44C3-BCE4-40160C7ED5E4",
+      "types": [
+        "urn:entity:brand"
+      ],
+      "popularity": 0.9710803342882812,
+      "disambiguation": "",
+      "tags": [
+        {
+          "name": "Health & Beauty",
+          "tag_id": "urn:tag:genre:brand:health_and_beauty",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "name": "Minimalist Packaging",
+          "tag_id": "urn:tag:aesthetic_property:qloo:minimalist_packaging",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "name": "Amber Glass Bottles",
+          "tag_id": "urn:tag:aesthetic_property:qloo:amber_glass_bottles",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "name": "Botanical Minimalism",
+          "tag_id": "urn:tag:aesthetic_property:qloo:botanical_minimalism",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "name": "Typography-Driven Design",
+          "tag_id": "urn:tag:aesthetic_property:qloo:typography_driven_design",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "name": "Architectural Store Interiors",
+          "tag_id": "urn:tag:aesthetic_property:qloo:architectural_store_interiors",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "name": "Artistic Expression",
+          "tag_id": "urn:tag:lifestyle:qloo:artistic_expression",
+          "type": "urn:tag:lifestyle:qloo"
+        },
+        {
+          "name": "Architectural Appreciation",
+          "tag_id": "urn:tag:lifestyle:qloo:architectural_appreciation",
+          "type": "urn:tag:lifestyle:qloo"
+        }
+      ]
+    }
+  ],
+  "shapeHint": "search"
+}

@@ -21,6 +21,10 @@ const EnvSchema = z.object({
   RATE_LIMIT_MAX: z.preprocess(blankToUndefined, z.coerce.number().int().positive().default(120)),
   RATE_LIMIT_RUNS_PER_MIN: z.preprocess(blankToUndefined, z.coerce.number().int().positive().default(8)),
   QLOO_API_KEY: z.preprocess(blankToUndefined, z.string().optional()),
+  QLOO_BASE_URL: z.preprocess(
+    blankToUndefined,
+    z.string().url().default("https://hackathon.api.qloo.com"),
+  ),
   LLM_PROVIDER: z.preprocess(blankToUndefined, z.string().optional()),
   LLM_API_KEY: z.preprocess(blankToUndefined, z.string().optional()),
 });
@@ -31,20 +35,21 @@ if (!parsed.success) {
   throw new Error(`Invalid environment: ${detail}`);
 }
 
-if (parsed.data.TASTE_PROVIDER === "qloo") {
-  throw new Error("The Qloo provider is not implemented yet. Set TASTE_PROVIDER=mock.");
+if (parsed.data.TASTE_PROVIDER === "qloo" && !parsed.data.QLOO_API_KEY) {
+  throw new Error("TASTE_PROVIDER=qloo requires QLOO_API_KEY. Set the key in .env or use TASTE_PROVIDER=mock.");
 }
 
 export const config = {
   port: parsed.data.PORT,
   host: parsed.data.HOST,
   nodeEnv: parsed.data.NODE_ENV,
-  tasteProvider: parsed.data.TASTE_PROVIDER as "mock" | "qloo",
+  tasteProvider: parsed.data.TASTE_PROVIDER,
   mockLatency: parsed.data.MOCK_LATENCY,
   trustProxy: parsed.data.TRUST_PROXY === "true" || parsed.data.TRUST_PROXY === "1",
   rateLimitMax: parsed.data.RATE_LIMIT_MAX,
   rateLimitRunsPerMin: parsed.data.RATE_LIMIT_RUNS_PER_MIN,
   qlooApiKey: parsed.data.QLOO_API_KEY,
+  qlooBaseUrl: parsed.data.QLOO_BASE_URL.replace(/\/$/, ""),
   llmProvider: parsed.data.LLM_PROVIDER,
   llmApiKey: parsed.data.LLM_API_KEY,
 };
