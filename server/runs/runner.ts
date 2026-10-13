@@ -41,13 +41,13 @@ async function mapPool<T, R>(items: T[], limit: number, fn: (item: T, index: num
   return results;
 }
 
-export function executeRun(run: Run, log: (fields: Record<string, string | number>) => void): void {
-  void pipeline(run, log);
+export function executeRun(run: Run, log: (fields: Record<string, string | number>) => void): Promise<void> {
+  return pipeline(run, log);
 }
 
 async function pipeline(run: Run, log: (fields: Record<string, string | number>) => void): Promise<void> {
   const started = Date.now();
-  const provider = getProvider();
+  const provider = getProvider({ live: run.live });
   let step: StepId = "resolve";
   const ctx: ProviderContext = {
     signal: run.abort.signal,

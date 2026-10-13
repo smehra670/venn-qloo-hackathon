@@ -8,10 +8,15 @@ import { getProvider } from "../providers/index.js";
 import { attachRelated } from "../providers/mock/engine.js";
 import type { ProviderContext } from "../providers/types.js";
 import { executeRun } from "../runs/runner.js";
-import { append, createRun, getRun, type Run } from "../runs/store.js";
+import { getScheduler } from "../runs/scheduler.js";
+import { append, canStartRun, createRun, getRun, recordRun, type Run } from "../runs/store.js";
 import { waitForLatency } from "../runs/trace.js";
 
 const EXPIRED = "That search has expired. Start a new one.";
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
 
 function quietContext(): ProviderContext {
   const signal = AbortSignal.timeout(20_000);
@@ -63,9 +68,20 @@ export function registerRuns(app: FastifyInstance): void {
         const message = parsed.error.issues[0]?.message ?? "Check the form and try again.";
         return reply.code(400).send({ error: message });
       }
-      const run = createRun(parsed.data);
-      executeRun(run, (fields) => {
-        request.log.info(fields, "run finished");
+      if (!canStartRun(request.ip)) {
+        return reply.code(429).send({ error: "Daily search limit reached for this network. Try again tomorrow." });
+      }
+      const scheduler = getScheduler();
+      if (scheduler.status().queued >= config.queueMax) {
+        return reply.code(503).send({ error: "Too many searches queued right now. Try again shortly." });
+      }
+      const live = isRecord(request.body) && request.body.live === true;
+      const run = createRun(parsed.data, { live });
+      recordRun(request.ip);
+      scheduler.enqueue(run, () => {
+        void executeRun(run, (fields) => {
+          request.log.info(fields, "run finished");
+        }).finally(() => scheduler.release());
       });
       return reply.send({ runId: run.id });
     },

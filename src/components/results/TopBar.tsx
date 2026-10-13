@@ -27,7 +27,13 @@ export function TopBar() {
       </div>
       <div className="ml-auto flex items-center gap-2">
         <Button type="button" variant="ghost" onClick={reset}>New search</Button>
-        <Badge>{health?.provider === "qloo" || result.provider === "qloo" ? "Powered by Qloo" : "Demo data"}</Badge>
+        <Badge>
+          {result.providerLabel.toLowerCase().includes("saved")
+            ? result.providerLabel
+            : health?.provider === "qloo" || result.provider === "qloo"
+              ? "Powered by Qloo"
+              : "Demo data"}
+        </Badge>
       </div>
     </header>
   );

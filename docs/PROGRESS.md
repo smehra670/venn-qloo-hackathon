@@ -10,3 +10,11 @@
 - Smoke: not re-run in Phase 0 (needs live server); prior session smoke OK with Qloo after 429 backoff.
 - Env: `.env.example` extended for OpenAI / store / queue. Local `.env` sets `LLM_PROVIDER=openai`; **`OPENAI_API_KEY` must be filled locally** (key from chat treated as exposed — rotate in OpenAI dashboard).
 - Chosen LLM model IDs (defaults): `gpt-4.1-mini` (brief + fast).
+
+## Phase 1 — Judge-proofing (2026-10-13)
+
+- SQLite dual `RunStore`, scheduler, Qloo circuit breaker, expanded health, CSP on, `docs/DEPLOY.md`.
+- Snapshots: `npm run snapshot`, `SnapshotTasteProvider`, `GET /api/examples`, `live: true` bypass.
+- About dialog `#about` + footer; `QLOO_CAPABILITIES` + drift test.
+- Config: OpenAI / queue / DATA_DIR / circuit env vars; `.env.example` updated.
+- Tests: 21 passing.

@@ -36,3 +36,10 @@ export const DEMO_LIMITS = [
 
 export const UNKNOWN_CITY_LIMIT =
   "Map preview and local places are available for London, Manchester and New York in demo mode.";
+
+/** Qloo surfaces actually called by `server/providers/qloo/client.ts`. Keep in sync; see capabilities.test.ts. */
+export const QLOO_CAPABILITIES = [
+  { path: "/search", label: "Entity search", usedFor: "resolveAnchors, resolveCity" },
+  { path: "/v2/insights", label: "Insights", usedFor: "discover, score, enrich, expand, heatmap" },
+  { path: "/v2/tags", label: "Tag search", usedFor: "resolveAnchors (keyword fallback)" },
+] as const;

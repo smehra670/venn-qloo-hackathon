@@ -18,6 +18,42 @@ export class QlooHttpError extends Error {
   }
 }
 
+interface CircuitState {
+  failures: number;
+  openedAt: number | null;
+}
+
+const circuit: CircuitState = { failures: 0, openedAt: null };
+
+export function getCircuitState(): { open: boolean; failures: number; openedAt: number | null } {
+  const open = circuit.openedAt !== null && Date.now() - circuit.openedAt < config.qlooCircuitCooldownMs;
+  if (!open && circuit.openedAt !== null) {
+    // Cooldown elapsed; let the next request through as a trial.
+    circuit.openedAt = null;
+    circuit.failures = 0;
+  }
+  return { open, failures: circuit.failures, openedAt: circuit.openedAt };
+}
+
+function recordFailure(): void {
+  circuit.failures += 1;
+  if (circuit.failures >= config.qlooCircuitFailures && circuit.openedAt === null) {
+    circuit.openedAt = Date.now();
+  }
+}
+
+function recordSuccess(): void {
+  circuit.failures = 0;
+  circuit.openedAt = null;
+}
+
+function assertCircuitClosed(): void {
+  const state = getCircuitState();
+  if (state.open) {
+    throw new QlooHttpError("Qloo is temporarily unavailable after repeated failures. Try again shortly.", 503);
+  }
+}
+
 export type QueryValue = string | number | boolean | undefined | null | Array<string | number>;
 
 function buildQuery(params: Record<string, QueryValue>): string {
@@ -58,20 +94,28 @@ export async function qlooGet<T>(
 ): Promise<T> {
   const key = config.qlooApiKey;
   if (!key) throw new Error("QLOO_API_KEY is missing.");
+  assertCircuitClosed();
 
   const query = buildQuery(params);
   const url = `${config.qlooBaseUrl}${path.startsWith("/") ? path : `/${path}`}${query ? `?${query}` : ""}`;
   let attempt = 0;
   while (true) {
     attempt += 1;
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "X-Api-Key": key,
-      },
-      signal,
-    });
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "X-Api-Key": key,
+        },
+        signal,
+      });
+    } catch (error) {
+      if (error instanceof Error && error.name === "AbortError") throw error;
+      recordFailure();
+      throw new QlooHttpError("Could not reach Qloo. Check your connection and try again.", 0);
+    }
 
     if (response.status === 401) {
       throw new QlooHttpError(
@@ -84,6 +128,7 @@ export async function qlooGet<T>(
     }
     if (response.status === 429) {
       if (attempt >= 5) {
+        recordFailure();
         throw new QlooHttpError("Qloo rate limit hit. Wait a moment and try again.", 429);
       }
       const retryAfter = Number(response.headers.get("retry-after"));
@@ -92,6 +137,7 @@ export async function qlooGet<T>(
       continue;
     }
     if (response.status === 404) {
+      recordSuccess();
       return parse({ success: true, results: [] });
     }
     if (!response.ok) {
@@ -102,10 +148,12 @@ export async function qlooGet<T>(
       } catch {
         // ignore
       }
+      if (response.status >= 500) recordFailure();
       throw new QlooHttpError(`Qloo request failed (${response.status}): ${detail}`, response.status);
     }
 
     const json: unknown = await response.json();
+    recordSuccess();
     return parse(json);
   }
 }

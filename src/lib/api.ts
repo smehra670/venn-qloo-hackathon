@@ -40,13 +40,15 @@ async function request<T>(path: string, init: RequestInit | undefined, parse: (v
   return parse(payload);
 }
 
-const HealthSchema = z.object({
-  ok: z.literal(true),
-  provider: z.enum(["mock", "qloo"]),
-  providerLabel: z.string(),
-  demo: z.boolean(),
-  version: z.string(),
-});
+const HealthSchema = z
+  .object({
+    ok: z.literal(true),
+    provider: z.enum(["mock", "qloo", "snapshot"]),
+    providerLabel: z.string(),
+    demo: z.boolean(),
+    version: z.string(),
+  })
+  .passthrough();
 
 const MetaSchema = z.object({
   businessTypes: z.array(z.object({ id: z.string(), label: z.string() })),

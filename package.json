@@ -35,6 +35,7 @@
     "@radix-ui/react-slider": "^1.5.0",
     "@radix-ui/react-toggle-group": "^1.1.20",
     "@radix-ui/react-tooltip": "^1.3.0",
+    "better-sqlite3": "^13.0.3",
     "clsx": "^2.1.1",
     "d3-force": "^3.0.0",
     "d3-scale": "^4.0.2",
@@ -58,6 +59,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "@types/better-sqlite3": "^9.6.0",
     "@types/d3-force": "^3.0.10",
     "@types/d3-scale": "^4.0.9",
     "@types/d3-selection": "^3.0.12",
@@ -79,5 +81,8 @@
     "typescript": "^7.0.2",
     "vite": "^8.3.4",
     "vitest": "^5.0.3"
+  },
+  "allowScripts": {
+    "better-sqlite3@13.0.3": true
   }
 }

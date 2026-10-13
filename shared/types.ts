@@ -39,7 +39,7 @@ export type EntityType =
   | "book"
   | "destination";
 
-export type ProviderName = "mock" | "qloo";
+export type ProviderName = "mock" | "qloo" | "snapshot";
 
 export const STEP_ORDER = [
   "resolve",

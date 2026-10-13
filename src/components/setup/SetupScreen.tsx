@@ -1,5 +1,6 @@
 import type { ExampleInput } from "@shared/types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { AboutDialog } from "@/components/about/AboutDialog";
 import { AmbientCircles } from "@/components/brand/AmbientCircles";
 import { Logo } from "@/components/brand/Logo";
 import { ExampleChips } from "@/components/setup/ExampleChips";
@@ -7,6 +8,13 @@ import { SentenceForm, validationMessage } from "@/components/setup/SentenceForm
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { useVenn } from "@/store/useVenn";
+
+function providerBadge(health: { provider: string; providerLabel: string; demo: boolean } | null): string {
+  if (!health) return "Demo data";
+  if (health.providerLabel.toLowerCase().includes("saved")) return health.providerLabel;
+  if (health.provider === "qloo") return "Powered by Qloo";
+  return "Demo data";
+}
 
 const FALLBACK: ExampleInput[] = [
   { businessType: "cafe", city: "London", anchors: ["Aesop", "Radiohead", "pilates"], businessName: "Brew & Co" },
@@ -21,9 +29,24 @@ export function SetupScreen() {
   const meta = useVenn((state) => state.meta);
   const health = useVenn((state) => state.health);
   const [busy, setBusy] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
   const reason = validationMessage(input);
   const examples = meta?.examples.length ? meta.examples : FALLBACK;
   const cities = meta?.demoCities ?? ["London", "Manchester", "New York"];
+
+  useEffect(() => {
+    const syncHash = () => setAboutOpen(window.location.hash === "#about");
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+    return () => window.removeEventListener("hashchange", syncHash);
+  }, []);
+
+  const closeAbout = () => {
+    setAboutOpen(false);
+    if (window.location.hash === "#about") {
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+  };
 
   const fillExample = (example: ExampleInput) => {
     setInput({ ...example, anchors: [] });
@@ -42,7 +65,12 @@ export function SetupScreen() {
       <AmbientCircles />
       <header className="relative z-10 flex items-center justify-between px-5 py-5 md:px-10">
         <Logo />
-        <Badge>{health?.provider === "qloo" ? "Powered by Qloo" : "Demo data"}</Badge>
+        <div className="flex items-center gap-2">
+          <Button type="button" variant="ghost" className="text-sm" onClick={() => setAboutOpen(true)}>
+            About
+          </Button>
+          <Badge>{providerBadge(health)}</Badge>
+        </div>
       </header>
       <main className="relative z-10 mx-auto flex max-w-3xl flex-col gap-8 px-5 pb-16 pt-8 md:px-8 md:pt-16">
         <div>
@@ -76,6 +104,15 @@ export function SetupScreen() {
         </form>
         <ExampleChips examples={examples} onPick={fillExample} />
       </main>
+      <footer className="relative z-10 border-t border-line px-5 py-6 text-sm text-ink-soft md:px-10">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3">
+          <span>Venn · MIT · taste collaboration agent</span>
+          <button type="button" className="underline underline-offset-2 hover:text-ink" onClick={() => setAboutOpen(true)}>
+            About &amp; Qloo surfaces
+          </button>
+        </div>
+      </footer>
+      <AboutDialog open={aboutOpen} onClose={closeAbout} version={health?.version} />
     </div>
   );
 }

@@ -98,7 +98,7 @@ const EntityTypeSchema = z.enum([
   "book",
   "destination",
 ]);
-const ProviderSchema = z.enum(["mock", "qloo"]);
+const ProviderSchema = z.enum(["mock", "qloo", "snapshot"]);
 
 const SignalSchema = z.object({
   affinityToPartner: z.number(),
