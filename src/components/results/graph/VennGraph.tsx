@@ -154,7 +154,7 @@ export function VennGraph() {
                     fillOpacity={0.5}
                     tabIndex={0}
                     role="button"
-                    aria-label={`${partner.name}, ${KIND_META[partner.kind].label}, match ${partner.matchScore}`}
+                    aria-label={`${partner.name}, ${KIND_META[partner.kind].label}, match ${partner.matchScore}${partner.userAdded ? ", your pick" : ""}`}
                     initial={reduced || !fresh ? false : { cx: layout.cx, cy: layout.cy }}
                     animate={{ cx: node.x, cy: node.y }}
                     transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 140, damping: 18, delay: fresh ? index * 0.04 : 0 }}
@@ -165,8 +165,9 @@ export function VennGraph() {
                         selectPartner(partner.id);
                       }
                     }}
-                    stroke={selectedId === partner.id ? "#3E49E6" : "transparent"}
-                    strokeWidth={selectedId === partner.id ? 3 : 0}
+                    stroke={partner.userAdded || selectedId === partner.id ? "#3E49E6" : "transparent"}
+                    strokeWidth={partner.userAdded || selectedId === partner.id ? 3 : 0}
+                    strokeDasharray={partner.userAdded ? "6 4" : undefined}
                   />
                   <motion.circle
                     r={node.r}

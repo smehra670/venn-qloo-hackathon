@@ -3,12 +3,15 @@ import type {
   BusinessInput,
   CityInfo,
   Heatmap,
+  Normalization,
   Partner,
   PartnerKind,
   ResolvedAnchor,
   RunResult,
 } from "@shared/types";
+import { PARTNER_KINDS } from "@shared/types";
 import { profileFor } from "../mock/profiles.js";
+import { stretchWithNormalization } from "../scoring.js";
 import type { Candidate, ProviderContext, ProviderEntity, TasteProvider } from "../types.js";
 import {
   affinityOf,
@@ -313,11 +316,12 @@ export class QlooTasteProvider implements TasteProvider {
     resolved: ResolvedAnchor[],
     candidates: Candidate[],
     ctx: ProviderContext,
+    out?: { normalization?: Normalization },
   ): Promise<Partner[]> {
     return ctx.trace(
       "score_shortlist",
       `count: ${candidates.length}`,
-      async () => this.scoreCandidates(input, resolved, candidates, ctx.signal),
+      async () => this.scoreCandidates(input, resolved, candidates, ctx.signal, out),
       (partners) => `${partners.length} scored`,
     );
   }
@@ -327,6 +331,7 @@ export class QlooTasteProvider implements TasteProvider {
     resolved: ResolvedAnchor[],
     candidates: Candidate[],
     signal: AbortSignal,
+    out?: { normalization?: Normalization },
   ): Promise<Partner[]> {
     if (candidates.length === 0) return [];
     const unique = new Map<string, Candidate>();
@@ -371,7 +376,7 @@ export class QlooTasteProvider implements TasteProvider {
       const harmonic = to > 0 && from > 0 ? (2 * to * from) / (to + from) : to;
       return harmonic;
     });
-    const scores = stretchScores(raw);
+    const scores = stretchScores(raw, out);
     const median = [...scores].sort((a, b) => a - b)[Math.floor(scores.length / 2)] ?? 74;
     const partners = list.map((candidate, index) =>
       buildPartner({
@@ -556,5 +561,72 @@ export class QlooTasteProvider implements TasteProvider {
     } catch {
       return null;
     }
+  }
+
+  async checkPartner(
+    input: BusinessInput,
+    resolved: ResolvedAnchor[],
+    query: { name: string; entityHint?: string },
+    frozen: { normalization: Normalization; medianScore: number },
+    ctx: ProviderContext,
+  ): Promise<Partner | null> {
+    return ctx.trace(
+      "search_entities",
+      `check: ${query.name}`,
+      async () => this.checkPartnerEntity(input, resolved, query, frozen, ctx.signal),
+      (partner) => (partner ? `${partner.name} · ${partner.matchScore}` : "no match"),
+    );
+  }
+
+  private async checkPartnerEntity(
+    input: BusinessInput,
+    resolved: ResolvedAnchor[],
+    query: { name: string; entityHint?: string },
+    frozen: { normalization: Normalization; medianScore: number },
+    signal: AbortSignal,
+  ): Promise<Partner | null> {
+    const hintKind =
+      query.entityHint && (PARTNER_KINDS as readonly string[]).includes(query.entityHint)
+        ? (query.entityHint as PartnerKind)
+        : undefined;
+    const types = hintKind ? [filterTypeForKind(hintKind)] : searchTypesForAnchor();
+    let results: QlooEntity[] = [];
+    try {
+      results = await searchEntities({ query: query.name, types, take: 5 }, signal);
+    } catch {
+      return null;
+    }
+    const best = results[0];
+    if (!best) return null;
+    const kind = hintKind ?? kindFromEntityTypes(typesOf(best), "culture");
+    const entry = toProviderEntity(best, kind, input.city);
+    if (!entry) return null;
+
+    const to = Math.max(0.05, affinityOf(best) || entry.popularity || 0.3);
+    let from = to * 0.85;
+    try {
+      const filterType = businessSignalFilter(input.businessType);
+      const reverse = await insights(
+        { "filter.type": filterType, "signal.interests.entities": entry.id, take: 5 },
+        signal,
+      );
+      const top = reverse.entities[0];
+      if (top) from = Math.max(0.15, affinityOf(top));
+    } catch {
+      // Keep the heuristic fallback; Check-a-partner should still succeed without a reverse hit.
+    }
+    const harmonic = to > 0 && from > 0 ? (2 * to * from) / (to + from) : to;
+    const matchScore = stretchWithNormalization(harmonic, frozen.normalization);
+    const partner = buildPartner({
+      entry,
+      local: false,
+      affinityTo: to,
+      affinityFrom: from,
+      matchScore,
+      resolved,
+      input,
+      median: frozen.medianScore,
+    });
+    return { ...partner, userAdded: true };
   }
 }

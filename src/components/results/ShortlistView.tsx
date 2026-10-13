@@ -92,6 +92,7 @@ function List({
               <span className="mt-1 flex flex-wrap gap-2">
                 <Chip>{KIND_META[partner.kind].label}</Chip>
                 <Chip>{partner.local ? "Local" : "Brand"}</Chip>
+                {partner.userAdded ? <Chip>Your pick</Chip> : null}
               </span>
               <span className="mt-1 block text-sm text-ink-soft">{partner.reasons[0] ?? partner.blurb}</span>
             </span>

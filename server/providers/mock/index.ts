@@ -1,4 +1,4 @@
-import type { BusinessInput, CityInfo, Heatmap, Partner, PartnerKind, ResolvedAnchor, RunResult } from "@shared/types";
+import type { BusinessInput, CityInfo, Heatmap, Normalization, Partner, PartnerKind, ResolvedAnchor, RunResult } from "@shared/types";
 import type { Candidate, ProviderContext, TasteProvider } from "../types.js";
 import { tagLabel } from "./taxonomy.js";
 import {
@@ -7,8 +7,10 @@ import {
   expandFrom,
   heatmapFor,
   planKinds,
+  resolveCandidateEntry,
   resolveOne,
   scoreCandidates,
+  scoreOneFrozen,
 } from "./engine.js";
 
 async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T, index: number) => Promise<R>): Promise<R[]> {
@@ -85,11 +87,17 @@ export class MockTasteProvider implements TasteProvider {
     );
   }
 
-  async score(input: BusinessInput, resolved: ResolvedAnchor[], candidates: Candidate[], ctx: ProviderContext): Promise<Partner[]> {
+  async score(
+    input: BusinessInput,
+    resolved: ResolvedAnchor[],
+    candidates: Candidate[],
+    ctx: ProviderContext,
+    out?: { normalization?: Normalization },
+  ): Promise<Partner[]> {
     return ctx.trace(
       "score_shortlist",
       `count: ${candidates.length}`,
-      async () => scoreCandidates(input, resolved, candidates),
+      async () => scoreCandidates(input, resolved, candidates, out),
       (partners) => `${partners.length} scored`,
     );
   }
@@ -124,6 +132,25 @@ export class MockTasteProvider implements TasteProvider {
       `partner: ${partnerId}, city: ${run.input.city}`,
       async () => heatmapFor(run, partnerId),
       (value) => (value ? `${value.spots.length} neighbourhoods` : "no local map"),
+    );
+  }
+
+  async checkPartner(
+    input: BusinessInput,
+    resolved: ResolvedAnchor[],
+    query: { name: string; entityHint?: string },
+    frozen: { normalization: Normalization; medianScore: number },
+    ctx: ProviderContext,
+  ): Promise<Partner | null> {
+    return ctx.trace(
+      "search_entities",
+      `check: ${query.name}`,
+      async () => {
+        const entry = resolveCandidateEntry(query.name, query.entityHint);
+        const partner = scoreOneFrozen(input, resolved, entry, frozen.normalization, frozen.medianScore);
+        return { ...partner, userAdded: true };
+      },
+      (partner) => `${partner.name} · ${partner.matchScore}`,
     );
   }
 }

@@ -2,6 +2,7 @@ import type {
   BusinessInput,
   CityInfo,
   EntityType,
+  Normalization,
   PartnerKind,
   ProviderName,
 } from "@shared/types";
@@ -54,6 +55,10 @@ export interface TasteProvider {
     resolved: import("@shared/types").ResolvedAnchor[],
     candidates: Candidate[],
     ctx: ProviderContext,
+    /** Set by the implementation to the normalization it used, so the runner can freeze it
+     * onto the `RunResult` for later Proof/Check calls. Optional: callers that don't need it
+     * (e.g. `expand`) can omit it. */
+    out?: { normalization?: Normalization },
   ): Promise<import("@shared/types").Partner[]>;
   enrich(
     input: BusinessInput,
@@ -70,4 +75,16 @@ export interface TasteProvider {
     partnerId: string,
     ctx: ProviderContext,
   ): Promise<import("@shared/types").Heatmap | null>;
+  /**
+   * Resolves a free-text name (Check-a-partner) to a candidate and scores it with the run's
+   * frozen normalization, so it lands on the same scale as the rest of the run's partners.
+   * Returns null when nothing could be resolved/scored (the route turns that into a 404).
+   */
+  checkPartner(
+    input: BusinessInput,
+    resolved: import("@shared/types").ResolvedAnchor[],
+    query: { name: string; entityHint?: string },
+    frozen: { normalization: Normalization; medianScore: number },
+    ctx: ProviderContext,
+  ): Promise<import("@shared/types").Partner | null>;
 }

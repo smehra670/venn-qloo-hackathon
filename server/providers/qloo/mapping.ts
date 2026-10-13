@@ -4,6 +4,7 @@ import type {
   CityInfo,
   EntityType,
   EvidenceItem,
+  Normalization,
   Partner,
   PartnerKind,
   ResolvedAnchor,
@@ -11,6 +12,7 @@ import type {
 } from "@shared/types";
 import type { ProviderEntity } from "../types.js";
 import { profileFor } from "../mock/profiles.js";
+import { computeNormalization, stretchWithNormalization } from "../scoring.js";
 import {
   affinityOf,
   entityIdOf,
@@ -187,12 +189,11 @@ export function toProviderEntity(entity: QlooEntity, kind: PartnerKind, city?: s
   };
 }
 
-export function stretchScores(raw: number[]): number[] {
+export function stretchScores(raw: number[], out?: { normalization?: Normalization }): number[] {
   if (raw.length === 0) return [];
-  const min = Math.min(...raw);
-  const max = Math.max(...raw);
-  if (max === min) return raw.map(() => 74);
-  return raw.map((value) => Math.round(52 + ((value - min) / (max - min)) * 44));
+  const normalization = computeNormalization(raw);
+  if (out) out.normalization = normalization;
+  return raw.map((value) => stretchWithNormalization(value, normalization));
 }
 
 export function surpriseFor(kind: PartnerKind, businessType: BusinessType, matchScore: number, median: number): {

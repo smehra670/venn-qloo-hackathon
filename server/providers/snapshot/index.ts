@@ -2,6 +2,7 @@ import type {
   BusinessInput,
   CityInfo,
   Heatmap,
+  Normalization,
   Partner,
   PartnerKind,
   ProviderName,
@@ -106,6 +107,7 @@ export class SnapshotTasteProvider implements TasteProvider {
     _resolved: ResolvedAnchor[],
     candidates: Candidate[],
     _ctx: ProviderContext,
+    _out?: { normalization?: Normalization },
   ): Promise<Partner[]> {
     const { result } = this.load(input);
     const byId = new Map(result.partners.map((partner) => [partner.id, partner]));
@@ -132,5 +134,23 @@ export class SnapshotTasteProvider implements TasteProvider {
 
   async heatmap(_run: RunResult, _partnerId: string, _ctx: ProviderContext): Promise<Heatmap | null> {
     return null;
+  }
+
+  async checkPartner(
+    input: BusinessInput,
+    _resolved: ResolvedAnchor[],
+    query: { name: string; entityHint?: string },
+    _frozen: { normalization: Normalization; medianScore: number },
+    _ctx: ProviderContext,
+  ): Promise<Partner | null> {
+    // Snapshots are static: there's no live search/score to fall back to, so Check only
+    // works for a partner already present in the saved result.
+    const { result } = this.load(input);
+    const needle = query.name.trim().toLowerCase();
+    const match =
+      result.partners.find((partner) => partner.name.toLowerCase() === needle) ??
+      result.partners.find((partner) => partner.name.toLowerCase().includes(needle));
+    if (!match) return null;
+    return { ...match, relatedIds: [...match.relatedIds], userAdded: true };
   }
 }

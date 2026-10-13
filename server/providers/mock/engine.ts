@@ -2,9 +2,11 @@ import { DEMO_LIMITS, UNKNOWN_CITY_LIMIT } from "@shared/constants";
 import type {
   BusinessInput,
   CityInfo,
+  EntityType,
   EvidenceItem,
   Heatmap,
   HeatSpot,
+  Normalization,
   Partner,
   PartnerKind,
   ResolvedAnchor,
@@ -12,12 +14,14 @@ import type {
   SignalBreakdown,
   TopPick,
 } from "@shared/types";
+import { PARTNER_KINDS } from "@shared/types";
 import Fuse from "fuse.js";
 import { CATALOG, type CatalogEntry } from "./catalog.js";
 import { matchCity } from "./cities.js";
 import { profileFor } from "./profiles.js";
 import { TAXONOMY, lookupSynonyms, tagLabel } from "./taxonomy.js";
 import type { Candidate } from "../types.js";
+import { computeNormalization, stretchWithNormalization } from "../scoring.js";
 import { hashString, unitFor } from "../../utils/rng.js";
 import { clamp } from "../../utils/text.js";
 
@@ -282,12 +286,10 @@ function trendWord(value: number): "Rising" | "Steady" | "Cooling" {
 }
 
 function stretch(raw: number, min: number, max: number): number {
-  if (max - min < 1e-9) return 74;
-  const score = 52 + ((raw - min) / (max - min)) * 44;
-  return Math.round(clamp(score, 52, 96));
+  return stretchWithNormalization(raw, { minRaw: min, maxRaw: max });
 }
 
-function median(values: number[]): number {
+export function median(values: number[]): number {
   if (values.length === 0) return 0;
   const sorted = [...values].sort((a, b) => a - b);
   const mid = Math.floor(sorted.length / 2);
@@ -303,7 +305,7 @@ interface ScoredDraft {
   sharedTagIds: string[];
 }
 
-function draftPartner(input: BusinessInput, resolved: ResolvedAnchor[], item: CatalogEntry, seed: number): ScoredDraft {
+export function draftPartner(input: BusinessInput, resolved: ResolvedAnchor[], item: CatalogEntry, seed: number): ScoredDraft {
   const profiles = buildProfiles(input, resolved);
   const tagMap = recordToMap(item.tags);
   const audienceMap = listToMap(item.audienceTags, 1);
@@ -387,7 +389,7 @@ function reasonsFor(draft: ScoredDraft, surprise: number, isSurprising: boolean,
   return reasons.slice(0, 3);
 }
 
-function toPartner(
+export function toPartner(
   input: BusinessInput,
   draft: ScoredDraft,
   matchScore: number,
@@ -416,16 +418,21 @@ function toPartner(
   return partner;
 }
 
-export function scoreCandidates(input: BusinessInput, resolved: ResolvedAnchor[], candidates: Candidate[]): Partner[] {
+export function scoreCandidates(
+  input: BusinessInput,
+  resolved: ResolvedAnchor[],
+  candidates: Candidate[],
+  out?: { normalization?: Normalization },
+): Partner[] {
   const seed = seedFor(input);
   const category = profileFor(input.businessType).category;
   const drafts = candidates.map((candidate) => draftPartner(input, resolved, candidate.entry, seed));
   const raws = drafts.map((draft) => draft.raw);
-  const min = raws.length > 0 ? Math.min(...raws) : 0;
-  const max = raws.length > 0 ? Math.max(...raws) : 1;
+  const normalization = computeNormalization(raws);
+  if (out) out.normalization = normalization;
   const preliminary = drafts.map((draft) => ({
     draft,
-    matchScore: stretch(draft.raw, min, max),
+    matchScore: stretchWithNormalization(draft.raw, normalization),
     surprise: surpriseDistance(category, draft.entry.kind),
   }));
   const mid = median(preliminary.map((item) => item.matchScore));
@@ -434,6 +441,91 @@ export function scoreCandidates(input: BusinessInput, resolved: ResolvedAnchor[]
     .sort((a, b) => b.matchScore - a.matchScore || a.name.localeCompare(b.name));
   attachRelated(partners);
   return partners;
+}
+
+const ENTITY_TYPE_FOR_KIND: Record<PartnerKind, EntityType> = {
+  music: "artist",
+  retail: "brand",
+  fashion: "brand",
+  wellness: "brand",
+  food: "place",
+  drink: "place",
+  venue: "place",
+  fitness: "place",
+  culture: "place",
+};
+
+function hintedKind(entityHint?: string): PartnerKind {
+  if (entityHint && (PARTNER_KINDS as readonly string[]).includes(entityHint)) return entityHint as PartnerKind;
+  return "culture";
+}
+
+function syntheticCatalogEntry(name: string, entityHint?: string): CatalogEntry {
+  const trimmed = name.trim();
+  const tagsList = guessedTags(trimmed.toLowerCase());
+  const kind = hintedKind(entityHint);
+  const weights: Record<string, number> = {};
+  tagsList.forEach((tag, index) => {
+    weights[tag] = index === 0 ? 1 : 0.7;
+  });
+  return {
+    id: `custom-${hashString(trimmed.toLowerCase()).toString(36)}`,
+    name: trimmed,
+    kind,
+    entityType: ENTITY_TYPE_FOR_KIND[kind],
+    blurb: `A stand-in profile for "${trimmed}" — not in the demo dataset, so Venn guessed a taste profile.`,
+    tags: weights,
+    audienceTags: tagsList,
+    popularity: 0.5,
+    trend: 0,
+  };
+}
+
+/**
+ * Resolves a free-text "Check a partner" name to a catalog entry, mirroring the matched /
+ * keyword / guessed ladder used for anchors in `resolveOne`. Falls back to a synthetic
+ * stand-in entry (same idea as a "guessed" anchor) so the demo always has something to score,
+ * optionally steered towards `entityHint` (a PartnerKind or EntityType hint) when ambiguous.
+ */
+export function resolveCandidateEntry(name: string, entityHint?: string): CatalogEntry {
+  const query = name.trim().toLowerCase();
+  const exact = CATALOG.find(
+    (item) => item.name.toLowerCase() === query || item.aliases?.some((alias) => alias.toLowerCase() === query),
+  );
+  if (exact) return exact;
+  const hits = fuse.search(query, { limit: 5 });
+  const withHint = entityHint
+    ? hits.find((hit) => {
+        const entry = CATALOG.find((item) => item.id === hit.item.id);
+        return Boolean(entry && (entry.kind === entityHint || entry.entityType === entityHint));
+      })
+    : undefined;
+  const best = withHint ?? hits[0];
+  if (best) {
+    const entry = CATALOG.find((item) => item.id === best.item.id);
+    if (entry) return entry;
+  }
+  return syntheticCatalogEntry(name, entityHint);
+}
+
+/**
+ * Scores a single candidate entry using this run's frozen normalization instead of a fresh
+ * one, so a newly checked partner lands on the same 52-96 scale as the rest of the run.
+ */
+export function scoreOneFrozen(
+  input: BusinessInput,
+  resolved: ResolvedAnchor[],
+  entry: CatalogEntry,
+  normalization: Normalization,
+  medianScore: number,
+): Partner {
+  const seed = seedFor(input);
+  const category = profileFor(input.businessType).category;
+  const draft = draftPartner(input, resolved, entry, seed);
+  const matchScore = stretchWithNormalization(draft.raw, normalization);
+  const surprise = surpriseDistance(category, entry.kind);
+  const isSurprising = surprise >= 0.6 && matchScore >= medianScore;
+  return toPartner(input, draft, matchScore, surprise, isSurprising);
 }
 
 export function attachRelated(partners: Partner[]): void {

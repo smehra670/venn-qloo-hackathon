@@ -1,5 +1,5 @@
 import { DEMO_LIMITS, STEP_TITLES, UNKNOWN_CITY_LIMIT } from "@shared/constants";
-import type { PartnerKind, RunResult, StepId } from "@shared/types";
+import type { Normalization, PartnerKind, RunResult, StepId } from "@shared/types";
 import { nanoid } from "nanoid";
 import { getProvider } from "../providers/index.js";
 import type { Candidate, ProviderContext } from "../providers/types.js";
@@ -128,7 +128,8 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
 
     step = "score";
     append(run, { type: "step_started", step, title: STEP_TITLES.score });
-    let partners = await provider.score(run.input, resolved, pool, ctx);
+    const scoreOut: { normalization?: Normalization } = {};
+    let partners = await provider.score(run.input, resolved, pool, ctx, scoreOut);
     ensure(run);
     append(run, { type: "step_completed", step, summary: `Scored ${partners.length} partners.` });
 
@@ -166,7 +167,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       if (pool.length > 28) {
         pool = [...pool].sort((a, b) => b.provisional - a.provisional).slice(0, 28);
       }
-      partners = await provider.score(run.input, resolved, pool, ctx);
+      partners = await provider.score(run.input, resolved, pool, ctx, scoreOut);
       append(run, { type: "step_completed", step, summary: "Widened the search and scored again." });
     } else if (strong < 12) {
       append(run, { type: "step_note", step, text: "No further partner types to try." });
@@ -209,6 +210,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
         toolCalls: run.toolCalls,
         elapsedMs,
       },
+      normalization: scoreOut.normalization,
     };
     append(run, { type: "step_completed", step, summary: "Your map is ready." });
     append(run, { type: "result", result });

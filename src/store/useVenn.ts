@@ -1,13 +1,13 @@
-import { STEP_TITLES } from "@shared/constants";
-import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BriefLength, type BriefTone, type BusinessInput, type Heatmap, type PartnerKind, type RunResult, type StepId, type StoredEvent } from "@shared/types";
+import { MAX_USER_ADDED_PARTNERS, STEP_TITLES } from "@shared/constants";
+import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BriefLength, type BriefTone, type BusinessInput, type Heatmap, type PartnerKind, type ProofPayload, type RunResult, type StepId, type StoredEvent } from "@shared/types";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { ApiError, cancelRun, createBrief, createRun, expandRun, getHealth, getHeatmap, getMeta, getRun, type Health, type Meta } from "@/lib/api";
+import { ApiError, cancelRun, createBrief, createRun, expandRun, getHealth, getHeatmap, getMeta, getRun, postCheck, postProof, type Health, type Meta } from "@/lib/api";
 import { openRunStream } from "@/lib/sse";
 import { clearRunId, readInput, readRunId, saveInput, saveRunId } from "@/lib/storage";
 
 export type Stage = "setup" | "researching" | "results";
-export type ResultsView = "graph" | "map" | "shortlist";
+export type ResultsView = "graph" | "map" | "shortlist" | "proof";
 export type StepState = "waiting" | "running" | "done" | "retry";
 
 export interface StepView {
@@ -78,6 +78,9 @@ interface VennState {
   briefLoading: boolean;
   briefs: Record<string, Brief>;
   heatmaps: Record<string, Heatmap | null>;
+  proof: ProofPayload | null;
+  proofLoading: boolean;
+  checking: boolean;
   error: string | null;
   boot: () => Promise<void>;
   startRun: (input: BusinessInput) => Promise<void>;
@@ -97,6 +100,8 @@ interface VennState {
   regenerateBrief: () => Promise<void>;
   expandPartner: (partnerId: string) => Promise<void>;
   loadHeatmap: (partnerId: string) => Promise<Heatmap | null>;
+  loadProof: () => Promise<void>;
+  checkPartner: (name: string, entityHint?: string) => Promise<void>;
   setInput: (input: BusinessInput) => void;
 }
 
@@ -166,6 +171,9 @@ export const useVenn = create<VennState>((set, get) => ({
   briefLoading: false,
   briefs: {},
   heatmaps: {},
+  proof: null,
+  proofLoading: false,
+  checking: false,
   error: null,
 
   setInput: (input) => {
@@ -224,6 +232,7 @@ export const useVenn = create<VennState>((set, get) => ({
       briefLength: "standard",
       briefs: {},
       heatmaps: {},
+      proof: null,
       pinnedIds: new Set(),
     });
     try {
@@ -264,6 +273,7 @@ export const useVenn = create<VennState>((set, get) => ({
       selectedId: null,
       briefOpen: false,
       hoverId: null,
+      proof: null,
     });
   },
 
@@ -282,7 +292,10 @@ export const useVenn = create<VennState>((set, get) => ({
     else next.add(kind);
     set({ kindFilter: next });
   },
-  setView: (view) => set({ view }),
+  setView: (view) => {
+    set({ view });
+    if (view === "proof") void get().loadProof();
+  },
 
   openBrief: async (partnerId) => {
     set({ briefOpen: true, briefPartnerId: partnerId, briefVariant: 0 });
@@ -345,6 +358,46 @@ export const useVenn = create<VennState>((set, get) => ({
     } catch (error) {
       toast(error instanceof ApiError ? error.message : "The map could not be loaded.");
       return null;
+    }
+  },
+
+  loadProof: async () => {
+    const { runId, proof, proofLoading } = get();
+    if (!runId || proof || proofLoading) return;
+    set({ proofLoading: true });
+    try {
+      const payload = await postProof(runId);
+      set({ proof: payload });
+    } catch (error) {
+      toast(error instanceof ApiError ? error.message : "The proof view could not be loaded.");
+    } finally {
+      set({ proofLoading: false });
+    }
+  },
+
+  checkPartner: async (name, entityHint) => {
+    const { runId, result, checking } = get();
+    if (!runId || !result || checking) return;
+    const userAddedCount = result.partners.filter((partner) => partner.userAdded).length;
+    if (userAddedCount >= MAX_USER_ADDED_PARTNERS) {
+      toast(`You can check up to ${MAX_USER_ADDED_PARTNERS} of your own partners per search.`);
+      return;
+    }
+    set({ checking: true });
+    try {
+      const response = await postCheck(runId, { name, entityHint });
+      const current = get().result;
+      if (!current) return;
+      const exists = current.partners.some((partner) => partner.id === response.partner.id);
+      const partners = exists
+        ? current.partners.map((partner) => (partner.id === response.partner.id ? response.partner : partner))
+        : [...current.partners, response.partner];
+      set({ result: { ...current, partners } });
+      toast(response.message ?? `Added "${response.partner.name}" as your pick.`);
+    } catch (error) {
+      toast(error instanceof ApiError ? error.message : "That partner could not be checked.");
+    } finally {
+      set({ checking: false });
     }
   },
 }));

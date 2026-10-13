@@ -26,3 +26,10 @@
 - Brief UI: tone/length, regenerate, citation superscripts, editable outreach.
 - Models: `gpt-4.1-mini`. Tests: 31 passing.
 - Reminder: set `OPENAI_API_KEY` in local `.env` and rotate any key that appeared in chat.
+
+## Phase 3 — Proof + Check (2026-10-13)
+
+- Frozen `normalization` on `RunResult`; shared scoring helper.
+- Proof tab + `POST .../proof` (popularity vs AI baseline narrative).
+- Check a partner + dashed “Your pick” nodes (cap 5); snapshots regenerated (mock).
+- Tests: 42 passing.

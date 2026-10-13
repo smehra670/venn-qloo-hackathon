@@ -1,5 +1,5 @@
-import { BriefSchema, HeatmapSchema, PartnerSchema, RunResultSchema } from "@shared/schemas";
-import type { Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ExampleInput, Heatmap, Partner, ProviderName, RunResult, RunStatus } from "@shared/types";
+import { BriefSchema, HeatmapSchema, PartnerSchema, ProofPayloadSchema, RunResultSchema } from "@shared/schemas";
+import type { Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ExampleInput, Heatmap, Partner, ProofPayload, ProviderName, RunResult, RunStatus } from "@shared/types";
 import { z } from "zod";
 
 export class ApiError extends Error {
@@ -139,5 +139,20 @@ export function createBrief(id: string, partnerId: string, options: CreateBriefO
     `/api/runs/${id}/brief`,
     { method: "POST", body: JSON.stringify({ partnerId, ...options }) },
     (value) => BriefSchema.parse(value),
+  );
+}
+
+export function postProof(id: string): Promise<ProofPayload> {
+  return request(`/api/runs/${id}/proof`, { method: "POST" }, (value) => ProofPayloadSchema.parse(value));
+}
+
+export interface CheckPartnerOptions {
+  name: string;
+  entityHint?: string;
+}
+
+export function postCheck(id: string, options: CheckPartnerOptions): Promise<{ partner: Partner; message?: string }> {
+  return request(`/api/runs/${id}/check`, { method: "POST", body: JSON.stringify(options) }, (value) =>
+    z.object({ partner: PartnerSchema, message: z.string().optional() }).parse(value),
   );
 }

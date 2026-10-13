@@ -1,12 +1,19 @@
-import { MAX_PARTNERS } from "@shared/constants";
-import { BriefRequestSchema, BusinessInputSchema, ExpandRequestSchema, HeatmapQuerySchema } from "@shared/schemas";
-import type { AgentEvent, StoredEvent } from "@shared/types";
+import { MAX_PARTNERS, MAX_USER_ADDED_PARTNERS } from "@shared/constants";
+import {
+  BriefRequestSchema,
+  BusinessInputSchema,
+  CheckRequestSchema,
+  ExpandRequestSchema,
+  HeatmapQuerySchema,
+} from "@shared/schemas";
+import type { AgentEvent, Partner, StoredEvent } from "@shared/types";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { writeAiBrief } from "../brief/ai.js";
 import { config } from "../config.js";
 import { getProvider } from "../providers/index.js";
-import { attachRelated } from "../providers/mock/engine.js";
+import { attachRelated, median } from "../providers/mock/engine.js";
 import type { ProviderContext } from "../providers/types.js";
+import { buildProof } from "../proof.js";
 import { executeRun } from "../runs/runner.js";
 import { getScheduler } from "../runs/scheduler.js";
 import { append, canStartRun, createRun, getRun, recordRun, type Run } from "../runs/store.js";
@@ -229,5 +236,51 @@ export function registerRuns(app: FastifyInstance): void {
     const brief = await writeAiBrief(result, partner, { variant, tone, length });
     run.briefs.set(key, brief);
     return brief;
+  });
+
+  app.post("/api/runs/:id/proof", async (request: FastifyRequest<{ Params: { id: string } }>) => {
+    const run = requireRun(request.params.id);
+    const result = requireResult(run);
+    return buildProof(result);
+  });
+
+  app.post("/api/runs/:id/check", async (request: FastifyRequest<{ Params: { id: string } }>, reply) => {
+    const parsed = CheckRequestSchema.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.code(400).send({ error: parsed.error.issues[0]?.message ?? "Enter a name to check." });
+    }
+    const run = requireRun(request.params.id);
+    const result = requireResult(run);
+    const userAddedCount = result.partners.filter((partner) => partner.userAdded).length;
+    if (userAddedCount >= MAX_USER_ADDED_PARTNERS) {
+      return reply
+        .code(400)
+        .send({ error: `You can check up to ${MAX_USER_ADDED_PARTNERS} of your own partners per search.` });
+    }
+    if (result.partners.length >= MAX_PARTNERS) {
+      return reply.code(400).send({ error: "This map already has 28 partners, which is the limit." });
+    }
+    const normalization = result.normalization ?? { minRaw: 0, maxRaw: 1 };
+    const medianScore = median(result.partners.map((partner) => partner.matchScore));
+    const checked = await getProvider().checkPartner(
+      result.input,
+      result.resolvedAnchors,
+      { name: parsed.data.name, entityHint: parsed.data.entityHint },
+      { normalization, medianScore },
+      quietContext(),
+    );
+    if (!checked) {
+      return reply
+        .code(404)
+        .send({ error: `Couldn't find or score "${parsed.data.name}". Try a different name or add more detail.` });
+    }
+    const existing = result.partners.find((partner) => partner.id === checked.id);
+    if (existing) {
+      return { partner: existing, message: `${existing.name} is already in this search.` };
+    }
+    const added: Partner = { ...checked, userAdded: true };
+    result.partners = [...result.partners, added];
+    attachRelated(result.partners);
+    return { partner: added };
   });
 }

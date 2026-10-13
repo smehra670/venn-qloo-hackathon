@@ -64,6 +64,7 @@ export function PartnerDrawer() {
           <div className="mt-2 flex flex-wrap gap-2">
             <Chip>{KIND_META[partner.kind].label}</Chip>
             <Chip>{partner.local ? `Local${partner.locationLabel ? ` · ${partner.locationLabel}` : ""}` : "Brand"}</Chip>
+            {partner.userAdded ? <Chip>Your pick</Chip> : null}
           </div>
         </div>
         <button type="button" aria-label="Close" onClick={() => select(null)} className="rounded-full p-2 hover:bg-paper-2">

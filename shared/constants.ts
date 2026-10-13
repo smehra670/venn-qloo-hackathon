@@ -28,6 +28,9 @@ export const STEP_TITLES: Record<StepId, string> = {
 
 export const MAX_PARTNERS = 28;
 
+/** "Check a partner" cap: how many of the user's own picks can be added per search. */
+export const MAX_USER_ADDED_PARTNERS = 5;
+
 export const DEMO_LIMITS = [
   "Match scores describe group-level taste patterns, not individual customers.",
   "Scores are relative to this search, not absolute probabilities.",

@@ -88,6 +88,21 @@ export const HeatmapQuerySchema = z.object({
   partnerId: z.string().min(1).optional(),
 });
 
+export const CheckRequestSchema = z.object({
+  name: z
+    .string()
+    .transform((value) => cleaned(value))
+    .pipe(z.string().min(1, "Enter a name to check.").max(60, "Keep it under 60 characters.")),
+  entityHint: z
+    .string()
+    .optional()
+    .transform((value) => {
+      if (value === undefined) return undefined;
+      const next = cleaned(value).toLowerCase();
+      return next.length === 0 ? undefined : next;
+    }),
+});
+
 const StepIdSchema = z.enum(STEP_ORDER);
 const PartnerKindSchema = z.enum(PARTNER_KINDS);
 const EntityTypeSchema = z.enum([
@@ -117,6 +132,11 @@ const EvidenceSchema = z.object({
   origin: z.enum(["data", "interpretation"]),
 });
 
+const NormalizationSchema = z.object({
+  minRaw: z.number(),
+  maxRaw: z.number(),
+});
+
 export const PartnerSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -136,6 +156,7 @@ export const PartnerSchema = z.object({
   relatedIds: z.array(z.string()),
   parentId: z.string().optional(),
   expanded: z.boolean().optional(),
+  userAdded: z.boolean().optional(),
 });
 
 const TopPickSchema = z.object({
@@ -187,6 +208,7 @@ export const RunResultSchema = z.object({
     toolCalls: z.number(),
     elapsedMs: z.number(),
   }),
+  normalization: NormalizationSchema.optional(),
 });
 
 export const HeatmapSchema = z.object({
@@ -293,6 +315,22 @@ export const AgentEventSchema: z.ZodType<AgentEvent> = z.discriminatedUnion("typ
     type: z.literal("cancelled"),
   }),
 ]);
+
+const ProofRowSchema = z.object({
+  partnerId: z.string(),
+  partnerName: z.string(),
+  matchScore: z.number(),
+  baselineScore: z.number(),
+  delta: z.number(),
+  explanation: z.string(),
+});
+
+export const ProofPayloadSchema = z.object({
+  runId: z.string(),
+  baseline: z.enum(["popularity", "ai"]),
+  narrative: z.string(),
+  rows: z.array(ProofRowSchema),
+});
 
 export function parseBusinessInput(value: unknown): BusinessInput {
   return BusinessInputSchema.parse(value);

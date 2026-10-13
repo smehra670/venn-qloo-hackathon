@@ -84,6 +84,16 @@ export interface EvidenceItem {
   origin: "data" | "interpretation";
 }
 
+/**
+ * Frozen stretch/score mapping captured when a run's partners were scored. Persisted on
+ * `RunResult` so Proof and Check-a-partner can re-score a new candidate against the exact
+ * same band instead of a fresh one, which would make scores incomparable.
+ */
+export interface Normalization {
+  minRaw: number;
+  maxRaw: number;
+}
+
 export interface Partner {
   id: string;
   name: string;
@@ -103,6 +113,10 @@ export interface Partner {
   relatedIds: string[];
   parentId?: string;
   expanded?: boolean;
+  /** Added by the user via "Check a partner" rather than discovered by Venn. Scored with
+   * this run's frozen normalization so it is comparable to the rest, but rendered distinctly
+   * (dashed) since Venn did not choose it. */
+  userAdded?: boolean;
 }
 
 export type PickRole = "best_overall" | "best_local" | "wildcard";
@@ -139,6 +153,9 @@ export interface RunResult {
     toolCalls: number;
     elapsedMs: number;
   };
+  /** Stretch params used to map raw affinity into this run's 52-96 match score band.
+   * Absent for providers that cannot recompute a candidate score (e.g. static snapshots). */
+  normalization?: Normalization;
 }
 
 export interface HeatSpot {
@@ -215,4 +232,25 @@ export interface ExampleInput {
   city: string;
   anchors: string[];
   businessName?: string;
+}
+
+/** A single row in the Proof view: one Venn-picked (or shortlisted) partner compared
+ * against a simple popularity/trend baseline that ignores taste affinity. */
+export interface ProofRow {
+  partnerId: string;
+  partnerName: string;
+  matchScore: number;
+  baselineScore: number;
+  delta: number;
+  explanation: string;
+}
+
+export type ProofBaseline = "popularity" | "ai";
+
+export interface ProofPayload {
+  runId: string;
+  /** "popularity" when no LLM is configured; "ai" when the narrative below was LLM-written. */
+  baseline: ProofBaseline;
+  narrative: string;
+  rows: ProofRow[];
 }

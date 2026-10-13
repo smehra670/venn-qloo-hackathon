@@ -9,6 +9,7 @@ const OPTIONS: { value: ResultsView; label: string }[] = [
   { value: "graph", label: "Graph" },
   { value: "map", label: "Map" },
   { value: "shortlist", label: "Shortlist" },
+  { value: "proof", label: "Proof" },
 ];
 
 export function TopBar() {
