@@ -65,6 +65,13 @@ db.exec(`
     count INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (ip_hash, day)
   );
+  CREATE TABLE IF NOT EXISTS shares (
+    token TEXT PRIMARY KEY,
+    run_id TEXT NOT NULL,
+    result_json TEXT NOT NULL,
+    created_at INTEGER NOT NULL,
+    expires_at INTEGER NOT NULL
+  );
 `);
 
 // A previous process died mid-run. Those runs can never finish, so close them out.
@@ -205,6 +212,7 @@ function prune(): void {
     }
   }
   pruneRunsStmt.run(now - TTL_MS);
+  pruneSharesStmt.run(now);
   if (runs.size <= MAX_MEMORY_RUNS) return;
   const finished = [...runs.values()]
     .filter((run) => run.status !== "running")
@@ -271,4 +279,62 @@ export function getStoreStats(): {
     dbRuns,
     dbPath,
   };
+}
+
+/** Share links outlive the run itself (runs expire after `RUN_TTL_HOURS`, shares after 7
+ * days), so the row snapshots the finished result rather than pointing back at the run. */
+const SHARE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+
+interface ShareRow {
+  token: string;
+  run_id: string;
+  result_json: string;
+  created_at: number;
+  expires_at: number;
+}
+
+const insertShareStmt = db.prepare(
+  `INSERT INTO shares (token, run_id, result_json, created_at, expires_at)
+   VALUES (@token, @runId, @resultJson, @createdAt, @expiresAt)`,
+);
+const selectShareStmt = db.prepare(`SELECT * FROM shares WHERE token = ?`);
+const deleteShareStmt = db.prepare(`DELETE FROM shares WHERE token = ?`);
+const pruneSharesStmt = db.prepare(`DELETE FROM shares WHERE expires_at < ?`);
+
+export interface ShareRecord {
+  token: string;
+  expiresAt: number;
+}
+
+/** Snapshots a finished run's result under a fresh opaque token, good for `SHARE_TTL_MS`. */
+export function createShare(run: Run): ShareRecord {
+  if (!run.result) throw httpErrorLike(409, "That search is still running.");
+  const token = nanoid(24);
+  const createdAt = Date.now();
+  const expiresAt = createdAt + SHARE_TTL_MS;
+  insertShareStmt.run({
+    token,
+    runId: run.id,
+    resultJson: JSON.stringify(run.result),
+    createdAt,
+    expiresAt,
+  });
+  return { token, expiresAt };
+}
+
+/** Looks up a share token, pruning (and treating as missing) anything past its TTL. */
+export function getShare(token: string): { runId: string; result: RunResult } | undefined {
+  const row = selectShareStmt.get(token) as ShareRow | undefined;
+  if (!row) return undefined;
+  if (Date.now() > row.expires_at) {
+    deleteShareStmt.run(token);
+    return undefined;
+  }
+  return { runId: row.run_id, result: JSON.parse(row.result_json) as RunResult };
+}
+
+function httpErrorLike(statusCode: number, message: string): Error & { statusCode: number } {
+  const error = new Error(message) as Error & { statusCode: number };
+  error.statusCode = statusCode;
+  return error;
 }

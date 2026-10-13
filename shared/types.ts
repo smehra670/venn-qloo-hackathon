@@ -289,3 +289,27 @@ export interface ProofPayload {
   narrative: string;
   rows: ProofRow[];
 }
+
+/** One signal bar in the "Compare audiences" panel: this partner's value against the
+ * median of the same signal across the rest of the run's partners. */
+export interface CompareSignal {
+  label: string;
+  value: number;
+  median: number;
+}
+
+/** "Compare audiences" readout for a single partner (see `server/compare.ts`). Built
+ * entirely from signals already computed during scoring, so it is deterministic and
+ * network-free for every provider, including mock. */
+export interface ComparePayload {
+  runId: string;
+  partnerId: string;
+  partnerName: string;
+  sharedTags: string[];
+  affinityToPartner: number;
+  affinityFromPartner: number;
+  /** This partner's local popularity minus the median local popularity across the run. */
+  popularityDelta: number;
+  signals: CompareSignal[];
+  note: string;
+}

@@ -1,5 +1,5 @@
-import { BriefSchema, HeatmapSchema, PartnerSchema, ProofPayloadSchema, RunResultSchema } from "@shared/schemas";
-import type { Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ExampleInput, Heatmap, Partner, ProofPayload, ProviderName, RunResult, RunStatus } from "@shared/types";
+import { BriefSchema, ComparePayloadSchema, HeatmapSchema, PartnerSchema, ProofPayloadSchema, RunResultSchema } from "@shared/schemas";
+import type { Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ComparePayload, ExampleInput, Heatmap, Partner, ProofPayload, ProviderName, RunResult, RunStatus } from "@shared/types";
 import { z } from "zod";
 
 export class ApiError extends Error {
@@ -154,5 +154,23 @@ export interface CheckPartnerOptions {
 export function postCheck(id: string, options: CheckPartnerOptions): Promise<{ partner: Partner; message?: string }> {
   return request(`/api/runs/${id}/check`, { method: "POST", body: JSON.stringify(options) }, (value) =>
     z.object({ partner: PartnerSchema, message: z.string().optional() }).parse(value),
+  );
+}
+
+export function createShare(id: string): Promise<{ token: string; expiresAt: number }> {
+  return request(`/api/runs/${id}/share`, { method: "POST" }, (value) =>
+    z.object({ token: z.string(), expiresAt: z.number() }).parse(value),
+  );
+}
+
+export function getShare(token: string): Promise<{ result: RunResult }> {
+  return request(`/api/share/${encodeURIComponent(token)}`, undefined, (value) =>
+    z.object({ result: RunResultSchema }).parse(value),
+  );
+}
+
+export function postCompare(id: string, partnerId: string): Promise<ComparePayload> {
+  return request(`/api/runs/${id}/compare`, { method: "POST", body: JSON.stringify({ partnerId }) }, (value) =>
+    ComparePayloadSchema.parse(value),
   );
 }

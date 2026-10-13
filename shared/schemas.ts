@@ -105,6 +105,10 @@ export const HeatmapQuerySchema = z.object({
   partnerId: z.string().min(1).optional(),
 });
 
+export const CompareRequestSchema = z.object({
+  partnerId: z.string().min(1),
+});
+
 export const CheckRequestSchema = z.object({
   name: z
     .string()
@@ -359,6 +363,24 @@ export const ProofPayloadSchema = z.object({
   baseline: z.enum(["popularity", "ai"]),
   narrative: z.string(),
   rows: z.array(ProofRowSchema),
+});
+
+const CompareSignalSchema = z.object({
+  label: z.string(),
+  value: z.number(),
+  median: z.number(),
+});
+
+export const ComparePayloadSchema = z.object({
+  runId: z.string(),
+  partnerId: z.string(),
+  partnerName: z.string(),
+  sharedTags: z.array(z.string()),
+  affinityToPartner: z.number(),
+  affinityFromPartner: z.number(),
+  popularityDelta: z.number(),
+  signals: z.array(CompareSignalSchema),
+  note: z.string(),
 });
 
 export function parseBusinessInput(value: unknown): BusinessInput {

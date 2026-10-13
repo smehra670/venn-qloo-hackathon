@@ -7,7 +7,9 @@ import { ZodError } from "zod";
 import { config } from "./config.js";
 import { registerHealth } from "./routes/health.js";
 import { registerRuns } from "./routes/runs.js";
+import { registerShare } from "./routes/share.js";
 import { disposeStore } from "./runs/store.js";
+import { closeUsageLedger } from "./usage/ledger.js";
 
 export async function buildApp() {
   const app = Fastify({
@@ -42,6 +44,7 @@ export async function buildApp() {
 
   registerHealth(app);
   registerRuns(app);
+  registerShare(app);
 
   if (config.nodeEnv === "production") {
     const root = path.resolve(import.meta.dirname, "../client");
@@ -88,6 +91,7 @@ export async function buildApp() {
 
   app.addHook("onClose", async () => {
     disposeStore();
+    closeUsageLedger();
   });
 
   return app;

@@ -1,0 +1,90 @@
+import type { Partner, RunResult } from "@shared/types";
+import { describe, expect, it } from "vitest";
+import { buildCompare } from "./compare.js";
+
+function partner(overrides: Partial<Partner>): Partner {
+  return {
+    id: "p1",
+    name: "Aesop",
+    kind: "retail",
+    entityType: "brand",
+    blurb: "",
+    local: false,
+    matchScore: 80,
+    surprise: 0.3,
+    isSurprising: false,
+    reasons: [],
+    sharedTags: ["minimalist"],
+    tags: ["minimalist", "skincare"],
+    signals: {
+      affinityToPartner: 0.7,
+      affinityFromPartner: 0.6,
+      tagOverlap: 0.5,
+      localPopularity: 0.4,
+      trend: 0.3,
+    },
+    evidence: [],
+    relatedIds: [],
+    ...overrides,
+  };
+}
+
+function result(partners: Partner[]): RunResult {
+  return {
+    runId: "run1",
+    createdAt: Date.now(),
+    provider: "mock",
+    providerLabel: "Demo data",
+    input: { businessType: "cafe", city: "London", anchors: ["Aesop"] },
+    resolvedAnchors: [],
+    plannedKinds: [],
+    partners,
+    topPicks: [],
+    city: null,
+    headline: "Test",
+    notes: [],
+    limits: [],
+    stats: { candidatesConsidered: 0, retries: 0, toolCalls: 0, elapsedMs: 0 },
+  };
+}
+
+describe("buildCompare", () => {
+  it("compares a partner's signals against the median of the rest of the run", () => {
+    const target = partner({ id: "p1", name: "Aesop", signals: { affinityToPartner: 0.8, affinityFromPartner: 0.7, tagOverlap: 0.6, localPopularity: 0.8, trend: 0.5 } });
+    const other1 = partner({ id: "p2", name: "Other 1", signals: { affinityToPartner: 0.4, affinityFromPartner: 0.3, tagOverlap: 0.2, localPopularity: 0.2, trend: 0.2 } });
+    const other2 = partner({ id: "p3", name: "Other 2", signals: { affinityToPartner: 0.5, affinityFromPartner: 0.4, tagOverlap: 0.3, localPopularity: 0.4, trend: 0.3 } });
+    const run = result([target, other1, other2]);
+
+    const payload = buildCompare(run, target);
+    expect(payload.partnerId).toBe("p1");
+    expect(payload.partnerName).toBe("Aesop");
+    expect(payload.sharedTags).toEqual(["minimalist"]);
+    expect(payload.affinityToPartner).toBe(0.8);
+    expect(payload.affinityFromPartner).toBe(0.7);
+    // median local popularity of the two peers is (0.2 + 0.4) / 2 = 0.3
+    expect(payload.popularityDelta).toBeCloseTo(0.8 - 0.3, 5);
+    expect(payload.signals).toHaveLength(5);
+    const popularitySignal = payload.signals.find((signal) => signal.label.toLowerCase().includes("popularity"));
+    expect(popularitySignal?.value).toBe(0.8);
+    expect(popularitySignal?.median).toBeCloseTo(0.3, 5);
+  });
+
+  it("excludes user-added partners from the comparison baseline", () => {
+    const target = partner({ id: "p1" });
+    const userAdded = partner({ id: "p2", userAdded: true, signals: { affinityToPartner: 0.99, affinityFromPartner: 0.99, tagOverlap: 0.99, localPopularity: 0.99, trend: 0.99 } });
+    const run = result([target, userAdded]);
+
+    const payload = buildCompare(run, target);
+    // With no non-user-added peers, the median falls back to the target's own signal.
+    expect(payload.popularityDelta).toBe(0);
+  });
+
+  it("is deterministic across repeated calls with the same input", () => {
+    const target = partner({ id: "p1" });
+    const other = partner({ id: "p2", name: "Other" });
+    const run = result([target, other]);
+    const first = buildCompare(run, target);
+    const second = buildCompare(run, target);
+    expect(first).toEqual(second);
+  });
+});

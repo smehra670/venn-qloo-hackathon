@@ -3,12 +3,14 @@ import {
   BriefRequestSchema,
   BusinessInputSchema,
   CheckRequestSchema,
+  CompareRequestSchema,
   ExpandRequestSchema,
   HeatmapQuerySchema,
 } from "@shared/schemas";
 import type { AgentEvent, Partner, StoredEvent } from "@shared/types";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { writeAiBrief } from "../brief/ai.js";
+import { buildCompare } from "../compare.js";
 import { config } from "../config.js";
 import { getProvider } from "../providers/index.js";
 import { attachRelated, median } from "../providers/mock/engine.js";
@@ -285,5 +287,15 @@ export function registerRuns(app: FastifyInstance): void {
     result.partners = [...result.partners, added];
     attachRelated(result.partners);
     return { partner: added };
+  });
+
+  app.post("/api/runs/:id/compare", async (request: FastifyRequest<{ Params: { id: string } }>, reply) => {
+    const parsed = CompareRequestSchema.safeParse(request.body);
+    if (!parsed.success) return reply.code(400).send({ error: "Choose a partner to compare." });
+    const run = requireRun(request.params.id);
+    const result = requireResult(run);
+    const partner = result.partners.find((item) => item.id === parsed.data.partnerId);
+    if (!partner) return reply.code(404).send({ error: "That partner is not in this search." });
+    return buildCompare(result, partner);
   });
 }

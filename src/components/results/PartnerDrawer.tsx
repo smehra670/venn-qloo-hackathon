@@ -1,6 +1,7 @@
 import { MAX_PARTNERS } from "@shared/constants";
 import { X } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { AudienceCompare } from "@/components/results/AudienceCompare";
 import { EvidencePanel } from "@/components/results/EvidencePanel";
 import { MatchRing } from "@/components/results/MatchRing";
 import { Button } from "@/components/ui/Button";
@@ -16,6 +17,11 @@ export function PartnerDrawer() {
   const togglePin = useVenn((state) => state.togglePin);
   const openBrief = useVenn((state) => state.openBrief);
   const expandPartner = useVenn((state) => state.expandPartner);
+  const loadCompare = useVenn((state) => state.loadCompare);
+  const closeCompare = useVenn((state) => state.closeCompare);
+  const compareOpenId = useVenn((state) => state.compareOpenId);
+  const compareLoading = useVenn((state) => state.compareLoading);
+  const compare = useVenn((state) => state.compare);
   const ref = useRef<HTMLElement>(null);
   const partner = result?.partners.find((item) => item.id === selectedId) ?? null;
 
@@ -104,7 +110,20 @@ export function PartnerDrawer() {
           Expand connections
         </Button>
         {atCap ? <p className="text-xs text-ink-soft">This map already has 28 partners, which is the limit.</p> : null}
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={() => {
+            if (compareOpenId === partner.id) closeCompare();
+            else void loadCompare(partner.id);
+          }}
+        >
+          {compareOpenId === partner.id ? "Hide audience compare" : "Compare audiences"}
+        </Button>
       </div>
+      {compareOpenId === partner.id ? (
+        <AudienceCompare payload={compare[partner.id]} loading={compareLoading && !compare[partner.id]} />
+      ) : null}
       {partner.relatedIds.length > 0 ? (
         <section className="mt-5">
           <h3 className="text-sm font-medium">Also pairs well with</h3>

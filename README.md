@@ -87,6 +87,9 @@ docker run --rm -p 8787:8787 -e TASTE_PROVIDER=mock venn
 - Helmet ships with CSP off because the map uses CARTO tiles. The theme is light only.
 - The blue token used for text and focus is `#3E49E6`. Circle fills stay `#FF6B57`, `#4F5BFF`, and `#6B3FA0`.
 - `sharp` is installed, but its native binary is blocked by Windows Application Control on this machine. `npm run og` draws `public/og.png` with Node's built-in zlib instead.
+- Usage ledger: `server/usage/ledger.ts` owns a small `usage_counters` SQLite table (same `DATA_DIR`) tallying Qloo HTTP calls and LLM completion calls per UTC day. Counted at the call site (`qlooGet`, `OpenAiLlmClient.send`), so every real outbound call is tallied regardless of which route triggered it. Surfaced on `/api/health` (`usage.qlooToday`/`llmToday`) and `GET /api/usage` (14-day history).
+- Share links: `POST /api/runs/:id/share` snapshots the finished `RunResult` into a `shares` table under a fresh opaque token (TTL 7 days), rather than pointing back at the live run — runs themselves expire after `RUN_TTL_HOURS` (24h by default), well inside the share window. `GET /api/share/:token` reads that snapshot only; it never mutates or re-scores anything. The client uses a `#share/<token>` hash route so no server-side routing changes were needed.
+- Audience compare: `POST /api/runs/:id/compare` builds its payload purely from signals already computed during scoring (`server/compare.ts`) instead of issuing a new Qloo probe — the score step already blends a forward and reverse affinity call, so repeating that would just be the same network round trip again. Deterministic for every provider, including mock.
 
 ## Responsible use
 

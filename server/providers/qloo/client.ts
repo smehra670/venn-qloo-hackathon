@@ -1,4 +1,5 @@
 import { config } from "../../config.js";
+import { recordUsage } from "../../usage/ledger.js";
 import {
   InsightsResponseSchema,
   SearchResponseSchema,
@@ -95,6 +96,7 @@ export async function qlooGet<T>(
   const key = config.qlooApiKey;
   if (!key) throw new Error("QLOO_API_KEY is missing.");
   assertCircuitClosed();
+  recordUsage("qloo");
 
   const query = buildQuery(params);
   const url = `${config.qlooBaseUrl}${path.startsWith("/") ? path : `/${path}`}${query ? `?${query}` : ""}`;

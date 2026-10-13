@@ -1,4 +1,5 @@
 import { config } from "../config.js";
+import { recordUsage } from "../usage/ledger.js";
 import type { LlmClient, LlmCompletionRequest } from "./types.js";
 
 const ENDPOINT = "https://api.openai.com/v1/chat/completions";
@@ -49,6 +50,7 @@ export class OpenAiLlmClient implements LlmClient {
   }
 
   private async send<T>(request: LlmCompletionRequest, responseFormat: Record<string, unknown>): Promise<T> {
+    recordUsage("llm");
     const model = request.model ?? config.llmModel;
     const body = {
       model,

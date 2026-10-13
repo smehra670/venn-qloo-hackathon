@@ -1,8 +1,8 @@
 import { MAX_USER_ADDED_PARTNERS, STEP_TITLES } from "@shared/constants";
-import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BriefLength, type BriefTone, type BusinessInput, type Heatmap, type PartnerKind, type ProofPayload, type RunResult, type StepId, type StoredEvent } from "@shared/types";
+import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BriefLength, type BriefTone, type BusinessInput, type ComparePayload, type Heatmap, type PartnerKind, type ProofPayload, type RunResult, type StepId, type StoredEvent } from "@shared/types";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { ApiError, cancelRun, createBrief, createRun, expandRun, getHealth, getHeatmap, getMeta, getRun, postCheck, postProof, type Health, type Meta } from "@/lib/api";
+import { ApiError, cancelRun, createBrief, createRun, createShare, expandRun, getHealth, getHeatmap, getMeta, getRun, postCheck, postCompare, postProof, type Health, type Meta } from "@/lib/api";
 import { openRunStream } from "@/lib/sse";
 import { clearRunId, readInput, readRunId, saveInput, saveRunId } from "@/lib/storage";
 
@@ -81,6 +81,10 @@ interface VennState {
   proof: ProofPayload | null;
   proofLoading: boolean;
   checking: boolean;
+  compare: Record<string, ComparePayload>;
+  compareOpenId: string | null;
+  compareLoading: boolean;
+  sharing: boolean;
   error: string | null;
   boot: () => Promise<void>;
   startRun: (input: BusinessInput) => Promise<void>;
@@ -102,6 +106,9 @@ interface VennState {
   loadHeatmap: (partnerId: string) => Promise<Heatmap | null>;
   loadProof: () => Promise<void>;
   checkPartner: (name: string, entityHint?: string) => Promise<void>;
+  loadCompare: (partnerId: string) => Promise<void>;
+  closeCompare: () => void;
+  shareRun: () => Promise<void>;
   setInput: (input: BusinessInput) => void;
 }
 
@@ -174,6 +181,10 @@ export const useVenn = create<VennState>((set, get) => ({
   proof: null,
   proofLoading: false,
   checking: false,
+  compare: {},
+  compareOpenId: null,
+  compareLoading: false,
+  sharing: false,
   error: null,
 
   setInput: (input) => {
@@ -234,6 +245,8 @@ export const useVenn = create<VennState>((set, get) => ({
       heatmaps: {},
       proof: null,
       pinnedIds: new Set(),
+      compare: {},
+      compareOpenId: null,
     });
     try {
       const { runId } = await createRun(input);
@@ -274,6 +287,8 @@ export const useVenn = create<VennState>((set, get) => ({
       briefOpen: false,
       hoverId: null,
       proof: null,
+      compare: {},
+      compareOpenId: null,
     });
   },
 
@@ -398,6 +413,41 @@ export const useVenn = create<VennState>((set, get) => ({
       toast(error instanceof ApiError ? error.message : "That partner could not be checked.");
     } finally {
       set({ checking: false });
+    }
+  },
+
+  loadCompare: async (partnerId) => {
+    const { runId, compare } = get();
+    if (!runId) return;
+    set({ compareOpenId: partnerId });
+    if (compare[partnerId]) return;
+    set({ compareLoading: true });
+    try {
+      const payload = await postCompare(runId, partnerId);
+      set({ compare: { ...get().compare, [partnerId]: payload } });
+    } catch (error) {
+      toast(error instanceof ApiError ? error.message : "The audience compare could not be loaded.");
+      set({ compareOpenId: null });
+    } finally {
+      set({ compareLoading: false });
+    }
+  },
+
+  closeCompare: () => set({ compareOpenId: null }),
+
+  shareRun: async () => {
+    const { runId, sharing } = get();
+    if (!runId || sharing) return;
+    set({ sharing: true });
+    try {
+      const { token } = await createShare(runId);
+      const url = `${window.location.origin}${window.location.pathname}#share/${token}`;
+      await navigator.clipboard.writeText(url);
+      toast("Share link copied. It stays live for 7 days.");
+    } catch (error) {
+      toast(error instanceof ApiError ? error.message : "Could not create a share link.");
+    } finally {
+      set({ sharing: false });
     }
   },
 }));

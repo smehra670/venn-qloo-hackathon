@@ -39,3 +39,10 @@
 - Fine-tune goals UI; `goalFit` without changing match scores; top-pick display tiebreak.
 - SSE `decision` events + “How Venn decided” panel; feasibility rules + optional LLM critic.
 - Tests: 71 passing. Cut line (0–4) complete.
+
+## After cut line (2026-10-13)
+
+- **5.4** Usage ledger (SQLite counters; health + `/api/usage`).
+- **6.4** Share links (`#share/<token>`, 7-day TTL snapshot).
+- **5.1** Audience compare panel (signal-based; no fragile demographics URNs).
+- Skipped 7.3 under pressure. Tests: 81 passing.

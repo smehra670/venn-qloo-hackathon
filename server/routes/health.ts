@@ -11,6 +11,7 @@ import { hashInput } from "../providers/snapshot/hash.js";
 import { loadManifest } from "../providers/snapshot/manifest.js";
 import { getScheduler } from "../runs/scheduler.js";
 import { getStoreStats } from "../runs/store.js";
+import { getUsageHistory, getUsageSummary } from "../usage/ledger.js";
 
 export const EXAMPLES: ExampleInput[] = [
   { businessType: "cafe", city: "London", anchors: ["Aesop", "Radiohead", "pilates"], businessName: "Brew & Co" },
@@ -57,8 +58,14 @@ export function registerHealth(app: FastifyInstance): void {
       store: getStoreStats(),
       llm: { enabled: isLlmEnabled(), provider: config.llmProvider },
       dataDir: { path: config.dataDir, ok: dataDirOk() },
+      usage: getUsageSummary(),
     };
   });
+
+  app.get("/api/usage", async () => ({
+    ...getUsageSummary(),
+    history: getUsageHistory(),
+  }));
 
   app.get("/api/meta", async () => ({
     businessTypes: BUSINESS_TYPES.map((id) => ({ id, label: BUSINESS_TYPE_LABELS[id] })),
