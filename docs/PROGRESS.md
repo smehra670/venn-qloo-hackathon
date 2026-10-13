@@ -33,3 +33,9 @@
 - Proof tab + `POST .../proof` (popularity vs AI baseline narrative).
 - Check a partner + dashed “Your pick” nodes (cap 5); snapshots regenerated (mock).
 - Tests: 42 passing.
+
+## Phase 4 — Goals, decisions, feasibility (2026-10-13)
+
+- Fine-tune goals UI; `goalFit` without changing match scores; top-pick display tiebreak.
+- SSE `decision` events + “How Venn decided” panel; feasibility rules + optional LLM critic.
+- Tests: 71 passing. Cut line (0–4) complete.

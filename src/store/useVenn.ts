@@ -38,7 +38,7 @@ export function deriveSteps(events: StoredEvent[]): StepView[] {
   const views = new Map<StepId, StepView>();
   for (const id of STEP_ORDER) views.set(id, { id, title: STEP_TITLES[id], state: "waiting" });
   for (const event of events) {
-    if (!("step" in event)) continue;
+    if (!("step" in event) || event.step === undefined) continue;
     const current = views.get(event.step);
     if (!current) continue;
     if (event.type === "step_started") current.state = "running";

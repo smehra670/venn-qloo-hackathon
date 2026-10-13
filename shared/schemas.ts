@@ -13,6 +13,22 @@ export function stripControls(value: string): string {
 
 const cleaned = (value: string): string => stripControls(value).trim();
 
+const GoalsSchema = z.object({
+  preferLocal: z.boolean().optional(),
+  preferSurprising: z.boolean().optional(),
+  budget: z.enum(["low", "medium", "flexible"]).optional(),
+  avoidKinds: z.array(z.enum(PARTNER_KINDS)).max(PARTNER_KINDS.length).optional(),
+  notes: z
+    .string()
+    .optional()
+    .transform((value) => {
+      if (value === undefined) return undefined;
+      const next = cleaned(value);
+      return next.length === 0 ? undefined : next;
+    })
+    .pipe(z.string().max(200).optional()),
+});
+
 export const BusinessInputSchema = z
   .object({
     businessName: z
@@ -59,6 +75,7 @@ export const BusinessInputSchema = z
       })
       .refine((list) => list.length >= 1, "Add at least one thing your customers love.")
       .refine((list) => list.length <= 6, "Six is the maximum."),
+    goals: GoalsSchema.optional(),
   })
   .superRefine((data, ctx) => {
     if (data.businessType !== "other") return;
@@ -157,6 +174,8 @@ export const PartnerSchema = z.object({
   parentId: z.string().optional(),
   expanded: z.boolean().optional(),
   userAdded: z.boolean().optional(),
+  goalFit: z.number().min(0).max(1).optional(),
+  feasibility: z.object({ ok: z.boolean(), notes: z.array(z.string()) }).optional(),
 });
 
 const TopPickSchema = z.object({
@@ -193,6 +212,7 @@ export const RunResultSchema = z.object({
     businessTypeCustom: z.string().optional(),
     city: z.string(),
     anchors: z.array(z.string()),
+    goals: GoalsSchema.optional(),
   }),
   resolvedAnchors: z.array(ResolvedAnchorSchema),
   plannedKinds: z.array(PartnerKindSchema),
@@ -209,6 +229,9 @@ export const RunResultSchema = z.object({
     elapsedMs: z.number(),
   }),
   normalization: NormalizationSchema.optional(),
+  decisions: z
+    .array(z.object({ step: StepIdSchema.optional(), decision: z.string(), reason: z.string() }))
+    .optional(),
 });
 
 export const HeatmapSchema = z.object({
@@ -296,6 +319,12 @@ export const AgentEventSchema: z.ZodType<AgentEvent> = z.discriminatedUnion("typ
   z.object({
     type: z.literal("retry"),
     step: StepIdSchema,
+    reason: z.string(),
+  }),
+  z.object({
+    type: z.literal("decision"),
+    step: StepIdSchema.optional(),
+    decision: z.string(),
     reason: z.string(),
   }),
   z.object({

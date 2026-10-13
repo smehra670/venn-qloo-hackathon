@@ -33,6 +33,9 @@ function quietContext(): ProviderContext {
       await waitForLatency(signal);
       return fn();
     },
+    decide() {
+      // Expand/heatmap/check-a-partner calls don't keep a decision log.
+    },
   };
 }
 

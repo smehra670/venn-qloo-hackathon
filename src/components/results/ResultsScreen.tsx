@@ -1,4 +1,5 @@
 import { Info } from "lucide-react";
+import { AgentNotes } from "@/components/results/AgentNotes";
 import { BriefSheet } from "@/components/results/BriefSheet";
 import { MapView } from "@/components/results/MapView";
 import { PartnerDrawer } from "@/components/results/PartnerDrawer";
@@ -45,6 +46,7 @@ export function ResultsScreen() {
           </button>
         </Tooltip>
       </div>
+      <AgentNotes />
       <div className="relative min-h-0 flex-1">
         {view === "graph" ? (
           <div className="flex h-full min-h-0 flex-col overflow-auto pb-16 md:pb-3">

@@ -9,6 +9,7 @@ export function ToolLog() {
   const lines = events.flatMap((event) => {
     if (event.type === "tool_call") return [`→ ${prefix}.${event.tool}(${event.args})`];
     if (event.type === "tool_result") return [`← ${event.summary} · ${event.ms} ms`];
+    if (event.type === "decision") return [`◆ ${event.decision} — ${event.reason}`];
     return [];
   });
 

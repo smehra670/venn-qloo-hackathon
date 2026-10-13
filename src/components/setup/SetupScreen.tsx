@@ -4,6 +4,7 @@ import { AboutDialog } from "@/components/about/AboutDialog";
 import { AmbientCircles } from "@/components/brand/AmbientCircles";
 import { Logo } from "@/components/brand/Logo";
 import { ExampleChips } from "@/components/setup/ExampleChips";
+import { FineTune } from "@/components/setup/FineTune";
 import { SentenceForm, validationMessage } from "@/components/setup/SentenceForm";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -94,6 +95,7 @@ export function SetupScreen() {
           }}
         >
           <SentenceForm input={input} cities={cities} onChange={setInput} />
+          <FineTune input={input} onChange={setInput} />
           <div className="flex flex-col items-start gap-3">
             <Button type="submit" disabled={Boolean(reason) || busy}>
               {busy ? "Starting…" : "Find my partners"}

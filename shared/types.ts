@@ -52,12 +52,26 @@ export const STEP_ORDER = [
 ] as const;
 export type StepId = (typeof STEP_ORDER)[number];
 
+/**
+ * Optional fine-tune preferences set on the setup screen. Purely advisory: they drive the
+ * rule-based `goalFit` on each `Partner` and a display-only re-rank of `topPicks`, but never
+ * change `matchScore` (see `server/agent/goals.ts`).
+ */
+export interface Goals {
+  preferLocal?: boolean;
+  preferSurprising?: boolean;
+  budget?: "low" | "medium" | "flexible";
+  avoidKinds?: PartnerKind[];
+  notes?: string;
+}
+
 export interface BusinessInput {
   businessName?: string;
   businessType: BusinessType;
   businessTypeCustom?: string;
   city: string;
   anchors: string[];
+  goals?: Goals;
 }
 
 export interface ResolvedAnchor {
@@ -117,6 +131,15 @@ export interface Partner {
    * this run's frozen normalization so it is comparable to the rest, but rendered distinctly
    * (dashed) since Venn did not choose it. */
   userAdded?: boolean;
+  /** 0-1 fit to the optional `BusinessInput.goals` fine-tune preferences, from
+   * `server/agent/goals.ts`. Rule-based and display-only: it never changes `matchScore`,
+   * only secondary ordering (e.g. top-pick tiebreaks) and UI notes. Absent when no goals
+   * were set for this run. */
+  goalFit?: number;
+  /** Rule-based sanity checks run on top picks only (see `server/agent/feasibility.ts`):
+   * flags things like a kind clash with the business's own category or thin evidence.
+   * `ok: false` does not remove the partner, just surfaces a caveat in the UI. */
+  feasibility?: { ok: boolean; notes: string[] };
 }
 
 export type PickRole = "best_overall" | "best_local" | "wildcard";
@@ -156,6 +179,9 @@ export interface RunResult {
   /** Stretch params used to map raw affinity into this run's 52-96 match score band.
    * Absent for providers that cannot recompute a candidate score (e.g. static snapshots). */
   normalization?: Normalization;
+  /** Agent decision log ("How Venn decided"): short rationale entries captured during
+   * plan/discover/adapt/assemble. Empty when nothing notable happened. */
+  decisions?: DecisionLogEntry[];
 }
 
 export interface HeatSpot {
@@ -212,6 +238,14 @@ export interface Brief {
   sources?: BriefSource[];
 }
 
+/** One entry in the agent's "how Venn decided" log, surfaced live via the `decision` SSE
+ * event and persisted on `RunResult.decisions` so it survives a page reload. */
+export interface DecisionLogEntry {
+  step?: StepId;
+  decision: string;
+  reason: string;
+}
+
 export type AgentEvent =
   | { type: "run_started"; runId: string; provider: ProviderName; providerLabel: string }
   | { type: "step_started"; step: StepId; title: string }
@@ -219,6 +253,7 @@ export type AgentEvent =
   | { type: "tool_result"; step: StepId; callId: string; tool: string; summary: string; ms: number }
   | { type: "step_note"; step: StepId; text: string }
   | { type: "retry"; step: StepId; reason: string }
+  | { type: "decision"; step?: StepId; decision: string; reason: string }
   | { type: "step_completed"; step: StepId; summary: string }
   | { type: "result"; result: RunResult }
   | { type: "error"; message: string }

@@ -1,6 +1,8 @@
 import { DEMO_LIMITS, STEP_TITLES, UNKNOWN_CITY_LIMIT } from "@shared/constants";
-import type { Normalization, PartnerKind, RunResult, StepId } from "@shared/types";
+import type { DecisionLogEntry, Normalization, PartnerKind, RunResult, StepId } from "@shared/types";
 import { nanoid } from "nanoid";
+import { applyFeasibility, critiqueFeasibility, flaggedPartners } from "../agent/feasibility.js";
+import { applyGoals, hasAnyGoal, rerankTopPicks, summarizeGoals } from "../agent/goals.js";
 import { getProvider } from "../providers/index.js";
 import type { Candidate, ProviderContext } from "../providers/types.js";
 import {
@@ -49,6 +51,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
   const started = Date.now();
   const provider = getProvider({ live: run.live });
   let step: StepId = "resolve";
+  const decisions: DecisionLogEntry[] = [];
   const ctx: ProviderContext = {
     signal: run.abort.signal,
     async trace(tool, args, fn, summarize) {
@@ -69,6 +72,11 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
         ms: Date.now() - began,
       });
       return value;
+    },
+    decide(decision, reason) {
+      ensure(run);
+      decisions.push({ step, decision, reason });
+      append(run, { type: "decision", step, decision, reason });
     },
   };
 
@@ -106,6 +114,9 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
         text: `No local geography for ${run.input.city.trim()}. Showing broader brands and artists instead.`,
       });
     }
+    if (hasAnyGoal(run.input.goals)) {
+      ctx.decide("Noted your fine-tune preferences", summarizeGoals(run.input.goals));
+    }
     append(run, { type: "step_completed", step, summary: `Will search ${planned.length} types.` });
 
     step = "discover";
@@ -118,6 +129,10 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     ).flat();
     ensure(run);
     if (pool.length > 22) {
+      ctx.decide(
+        "Trimmed the candidate pool",
+        `Found ${pool.length} candidates; kept the strongest 22 by provisional fit to stay within budget.`,
+      );
       pool = [...pool].sort((a, b) => b.provisional - a.provisional || a.entry.id.localeCompare(b.entry.id)).slice(0, 22);
     }
     append(run, {
@@ -150,11 +165,9 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     const strong = strongCount(partners);
     if (strong < 12 && extra.length > 0) {
       retries = 1;
-      append(run, {
-        type: "retry",
-        step,
-        reason: `Only ${strong} strong matches. Widening to ${extra.join(" and ")} and relaxing the match threshold.`,
-      });
+      const retryReason = `Only ${strong} strong matches. Widening to ${extra.join(" and ")} and relaxing the match threshold.`;
+      append(run, { type: "retry", step, reason: retryReason });
+      ctx.decide("Widened the search", retryReason);
       const widened = (
         await mapPool(extra, 2, async (kind) => {
           const found = await provider.discover(run.input, resolved, kind, ctx);
@@ -172,15 +185,32 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     } else if (strong < 12) {
       append(run, { type: "step_note", step, text: "No further partner types to try." });
       append(run, { type: "step_completed", step, summary: "Kept the shortlist as it stands." });
+      ctx.decide("Kept the shortlist as it stands", `Only ${strong} strong matches, but no further partner types were left to try.`);
     } else {
       append(run, { type: "step_note", step, text: "Coverage looks good. No need to widen the search." });
       append(run, { type: "step_completed", step, summary: "Coverage looks good." });
+      ctx.decide("Did not widen the search", `${strong} strong matches already — coverage looked solid after the first pass.`);
     }
     ensure(run);
 
     step = "assemble";
     append(run, { type: "step_started", step, title: STEP_TITLES.assemble });
-    const topPicks = chooseTopPicks(partners);
+    partners = applyGoals(partners, run.input.goals);
+    let topPicks = chooseTopPicks(partners);
+    const goalRerank = rerankTopPicks(partners, topPicks, run.input.goals);
+    topPicks = goalRerank.topPicks;
+    for (const note of goalRerank.notes) ctx.decide("Adjusted a top pick for your preferences", note);
+
+    partners = applyFeasibility(partners, topPicks, run.input);
+    const flagged = flaggedPartners(partners, topPicks);
+    if (flagged.length > 0) {
+      ctx.decide(
+        "Flagged a feasibility concern",
+        `${flagged.length} of your top picks have a note worth checking before reaching out: ${flagged.map((partner) => partner.name).join(", ")}.`,
+      );
+    }
+    const critique = await critiqueFeasibility(flagged);
+
     const elapsedMs = Date.now() - started;
     const limits =
       provider.name === "mock"
@@ -202,7 +232,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       topPicks,
       city,
       headline: headlineFor(partners, topPicks),
-      notes: notesFor(run.input, resolved, retries),
+      notes: critique ? [...notesFor(run.input, resolved, retries), `Agent critique: ${critique}`] : notesFor(run.input, resolved, retries),
       limits: provider.name === "mock" ? limits : limits.length > 0 ? limits : [...DEMO_LIMITS],
       stats: {
         candidatesConsidered: pool.length,
@@ -211,6 +241,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
         elapsedMs,
       },
       normalization: scoreOut.normalization,
+      decisions,
     };
     append(run, { type: "step_completed", step, summary: "Your map is ready." });
     append(run, { type: "result", result });

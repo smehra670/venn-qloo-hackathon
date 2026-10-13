@@ -32,6 +32,13 @@ export interface Candidate {
 export interface ProviderContext {
   signal: AbortSignal;
   trace<T>(tool: string, args: string, fn: () => Promise<T>, summarize: (result: T) => string): Promise<T>;
+  /**
+   * Appends a short "how Venn decided" entry (a `decision` SSE event, plus the runner's
+   * decision log persisted on `RunResult.decisions`). `decision` is a short label; `reason`
+   * is one sentence of context. No-op in contexts that don't track a decision log (e.g. the
+   * quiet context used for expand/heatmap/check-a-partner calls).
+   */
+  decide(decision: string, reason: string): void;
 }
 
 export interface TasteProvider {
