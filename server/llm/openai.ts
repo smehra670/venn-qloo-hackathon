@@ -60,6 +60,8 @@ export class OpenAiLlmClient implements LlmClient {
       ],
       response_format: responseFormat,
       temperature: 0.4,
+      // GPT-6 Luna supports Chat Completions structured output with reasoning off.
+      reasoning_effort: "none",
     };
 
     let response = await this.post(body);

@@ -67,8 +67,8 @@ const EnvSchema = z.object({
   OPENAI_API_KEY: z.preprocess(blankToUndefined, z.string().optional()),
   ANTHROPIC_API_KEY: z.preprocess(blankToUndefined, z.string().optional()),
   LLM_API_KEY: z.preprocess(blankToUndefined, z.string().optional()),
-  LLM_MODEL: z.preprocess(blankToUndefined, z.string().min(1).default("gpt-4.1-mini")),
-  LLM_MODEL_FAST: z.preprocess(blankToUndefined, z.string().min(1).default("gpt-4.1-mini")),
+  LLM_MODEL: z.preprocess(blankToUndefined, z.string().min(1).default("gpt-6-luna")),
+  LLM_MODEL_FAST: z.preprocess(blankToUndefined, z.string().min(1).default("gpt-6-luna")),
   LLM_BRIEF_BUDGET_PER_RUN: z.preprocess(blankToUndefined, z.coerce.number().int().positive().default(6)),
   /** Max `rankTogether` calls (one per kind, plus any baseline-name resolutions) a single
    * Proof build may make, so a search with many kinds can't blow the Qloo call budget. */

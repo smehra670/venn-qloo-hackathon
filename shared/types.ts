@@ -358,7 +358,7 @@ export interface Brief {
   outreach: { subject: string; body: string };
   limits: string;
   generatedBy: "template" | "llm";
-  /** Model id used to write this brief, e.g. "gpt-4.1-mini" or "claude-3-5-sonnet-latest".
+  /** Model id used to write this brief, e.g. "gpt-6-luna" or "claude-3-5-sonnet-latest".
    * `"template"` for the deterministic fallback writer. */
   model?: string;
   tone?: BriefTone;

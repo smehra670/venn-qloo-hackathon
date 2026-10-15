@@ -59,7 +59,7 @@ export async function writeAiBrief(
   const system = buildSystemPrompt({ tone, length });
   const user = buildUserPrompt(factPack, { tone, length });
   // The actual model id used for the call — recorded on the brief so the UI can attribute
-  // it (e.g. "AI · gpt-4.1-mini") rather than just "AI".
+  // it (e.g. "AI · gpt-6-luna") rather than just "AI".
   const model = config.llmModel;
   const request: LlmCompletionRequest = { system, user, schema: LLM_BRIEF_JSON_SCHEMA, model };
 
