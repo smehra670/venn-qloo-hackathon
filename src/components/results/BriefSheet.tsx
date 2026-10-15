@@ -65,7 +65,7 @@ export function BriefSheet() {
           key={`${brief.generatedBy}-${brief.variant}-${brief.tone ?? "warm"}-${brief.length ?? "standard"}`}
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="mx-auto max-w-[760px] rounded-[20px] bg-card px-8 py-10 shadow-soft md:px-14"
+          className="mx-auto max-w-[760px] rounded-[12px] border border-line bg-card px-8 py-10 shadow-soft md:px-14"
         >
           <BriefBody brief={brief} dataLabel={dataLabel} />
         </motion.article>
@@ -128,13 +128,13 @@ function BriefBody({ brief, dataLabel }: { brief: Brief; dataLabel: string }) {
         <p className="text-sm tracking-wide text-ink-soft">{brief.format}</p>
         <GeneratorChip brief={brief} />
       </div>
-      <h2 id="brief-title" className="mt-2 font-serif text-4xl tracking-tight">{brief.title}</h2>
+      <h2 id="brief-title" className="mt-2 font-bold text-4xl tracking-tight">{brief.title}</h2>
       <section className="brief-section mt-8">
-        <h3 className="font-serif text-2xl">Concept</h3>
+        <h3 className="font-bold text-2xl tracking-tight">Concept</h3>
         <p className="mt-3 leading-relaxed">{brief.concept}</p>
       </section>
       <section className="brief-section mt-8">
-        <h3 className="font-serif text-2xl">Why it fits</h3>
+        <h3 className="font-bold text-2xl tracking-tight">Why it fits</h3>
         <ul className="mt-3 space-y-3">
           {brief.whyItFits.map((item) => (
             <li key={item.text}>
@@ -147,11 +147,11 @@ function BriefBody({ brief, dataLabel }: { brief: Brief; dataLabel: string }) {
         </ul>
       </section>
       <section className="brief-section mt-8">
-        <h3 className="font-serif text-2xl">First step</h3>
+        <h3 className="font-bold text-2xl tracking-tight">First step</h3>
         <p className="mt-3">{brief.firstStep}</p>
       </section>
       <section className="brief-section mt-8">
-        <h3 className="font-serif text-2xl">Two-week plan</h3>
+        <h3 className="font-bold text-2xl tracking-tight">Two-week plan</h3>
         <table className="mt-3 w-full text-left text-sm">
           <tbody>
             {brief.plan.map((row) => (
@@ -164,20 +164,20 @@ function BriefBody({ brief, dataLabel }: { brief: Brief; dataLabel: string }) {
         </table>
       </section>
       <section className="brief-section mt-8">
-        <h3 className="font-serif text-2xl">What to measure</h3>
+        <h3 className="font-bold text-2xl tracking-tight">What to measure</h3>
         <ul className="mt-3 list-disc space-y-1 pl-5">
           {brief.measure.map((item) => <li key={item}>{item}</li>)}
         </ul>
       </section>
       <section className="brief-section mt-8">
-        <h3 className="font-serif text-2xl">Risks</h3>
+        <h3 className="font-bold text-2xl tracking-tight">Risks</h3>
         <ul className="mt-3 list-disc space-y-1 pl-5">
           {brief.risks.map((item) => <li key={item}>{item}</li>)}
         </ul>
       </section>
       <section className="brief-section mt-8">
         <div className="flex items-center justify-between gap-3">
-          <h3 className="font-serif text-2xl">Outreach email</h3>
+          <h3 className="font-bold text-2xl tracking-tight">Outreach email</h3>
           <Button
             type="button"
             variant="secondary"
@@ -205,7 +205,7 @@ function BriefBody({ brief, dataLabel }: { brief: Brief; dataLabel: string }) {
       </section>
       {brief.sources && brief.sources.length > 0 ? (
         <section className="brief-section mt-8">
-          <h3 className="font-serif text-2xl">Sources</h3>
+          <h3 className="font-bold text-2xl tracking-tight">Sources</h3>
           <ol className="mt-3 space-y-1 text-sm text-ink-soft">
             {brief.sources.map((source, index) => (
               <li key={source.id} id={`source-${source.id}`}>

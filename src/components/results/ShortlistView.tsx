@@ -50,12 +50,12 @@ export function ShortlistView() {
       </div>
       {ordered.pinnedRows.length > 0 ? (
         <section>
-          <h2 className="mb-2 font-serif text-2xl">Your shortlist</h2>
+          <h2 className="mb-2 font-bold text-2xl tracking-tight">Your shortlist</h2>
           <List partners={ordered.pinnedRows} pinned={pinned} onPin={togglePin} onOpen={select} onBrief={(id) => void openBrief(id)} />
         </section>
       ) : null}
       <section>
-        <h2 className="mb-2 font-serif text-2xl">All partners</h2>
+        <h2 className="mb-2 font-bold text-2xl tracking-tight">All partners</h2>
         <List partners={ordered.rest} pinned={pinned} onPin={togglePin} onOpen={select} onBrief={(id) => void openBrief(id)} offset={ordered.pinnedRows.length} />
       </section>
     </div>
@@ -85,7 +85,7 @@ function List({
   offset?: number;
 }) {
   return (
-    <ul className="divide-y divide-line overflow-hidden rounded-[20px] border border-line bg-card">
+    <ul className="divide-y divide-line overflow-hidden rounded-[12px] border border-line bg-card shadow-soft">
       {partners.map((partner, index) => (
         <li key={partner.id} className="flex flex-wrap items-center gap-3 px-3 py-3">
           <button type="button" className="flex min-w-0 flex-1 items-center gap-3 text-left" onClick={() => onOpen(partner.id)}>

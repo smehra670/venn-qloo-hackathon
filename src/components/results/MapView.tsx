@@ -1,7 +1,9 @@
 import type { HeatSpot, Partner } from "@shared/types";
 import { divIcon } from "leaflet";
 import { Fragment, useEffect, useMemo, useState } from "react";
-import { Circle, MapContainer, Marker, TileLayer, Tooltip, ZoomControl, useMap } from "react-leaflet";
+import { AttributionControl, Circle, MapContainer, Marker, Tooltip, ZoomControl, useMap } from "react-leaflet";
+import { OpenFreeMapLayer } from "@/components/results/OpenFreeMapLayer";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Segmented } from "@/components/ui/Segmented";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useVenn } from "@/store/useVenn";
@@ -77,10 +79,12 @@ export function MapView() {
   if (!result) return null;
   if (!result.city?.hasLocalData) {
     return (
-      <div className="grid h-full place-items-center px-6 text-center">
-        <p className="max-w-md font-serif text-3xl leading-tight">
-          Map preview needs local place data for {result.input.city.trim() || "this city"}.
-        </p>
+      <div className="grid h-full place-items-center px-6">
+        <EmptyState
+          title="No map for this city yet"
+          body={`Map preview needs local place data for ${result.input.city.trim() || "this city"}. Try Shortlist or Graph meanwhile — the matches are still there.`}
+          className="max-w-md"
+        />
       </div>
     );
   }
@@ -119,12 +123,16 @@ export function MapView() {
             <p className="p-6 text-ink-soft">No neighbourhood heatmap came back for this partner. Try another partner or city.</p>
           ) : null}
           {heatmap ? (
-            <MapContainer center={heatmap.city.center} zoom={heatmap.city.zoom} zoomControl={false} className="h-full min-h-[320px]">
+            <MapContainer
+              center={heatmap.city.center}
+              zoom={heatmap.city.zoom}
+              zoomControl={false}
+              attributionControl={false}
+              className="h-full min-h-[320px]"
+            >
               <ZoomControl position="bottomright" />
-              <TileLayer
-                attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-                url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-              />
+              <AttributionControl position="bottomleft" prefix={false} />
+              <OpenFreeMapLayer />
               <FlyTo spot={active} />
               {venuePartners.map((venuePartner) => (
                 <Marker

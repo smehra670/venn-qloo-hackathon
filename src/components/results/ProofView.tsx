@@ -8,14 +8,24 @@ import { useVenn } from "@/store/useVenn";
 
 function SummaryStrip({ summary }: { summary: ProofResult["summary"] }) {
   if (summary.kindsCompared === 0) return null;
-  const deltaLabel = `${summary.avgDelta >= 0 ? "+" : ""}${summary.avgDelta} avg delta`;
+  const stats = [
+    { label: "Kinds", value: String(summary.kindsCompared) },
+    { label: "Venn avg", value: String(summary.avgVennScore) },
+    { label: "Baseline avg", value: String(summary.avgBaselineScore) },
+    { label: "Avg delta", value: `${summary.avgDelta >= 0 ? "+" : ""}${summary.avgDelta}` },
+    { label: "Venn wins", value: String(summary.vennWins) },
+  ];
   return (
-    <div className="mt-3 flex flex-wrap gap-2">
-      <Chip>{`${summary.kindsCompared} kind${summary.kindsCompared === 1 ? "" : "s"} compared`}</Chip>
-      <Chip>{`Venn avg ${summary.avgVennScore}`}</Chip>
-      <Chip>{`Baseline avg ${summary.avgBaselineScore}`}</Chip>
-      <Chip className={summary.avgDelta >= 0 ? "text-emerald-700" : "text-rose-700"}>{deltaLabel}</Chip>
-      <Chip>{`Venn wins ${summary.vennWins} · baseline wins ${summary.baselineWins} · ties ${summary.ties}`}</Chip>
+    <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+      {stats.map((stat) => (
+        <div key={stat.label} className="rounded-[12px] border border-line bg-paper px-4 py-3">
+          <p className="tabular text-3xl font-bold tracking-tight text-ink">{stat.value}</p>
+          <p className="mt-1 text-xs text-ink-soft">{stat.label}</p>
+        </div>
+      ))}
+      <p className="col-span-full text-sm text-ink-soft">
+        Baseline wins {summary.baselineWins} · ties {summary.ties}
+      </p>
     </div>
   );
 }
@@ -25,7 +35,7 @@ function ItemList({ items, empty }: { items: ProofKindGroup["vennItems"]; empty:
   return (
     <ul className="space-y-1.5">
       {items.map((item) => (
-        <li key={item.entityId} className="flex items-center justify-between gap-2 rounded-xl bg-paper-2 px-3 py-2">
+        <li key={item.entityId} className="flex items-center justify-between gap-2 rounded-2xl bg-paper-2 px-3 py-2.5">
           <span className="min-w-0 truncate text-sm font-medium">{item.name}</span>
           <span className="font-mono text-xs text-ink-soft">{item.score}</span>
         </li>
@@ -37,7 +47,7 @@ function ItemList({ items, empty }: { items: ProofKindGroup["vennItems"]; empty:
 function KindGroupCard({ group }: { group: ProofKindGroup }) {
   const meta = KIND_META[group.kind];
   return (
-    <div className="rounded-2xl border border-line p-3">
+    <div className="rounded-[12px] border border-line bg-paper/50 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span className="font-medium">{meta?.label ?? group.kind}</span>
         {group.poolSize > 0 ? <span className="text-xs text-ink-soft">pool of {group.poolSize}</span> : null}
@@ -88,8 +98,8 @@ export function ProofView() {
 
   return (
     <div className="mx-auto flex h-full max-w-3xl flex-col gap-4 overflow-auto px-4 py-4 pb-28 md:px-8">
-      <section className="rounded-[20px] border border-line bg-card p-4">
-        <h2 className="font-serif text-2xl">Check a partner</h2>
+      <section className="card-surface p-5">
+        <h2 className="font-bold text-2xl tracking-tight">Check a partner</h2>
         <p className="mt-1 text-sm text-ink-soft">
           Try a brand, artist or place of your own. Venn scores it with this search&apos;s frozen scale and adds it
           as a dashed &ldquo;Your pick&rdquo; node on the graph — up to {MAX_USER_ADDED_PARTNERS} per search.
@@ -101,7 +111,7 @@ export function ProofView() {
             placeholder="e.g. Patagonia"
             aria-label="Partner name to check"
             disabled={atCap}
-            className="min-w-[180px] flex-1 rounded-full border border-line bg-paper-2 px-4 py-2 text-sm outline-none disabled:opacity-50"
+            className="min-h-11 min-w-[180px] flex-1 rounded-full border border-line bg-paper-2 px-4 py-2 text-sm outline-none disabled:opacity-50"
           />
           <Button type="submit" disabled={atCap || checking || name.trim().length === 0}>
             {checking ? "Checking…" : "Check"}
@@ -114,9 +124,9 @@ export function ProofView() {
         ) : null}
       </section>
 
-      <section className="rounded-[20px] border border-line bg-card p-4">
+      <section className="card-surface p-5">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="font-serif text-2xl">Proof</h2>
+          <h2 className="font-bold text-2xl tracking-tight">Proof</h2>
           {proof ? (
             <Chip>{proof.baseline === "ai" ? "AI-suggested baseline" : "Popularity baseline"}</Chip>
           ) : null}

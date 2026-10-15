@@ -38,12 +38,12 @@ export function ResultsScreen() {
   if (!result) return null;
 
   return (
-    <div className="flex h-dvh flex-col">
+    <div className="flex h-dvh flex-col bg-paper">
       <TopBar />
-      <div className="flex items-start gap-2 px-4 pb-2 pt-4 md:px-6">
-        <h1 className="line-clamp-2 font-serif text-2xl tracking-tight md:text-3xl">{result.headline}</h1>
+      <div className="flex items-start gap-2 px-4 pb-2 pt-5 md:px-6">
+        <h1 className="line-clamp-2 text-[clamp(1.5rem,3vw,2.25rem)] font-bold tracking-tight text-ink">{result.headline}</h1>
         <Tooltip label="Match scores are relative to this search and describe group-level taste, not individual customers.">
-          <button type="button" aria-label="About match scores" className="mt-1 rounded-full p-1 text-ink-soft">
+          <button type="button" aria-label="About match scores" className="mt-1 min-h-11 min-w-11 rounded-full p-2 text-ink-soft">
             <Info size={16} />
           </button>
         </Tooltip>

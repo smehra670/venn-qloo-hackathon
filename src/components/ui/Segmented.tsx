@@ -1,6 +1,7 @@
 import * as ToggleGroup from "@radix-ui/react-toggle-group";
 import { cn } from "@/lib/cn";
 
+/** Plain text tabs with a 2px ink underline on the active item. */
 export function Segmented<T extends string>({
   value,
   onChange,
@@ -20,14 +21,14 @@ export function Segmented<T extends string>({
       onValueChange={(next) => {
         if (next) onChange(next as T);
       }}
-      className="inline-flex rounded-full bg-paper-2 p-1"
+      className="inline-flex flex-wrap gap-1"
     >
       {options.map((option) => (
         <ToggleGroup.Item
           key={option.value}
           value={option.value}
           className={cn(
-            "rounded-full px-3 py-1.5 text-sm text-ink-soft data-[state=on]:bg-card data-[state=on]:text-ink data-[state=on]:shadow-soft",
+            "min-h-11 rounded-none border-b-2 border-transparent px-3 py-2 text-sm text-ink-soft transition data-[state=on]:border-ink data-[state=on]:font-bold data-[state=on]:text-ink",
           )}
         >
           {option.label}

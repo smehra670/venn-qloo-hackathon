@@ -17,6 +17,7 @@ import { GripVertical } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
+import { EmptyState } from "@/components/ui/EmptyState";
 import {
   addPartnersToColumn,
   BOARD_COLUMNS,
@@ -111,7 +112,7 @@ export function PlanView() {
     <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-4 overflow-auto px-4 py-4 pb-28 md:px-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="font-serif text-2xl">Outreach plan</h2>
+          <h2 className="font-bold text-2xl tracking-tight">Outreach plan</h2>
           <p className="text-sm text-ink-soft">Move partners through your pipeline. Saved on this device only.</p>
         </div>
         <div className="flex gap-2">
@@ -123,12 +124,11 @@ export function PlanView() {
       </div>
 
       {empty ? (
-        <div className="rounded-[20px] border border-dashed border-line bg-card p-6 text-center">
-          <p className="font-serif text-xl">Nothing on the board yet</p>
-          <p className="mt-1 text-sm text-ink-soft">
-            Pin partners from the Shortlist, or add your top {TOP_N} picks to start planning outreach.
-          </p>
-        </div>
+        <EmptyState
+          title="Nothing on the board yet"
+          body={`Pin partners from the Shortlist, or add your top ${TOP_N} picks to start planning outreach.`}
+          className="border-dashed"
+        />
       ) : null}
 
       <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd}>
@@ -178,7 +178,7 @@ function Column({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex w-[260px] shrink-0 flex-col gap-2 rounded-[20px] border border-line bg-paper-2 p-3 transition-colors",
+        "flex w-[260px] shrink-0 flex-col gap-2 rounded-[12px] border border-line bg-paper-2 p-3 transition-colors",
         isOver && "border-coral bg-coral-soft/40",
       )}
     >

@@ -5,6 +5,7 @@ import { MatchRing } from "@/components/results/MatchRing";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ApiError, getShare } from "@/lib/api";
 import { businessLabel } from "@/lib/format";
@@ -64,16 +65,21 @@ export function ShareView({ token }: { token: string }) {
       ) : null}
 
       {!loading && error ? (
-        <div className="mt-10 text-center">
-          <p className="font-serif text-2xl">{error}</p>
-          <p className="mt-2 text-sm text-ink-soft">Share links stay live for 7 days after they are created.</p>
-          <Button type="button" className="mt-4" onClick={goHome}>Start your own search</Button>
-        </div>
+        <EmptyState
+          className="mt-10"
+          title="That share link wandered off"
+          body={`${error} Share links stay live for 7 days after they are created.`}
+          action={
+            <Button type="button" onClick={goHome}>
+              Start your own search
+            </Button>
+          }
+        />
       ) : null}
 
       {!loading && result ? (
         <>
-          <h1 className="font-serif text-2xl tracking-tight md:text-3xl">{result.headline}</h1>
+          <h1 className="font-bold text-2xl tracking-tight md:text-3xl">{result.headline}</h1>
           <p className="text-sm text-ink-soft">
             {businessLabel(result.input)} · {result.input.city} · shared from a Venn search
           </p>
@@ -84,11 +90,11 @@ export function ShareView({ token }: { token: string }) {
                 const partner = result.partners.find((item) => item.id === pick.partnerId);
                 if (!partner) return null;
                 return (
-                  <div key={pick.role} className="flex min-w-[220px] items-center gap-3 rounded-[20px] border border-line bg-card/95 p-3 shadow-soft">
+                  <div key={pick.role} className="flex min-w-[220px] items-center gap-3 rounded-[12px] border border-line bg-card p-4 shadow-soft">
                     <MatchRing score={partner.matchScore} size={64} />
                     <span>
                       <span className="block text-xs tracking-wide text-ink-soft">{pick.headline}</span>
-                      <span className="block font-serif text-lg leading-tight">{partner.name}</span>
+                      <span className="block font-bold text-lg leading-tight">{partner.name}</span>
                     </span>
                   </div>
                 );
@@ -96,7 +102,7 @@ export function ShareView({ token }: { token: string }) {
             </div>
           ) : null}
 
-          <ul className="divide-y divide-line overflow-hidden rounded-[20px] border border-line bg-card">
+          <ul className="divide-y divide-line overflow-hidden rounded-[12px] border border-line bg-card shadow-soft">
             {[...result.partners]
               .sort((a, b) => b.matchScore - a.matchScore || a.name.localeCompare(b.name))
               .map((partner, index) => (

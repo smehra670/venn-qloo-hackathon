@@ -36,7 +36,7 @@ export function AnchorConfirm({
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h2 className="font-serif text-3xl tracking-tight">Check your anchors</h2>
+        <h2 className="text-3xl font-bold tracking-tight text-ink">Check your anchors</h2>
         <p className="mt-2 text-sm text-ink-soft">
           A couple of things you typed could mean more than one brand, artist or place. Pick the one you meant, or keep it as typed.
         </p>

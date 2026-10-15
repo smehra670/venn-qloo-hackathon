@@ -39,10 +39,13 @@ export function App() {
         theme="light"
         toastOptions={{
           style: {
-            background: "#FFFDF8",
-            color: "#1B1A2E",
-            border: "1px solid rgba(27, 26, 46, 0.1)",
-            fontFamily: "Geist Variable, sans-serif",
+            background: "#FFFFFF",
+            color: "#14151A",
+            border: "1px solid #E5E7EB",
+            borderRadius: "16px",
+            boxShadow: "none",
+            fontFamily: "Bricolage Grotesque Variable, sans-serif",
+            fontSize: "15px",
           },
         }}
       />

@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Venn landing reference</title>
+    <!--
+      DESIGN TOKENS (port these into the app — do not reinterpret)
+      --bg: #FFFFFF
+      --surface: #F4F5F7
+      --ink: #14151A
+      --muted: #5B6170
+      --line: #E5E7EB
+      --coral: #FF6B57   /* you — data only */
+      --blue: #4F5BFF    /* partners — data only */
+      --plum: #6B3FA0    /* shared taste — data only */
+      --radius-sm: 12px
+      --radius-md: 16px
+      --radius-lg: 20px
+      --radius-pill: 999px
+      Font: 'Bricolage Grotesque Variable' (opsz), weights 400–700
+      No shadows. No gradients. Sentence case. Links: 2px solid underline.
+      Primary button: ink fill, white text, pill.
+      Active tab: 2px ink underline.
+    -->
+    <style>
+      :root {
+        --bg: #ffffff;
+        --surface: #f4f5f7;
+        --ink: #14151a;
+        --muted: #5b6170;
+        --line: #e5e7eb;
+        --coral: #ff6b57;
+        --blue: #4f5bff;
+        --plum: #6b3fa0;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Bricolage Grotesque Variable", "Bricolage Grotesque", system-ui, sans-serif;
+        color: var(--ink);
+        background: var(--bg);
+        font-size: 16px;
+        line-height: 1.5;
+      }
+      a {
+        color: inherit;
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 0;
+      }
+      .nav a {
+        color: var(--muted);
+        margin-left: 20px;
+        font-weight: 500;
+      }
+      .hero {
+        display: grid;
+        gap: 48px;
+        padding: 24px 0 64px;
+      }
+      @media (min-width: 960px) {
+        .hero {
+          grid-template-columns: 1.05fr 0.95fr;
+          align-items: start;
+        }
+      }
+      h1 {
+        font-size: clamp(2rem, 4.5vw, 3.25rem);
+        font-weight: 700;
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        margin: 0 0 16px;
+      }
+      .lede {
+        color: var(--muted);
+        max-width: 34rem;
+        margin: 0 0 28px;
+      }
+      .sentence {
+        font-size: 1.15rem;
+        margin-bottom: 24px;
+      }
+      .field {
+        font-weight: 700;
+        border: 0;
+        border-bottom: 2px solid var(--line);
+        background: transparent;
+        font: inherit;
+        color: var(--ink);
+        padding: 2px 4px;
+      }
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--surface);
+        border-radius: 12px;
+        padding: 8px 12px;
+        margin: 0 8px 8px 0;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 12px 28px;
+        border-radius: 999px;
+        border: 0;
+        background: var(--ink);
+        color: #fff;
+        font: inherit;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .band {
+        background: var(--surface);
+        padding: 64px 0;
+      }
+      .cards {
+        display: grid;
+        gap: 20px;
+      }
+      @media (min-width: 800px) {
+        .cards {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      .card {
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+      }
+      .card .shot {
+        aspect-ratio: 16/10;
+        background: #eef0f5;
+        border-radius: 16px 16px 0 0;
+      }
+      .card .body {
+        padding: 16px 18px 20px;
+      }
+      .trust {
+        display: grid;
+        gap: 24px;
+        padding: 48px 0;
+      }
+      @media (min-width: 800px) {
+        .trust {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 20px 0 32px;
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        color: var(--muted);
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <strong>Venn</strong>
+        <nav class="nav">
+          <a href="#about">About</a>
+          <a href="#source">Source code</a>
+        </nav>
+      </header>
+      <section class="hero">
+        <div>
+          <h1>Find the businesses your customers already love.</h1>
+          <p class="lede">
+            Tell Venn what you run and what your customers love. It finds businesses whose crowds overlap with yours, then drafts the message to send them.
+          </p>
+          <p class="sentence">I run a <span class="field">café</span> called <span class="field">Brew &amp; Co</span> in <span class="field">London</span>.</p>
+          <p><strong>My customers love</strong></p>
+          <div>
+            <span class="chip">Aesop ×</span>
+            <span class="chip">Radiohead ×</span>
+            <span class="chip">Slow Studio Pilates ×</span>
+          </div>
+          <p><a href="#add">Add another</a></p>
+          <p style="color: var(--muted); font-size: 14px">Add up to six. Press Enter after each one.</p>
+          <p style="color: var(--muted)"><a href="#fine">+ Fine-tune the search</a></p>
+          <p style="margin-top: 24px">
+            <button class="btn" type="button">Find my partners</button>
+            <span style="color: var(--muted); font-size: 14px; margin-left: 12px">No customer data goes in. Venn only uses public brands, artists and places.</span>
+          </p>
+          <p style="margin-top: 20px; color: var(--muted); font-size: 14px">
+            Try <a href="#ex1">Brew &amp; Co in London</a>, <a href="#ex2">a gym in Manchester</a>, or <a href="#ex3">Second Spin Records in New York</a>.
+          </p>
+        </div>
+        <div aria-label="Sample overlap graph">
+          <p style="display: flex; justify-content: space-between; color: var(--muted); font-size: 13px">
+            <span><span style="color: var(--coral)">●</span> You <span style="color: var(--blue)">●</span> Partners <span style="color: var(--plum)">●</span> Shared taste</span>
+            <span>Saved Qloo results, 15 Oct 2026</span>
+          </p>
+          <div style="height: 320px; background: var(--surface); border-radius: 20px; margin-top: 12px"></div>
+          <p style="margin-top: 12px; font-size: 14px">
+            <strong>Partner</strong> shares taste with Brew &amp; Co. <a href="#brief">Open the brief</a>
+          </p>
+        </div>
+      </section>
+    </div>
+    <section class="band">
+      <div class="wrap">
+        <h2 style="font-size: 1.75rem; margin: 0 0 8px">What you get from one search</h2>
+        <p style="color: var(--muted); margin: 0 0 28px">Overlap, neighbourhood and a pitch — from the same saved example.</p>
+        <div class="cards">
+          <article class="card"><div class="shot"></div><div class="body"><strong>The overlap</strong><p style="color: var(--muted); margin: 6px 0 0; font-size: 14px">Who sits in the same crowd lens.</p></div></article>
+          <article class="card"><div class="shot"></div><div class="body"><strong>The neighbourhood</strong><p style="color: var(--muted); margin: 6px 0 0; font-size: 14px">Where shared taste shows up on a map.</p></div></article>
+          <article class="card"><div class="shot"></div><div class="body"><strong>The pitch</strong><p style="color: var(--muted); margin: 6px 0 0; font-size: 14px">A brief ready to copy and send.</p></div></article>
+        </div>
+        <div class="trust">
+          <div><strong>No customer data</strong><p style="color: var(--muted); margin: 6px 0 0; font-size: 14px">Only public brands, artists and places.</p></div>
+          <div><strong>Scores describe groups</strong><p style="color: var(--muted); margin: 6px 0 0; font-size: 14px">Relative to this search, not individuals.</p></div>
+          <div><strong>Open source</strong><p style="color: var(--muted); margin: 6px 0 0; font-size: 14px">MIT licence. Inspect every Qloo call.</p></div>
+        </div>
+      </div>
+    </section>
+    <div class="wrap">
+      <footer>
+        <span>Venn, a taste collaboration agent, powered by Qloo data.</span>
+        <span><a href="#about">About</a> · <a href="#source">Source code</a></span>
+      </footer>
+    </div>
+  </body>
+</html>

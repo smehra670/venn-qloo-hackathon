@@ -24,18 +24,22 @@ export function TopBar() {
   const openCallLog = useVenn((state) => state.openCallLog);
   if (!result) return null;
   return (
-    <header className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
+    <header className="flex flex-wrap items-center gap-3 border-b border-line bg-paper px-4 py-3">
       <Logo />
-      <span className="rounded-full bg-paper-2 px-3 py-1 text-sm text-ink-soft">{summaryLine(result.input)}</span>
+      <span className="rounded-[12px] bg-surface px-3 py-1.5 text-sm text-ink-soft">{summaryLine(result.input)}</span>
       <div className="hidden md:block">
         <Segmented value={view} onChange={setView} options={OPTIONS} label="Result view" />
       </div>
-      <div className="ml-auto flex items-center gap-2">
-        <Button type="button" variant="ghost" onClick={() => void openCallLog()}>How Venn used Qloo</Button>
+      <div className="ml-auto flex flex-wrap items-center gap-2">
+        <Button type="button" variant="ghost" onClick={() => void openCallLog()}>
+          How Venn used Qloo
+        </Button>
         <Button type="button" variant="ghost" disabled={sharing} onClick={() => void shareRun()}>
           {sharing ? "Copying…" : "Share"}
         </Button>
-        <Button type="button" variant="ghost" onClick={reset}>New search</Button>
+        <Button type="button" variant="secondary" onClick={reset}>
+          New search
+        </Button>
         <Badge>
           {result.providerLabel.toLowerCase().includes("saved")
             ? result.providerLabel
@@ -52,7 +56,7 @@ export function MobileTabs() {
   const view = useVenn((state) => state.view);
   const setView = useVenn((state) => state.setView);
   return (
-    <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-card p-2 md:hidden">
+    <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-paper p-2 md:hidden">
       <Segmented value={view} onChange={setView} options={OPTIONS} label="Result view" />
     </div>
   );

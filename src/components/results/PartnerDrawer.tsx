@@ -63,12 +63,12 @@ export function PartnerDrawer() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="partner-title"
-      className="fixed inset-x-0 bottom-0 z-30 flex max-h-[85dvh] flex-col overflow-auto rounded-t-[20px] border border-line bg-card p-5 shadow-soft md:inset-y-0 md:right-0 md:left-auto md:max-h-none md:w-[380px] md:rounded-none md:border-y-0 md:border-r-0"
+      className="fixed inset-x-0 bottom-0 z-30 flex max-h-[85dvh] flex-col overflow-auto rounded-t-[12px] border border-line bg-card p-5 shadow-soft md:inset-y-0 md:right-0 md:left-auto md:max-h-none md:w-[380px] md:rounded-none md:border-y-0 md:border-r-0"
     >
       <div className="mx-auto mb-3 h-1.5 w-12 rounded-full bg-paper-2 md:hidden" aria-hidden="true" />
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h2 id="partner-title" className="font-serif text-3xl tracking-tight">{partner.name}</h2>
+          <h2 id="partner-title" className="font-bold text-3xl tracking-tight">{partner.name}</h2>
           <div className="mt-2 flex flex-wrap gap-2">
             <Chip>{KIND_META[partner.kind].label}</Chip>
             <Chip>{partner.local ? `Local${partner.locationLabel ? ` · ${partner.locationLabel}` : ""}` : "Brand"}</Chip>
@@ -81,7 +81,7 @@ export function PartnerDrawer() {
             {goalChip ? <Chip>{goalChip}</Chip> : null}
           </div>
         </div>
-        <button type="button" aria-label="Close" onClick={() => select(null)} className="rounded-full p-2 hover:bg-paper-2">
+        <button type="button" aria-label="Close" onClick={() => select(null)} className="min-h-11 min-w-11 rounded-full p-2 hover:bg-paper-2">
           <X size={18} />
         </button>
       </div>

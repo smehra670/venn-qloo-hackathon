@@ -41,12 +41,12 @@ export function TopPicks() {
             key={pick.role}
             type="button"
             onClick={() => select(partner.id)}
-            className="flex min-w-[220px] items-center gap-3 rounded-[20px] border border-line bg-card/95 p-3 text-left shadow-soft"
+            className="flex min-w-[220px] items-center gap-3 rounded-[12px] border border-line bg-card p-4 text-left"
           >
             <MatchRing score={partner.matchScore} size={72} />
             <span>
               <span className="block text-xs tracking-wide text-ink-soft">{TITLES[pick.role]}</span>
-              <span className="block font-serif text-lg leading-tight">{partner.name}</span>
+              <span className="block font-bold text-lg leading-tight">{partner.name}</span>
               <span className="block text-sm text-ink-soft">{pick.headline}</span>
             </span>
           </button>
@@ -56,12 +56,12 @@ export function TopPicks() {
         <button
           type="button"
           onClick={() => select(goalPick.id)}
-          className="flex min-w-[220px] items-center gap-3 rounded-[20px] border border-line bg-card/95 p-3 text-left shadow-soft"
+          className="flex min-w-[220px] items-center gap-3 rounded-[12px] border border-line bg-card p-4 text-left"
         >
           <MatchRing score={goalPick.matchScore} size={72} />
           <span>
             <span className="block text-xs tracking-wide text-ink-soft">Best for your goal</span>
-            <span className="block font-serif text-lg leading-tight">{goalPick.name}</span>
+            <span className="block font-bold text-lg leading-tight">{goalPick.name}</span>
             <span className="block text-sm text-ink-soft">
               {usedIds.has(goalPick.id) ? "Also a top pick" : "Fits what you're after"}
             </span>

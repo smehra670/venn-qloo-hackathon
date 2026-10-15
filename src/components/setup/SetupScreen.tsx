@@ -6,18 +6,12 @@ import { Logo } from "@/components/brand/Logo";
 import { AnchorConfirm } from "@/components/setup/AnchorConfirm";
 import { ExampleChips } from "@/components/setup/ExampleChips";
 import { FineTune } from "@/components/setup/FineTune";
+import { SampleGraph } from "@/components/setup/SampleGraph";
 import { SentenceForm, validationMessage } from "@/components/setup/SentenceForm";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { resolveAnchors } from "@/lib/api";
 import { useVenn } from "@/store/useVenn";
-
-function providerBadge(health: { provider: string; providerLabel: string; demo: boolean } | null): string {
-  if (!health) return "Demo data";
-  if (health.providerLabel.toLowerCase().includes("saved")) return health.providerLabel;
-  if (health.provider === "qloo") return "Powered by Qloo";
-  return "Demo data";
-}
 
 const FALLBACK: ExampleInput[] = [
   { businessType: "cafe", city: "London", anchors: ["Aesop", "Radiohead", "pilates"], businessName: "Brew & Co" },
@@ -34,9 +28,6 @@ export function SetupScreen() {
   const [busy, setBusy] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
   const [confirmState, setConfirmState] = useState<{ input: BusinessInput; resolutions: AnchorResolution[] } | null>(null);
-  // Examples are pre-confirmed (the demo dataset is written so they always resolve cleanly),
-  // so submitting one skips the "Check your anchors" step entirely. Any manual edit clears
-  // this, since the user is no longer necessarily using the example's exact anchors.
   const fromExampleRef = useRef(false);
   const reason = validationMessage(input);
   const examples = meta?.examples.length ? meta.examples : FALLBACK;
@@ -108,20 +99,17 @@ export function SetupScreen() {
       }
       await runNow(cleaned);
     } catch {
-      // The confirm step is advisory; if it fails, fall back to running directly.
       await runNow(cleaned);
     }
   };
 
   if (confirmState) {
     return (
-      <div className="relative min-h-dvh overflow-hidden">
-        <AmbientCircles />
-        <header className="relative z-10 flex items-center justify-between px-5 py-5 md:px-10">
+      <div className="min-h-dvh bg-paper">
+        <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 md:px-8">
           <Logo />
-          <Badge>{providerBadge(health)}</Badge>
         </header>
-        <main className="relative z-10 mx-auto max-w-3xl px-5 pb-16 pt-8 md:px-8 md:pt-16">
+        <main className="mx-auto max-w-3xl px-4 py-8 md:px-8">
           <AnchorConfirm
             resolutions={confirmState.resolutions}
             busy={busy}
@@ -134,45 +122,78 @@ export function SetupScreen() {
   }
 
   return (
-    <div className="relative min-h-dvh overflow-hidden">
+    <div className="relative min-h-dvh overflow-x-hidden bg-paper">
       <AmbientCircles />
-      <header className="relative z-10 flex items-center justify-between px-5 py-5 md:px-10">
+      <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-5 md:px-8">
         <Logo />
-        <div className="flex items-center gap-2">
-          <Button type="button" variant="ghost" className="text-sm" onClick={() => setAboutOpen(true)}>
+        <nav className="flex items-center gap-5 text-sm text-ink-soft" aria-label="Primary">
+          <button type="button" className="min-h-11 hover:text-ink" onClick={() => setAboutOpen(true)}>
             About
-          </Button>
-          <Badge>{providerBadge(health)}</Badge>
-        </div>
-      </header>
-      <main className="relative z-10 mx-auto flex max-w-3xl flex-col gap-8 px-5 pb-16 pt-8 md:px-8 md:pt-16">
-        <div>
-          <h1 className="font-serif text-[clamp(2.75rem,7vw,5.5rem)] leading-[0.95] tracking-tight">Find who shares your crowd.</h1>
-          <p className="mt-5 max-w-xl text-lg leading-relaxed text-ink-soft">
-            Tell Venn what you run and what your customers love. It finds the businesses whose audiences overlap with yours, then writes the pitch.
-          </p>
-        </div>
-        <form className="flex flex-col gap-6" onSubmit={(event) => void submit(event)}>
-          <SentenceForm input={input} cities={cities} onChange={handleInputChange} />
-          <FineTune input={input} onChange={handleInputChange} />
-          <div className="flex flex-col items-start gap-3">
-            <Button type="submit" disabled={Boolean(reason) || busy}>
-              {busy ? "Starting…" : "Find my partners"}
-            </Button>
-            {reason ? <p className="text-sm text-ink-soft">{reason}</p> : null}
-            <p className="text-sm text-ink-soft">No customer data needed. Venn only uses public brands, artists and places.</p>
-          </div>
-        </form>
-        <ExampleChips examples={examples} onPick={fillExample} />
-      </main>
-      <footer className="relative z-10 border-t border-line px-5 py-6 text-sm text-ink-soft md:px-10">
-        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-between gap-3">
-          <span>Venn · MIT · taste collaboration agent</span>
-          <button type="button" className="underline underline-offset-2 hover:text-ink" onClick={() => setAboutOpen(true)}>
-            About &amp; Qloo surfaces
           </button>
+          <a
+            className="min-h-11 inline-flex items-center hover:text-ink"
+            href="https://github.com/smehra670/venn-inhouse"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Source code
+          </a>
+        </nav>
+      </header>
+
+      <main className="relative z-10">
+        <section className="mx-auto grid max-w-6xl gap-10 px-4 pb-14 pt-2 md:grid-cols-[1.05fr_0.95fr] md:gap-12 md:px-8 md:pb-20 md:pt-4">
+          <div>
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-soft">
+              Taste collaboration agent · powered by Qloo
+            </p>
+            <h1 className="mt-3 max-w-xl text-[clamp(2rem,4.5vw,3.25rem)] font-bold leading-[1.08] tracking-tight text-ink">
+              Find partners whose audiences already overlap with yours.
+            </h1>
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-soft md:text-[1.05rem]">
+              Name your business and a few brands, artists or places your customers love. Venn searches public taste data, ranks nearby collab fits by shared crowd, and drafts the pitch you can send.
+            </p>
+
+            <form className="mt-8 flex flex-col gap-5" onSubmit={(event) => void submit(event)}>
+              <SentenceForm input={input} cities={cities} onChange={handleInputChange} />
+              <FineTune input={input} onChange={handleInputChange} />
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Button type="submit" disabled={Boolean(reason) || busy} className="min-h-12 px-7 text-base">
+                  {busy ? "Starting…" : "Find my partners"}
+                </Button>
+                <p className="max-w-xs text-sm leading-relaxed text-ink-soft">
+                  No CRM upload. Only public taste signals — then a shortlist, map, and ready-to-send brief.
+                </p>
+              </div>
+              {reason ? <p className="text-sm text-ink-soft">{reason}</p> : null}
+              <ExampleChips examples={examples} onPick={fillExample} />
+            </form>
+          </div>
+
+          <div className="min-w-0">
+            <SampleGraph />
+          </div>
+        </section>
+
+      </main>
+
+      <footer className="relative z-10 border-t border-line bg-paper/80 px-4 py-6 text-sm text-ink-soft backdrop-blur-sm md:px-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+          <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
+            <span>Venn, a taste collaboration agent, powered by Qloo data.</span>
+            <Badge tone="sky">Qloo Agentic Hackathon 2026 Entry</Badge>
+          </div>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <button type="button" className="link-underline min-h-11" onClick={() => setAboutOpen(true)}>
+              About
+            </button>
+            <a className="link-underline min-h-11 inline-flex items-center" href="https://github.com/smehra670/venn-inhouse" target="_blank" rel="noreferrer">
+              Source code
+            </a>
+          </div>
         </div>
       </footer>
+
       <AboutDialog open={aboutOpen} onClose={closeAbout} version={health?.version} />
     </div>
   );

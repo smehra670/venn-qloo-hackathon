@@ -1,4 +1,3 @@
-import { Check } from "lucide-react";
 import { deriveSteps, useVenn } from "@/store/useVenn";
 import { cn } from "@/lib/cn";
 
@@ -10,23 +9,25 @@ export function StepTimeline() {
   return (
     <div>
       <ol className="flex flex-col gap-4">
-        {steps.map((step) => (
+        {steps.map((step, index) => (
           <li key={step.id} className="flex gap-3">
             <span
               className={cn(
-                "mt-1 h-3 w-3 shrink-0 rounded-full border border-line bg-card",
-                step.state === "running" && "animate-pulse bg-blue",
-                step.state === "done" && "border-ink bg-ink",
-                step.state === "retry" && "border-amber-700 bg-amber-200",
+                "tabular mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold",
+                step.state === "waiting" && "bg-surface text-ink-soft",
+                step.state === "running" && "bg-ink text-paper",
+                step.state === "done" && "bg-ink text-paper",
+                step.state === "retry" && "bg-[#f3e8d4] text-ink",
               )}
               aria-hidden="true"
-            />
+            >
+              {String(index + 1).padStart(2, "0")}
+            </span>
             <div>
-              <p className="font-medium text-ink">{step.title}</p>
+              <p className="font-bold text-ink">{step.title}</p>
               {step.state === "done" && step.summary ? <p className="text-sm text-ink-soft">{step.summary}</p> : null}
               {step.note ? <p className="text-sm text-ink-soft">{step.note}</p> : null}
               {step.retry ? <p className="text-sm text-amber-900">{step.retry}</p> : null}
-              {step.state === "done" ? <Check className="sr-only" /> : null}
             </div>
           </li>
         ))}

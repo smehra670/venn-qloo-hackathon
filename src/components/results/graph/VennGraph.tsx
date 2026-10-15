@@ -124,7 +124,7 @@ export function VennGraph() {
               <circle cx={layout.cx} cy={layout.cy} r={layout.businessR} />
             </clipPath>
             <circle cx={layout.cx} cy={layout.cy} r={layout.businessR} fill="#FF6B57" fillOpacity={0.55} />
-            <text x={layout.cx} y={layout.cy} textAnchor="middle" className="fill-ink font-serif text-lg" style={{ paintOrder: "stroke", stroke: "#F6F2EA", strokeWidth: 5 }}>
+            <text x={layout.cx} y={layout.cy} textAnchor="middle" className="fill-ink font-serif text-lg" style={{ paintOrder: "stroke", stroke: "#FFFFFF", strokeWidth: 5 }}>
               {label}
             </text>
             {visible.map((partner, index) => {
@@ -185,7 +185,7 @@ export function VennGraph() {
                       y={node.y + ((node.y - layout.cy) / (Math.hypot(node.x - layout.cx, node.y - layout.cy) || 1)) * (node.r + 14)}
                       textAnchor={node.x > layout.cx + 12 ? "start" : node.x < layout.cx - 12 ? "end" : "middle"}
                       className="fill-ink font-serif text-[13px]"
-                      style={{ paintOrder: "stroke", stroke: "#F6F2EA", strokeWidth: 5 }}
+                      style={{ paintOrder: "stroke", stroke: "#FFFFFF", strokeWidth: 5 }}
                     >
                       {partner.name}
                       {hoverId === partner.id || selectedId === partner.id ? ` · ${partner.matchScore}` : ""}

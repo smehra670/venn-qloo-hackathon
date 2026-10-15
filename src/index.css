@@ -2,24 +2,35 @@
 @import "leaflet/dist/leaflet.css";
 
 @theme {
-  --color-paper: #f6f2ea;
-  --color-paper-2: #efe9dd;
-  --color-card: #fffdf8;
-  --color-ink: #1b1a2e;
-  --color-ink-soft: #4e4c64;
-  --color-line: rgba(27, 26, 46, 0.1);
+  --color-paper: #ffffff;
+  --color-paper-2: #f4f5f7;
+  --color-band: #f4f5f7;
+  --color-card: #f4f5f7;
+  --color-surface: #f4f5f7;
+  --color-ink: #14151a;
+  --color-ink-soft: #5b6170;
+  --color-muted: #5b6170;
+  --color-line: #e5e7eb;
+
+  /* Brand accent removed — primary actions use ink */
+  --color-accent: #14151a;
+  --color-accent-soft: #f4f5f7;
+
+  /* DATA COLOURS — you / partners / shared taste */
   --color-coral: #ff6b57;
   --color-coral-soft: #ffe3dd;
-  --color-blue: #3e49e6;
+  --color-blue: #4f5bff;
   --color-blue-soft: #e3e5ff;
   --color-plum: #6b3fa0;
 
-  --font-serif: "Fraunces Variable", ui-serif, Georgia, serif;
-  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Geist Mono Variable", ui-monospace, SFMono-Regular, monospace;
+  --font-sans: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
 
-  --radius-card: 20px;
-  --shadow-soft: 0 1px 2px rgba(27, 26, 46, 0.04), 0 8px 24px rgba(27, 26, 46, 0.06);
+  --radius-card: 16px;
+  --radius-image: 16px;
+  --radius-button: 999px;
+  --shadow-soft: none;
 }
 
 html {
@@ -32,6 +43,10 @@ body {
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  overflow-x: hidden;
 }
 
 #root {
@@ -43,7 +58,7 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-blue);
+  outline: 2px solid var(--color-ink);
   outline-offset: 2px;
 }
 
@@ -53,7 +68,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(27, 26, 46, 0.22);
+  background: rgba(20, 21, 26, 0.2);
   border-radius: 99px;
   border: 2px solid transparent;
   background-clip: padding-box;
@@ -71,33 +86,50 @@ body {
   border: 0;
 }
 
-@keyframes drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.link-underline {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+.field-underline {
+  border: 0;
+  border-bottom: 2px solid var(--color-line);
+  background: transparent;
+  border-radius: 0;
+  font-weight: 700;
+  color: var(--color-ink);
+  padding: 2px 4px;
+  outline: none;
+}
+
+.field-underline:focus {
+  border-bottom-color: var(--color-ink);
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
   }
-  50% {
-    transform: translate3d(3%, -4%, 0) scale(1.05);
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
-.ambient-circle {
-  animation: drift 46s ease-in-out infinite;
+.graph-pop {
+  animation: pop-in 0.45s ease-out both;
 }
 
-.ambient-circle:nth-child(2) {
-  animation-duration: 58s;
-  animation-delay: -12s;
-}
-
-.ambient-circle:nth-child(3) {
-  animation-duration: 52s;
-  animation-delay: -20s;
-}
-
-.ambient-circle:nth-child(4) {
-  animation-duration: 64s;
-  animation-delay: -8s;
+@media (prefers-reduced-motion: reduce) {
+  .graph-pop {
+    animation: none !important;
+  }
 }
 
 @keyframes shake {
@@ -136,14 +168,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-serif);
   font-size: 14px;
-  border: 2px solid var(--color-card);
-  box-shadow: var(--shadow-soft);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  border: 2px solid var(--color-paper);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ambient-circle,
   .shake {
     animation: none !important;
   }

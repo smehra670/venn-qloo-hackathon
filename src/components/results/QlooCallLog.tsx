@@ -54,11 +54,11 @@ export function QlooCallLog() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="qloo-call-log-title"
-      className="fixed inset-x-0 bottom-0 z-40 flex max-h-[85dvh] flex-col overflow-auto rounded-t-[20px] border border-line bg-card p-5 shadow-soft md:inset-y-0 md:right-0 md:left-auto md:max-h-none md:w-[420px] md:rounded-none md:border-y-0 md:border-r-0"
+      className="fixed inset-x-0 bottom-0 z-40 flex max-h-[85dvh] flex-col overflow-auto rounded-t-[12px] border border-line bg-card p-5 shadow-soft md:inset-y-0 md:right-0 md:left-auto md:max-h-none md:w-[420px] md:rounded-none md:border-y-0 md:border-r-0"
     >
       <div className="flex items-start justify-between gap-3">
-        <h2 id="qloo-call-log-title" className="font-serif text-2xl tracking-tight">How Venn used Qloo</h2>
-        <button type="button" aria-label="Close" onClick={close} className="rounded-full p-2 hover:bg-paper-2">
+        <h2 id="qloo-call-log-title" className="font-bold text-2xl tracking-tight">How Venn used Qloo</h2>
+        <button type="button" aria-label="Close" onClick={close} className="min-h-11 min-w-11 rounded-full p-2 hover:bg-paper-2">
           <X size={18} />
         </button>
       </div>

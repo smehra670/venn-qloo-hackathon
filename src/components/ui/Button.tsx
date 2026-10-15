@@ -11,10 +11,10 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-45",
+        "inline-flex min-h-11 items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-45",
         variant === "primary" && "bg-ink text-paper hover:bg-ink/90",
-        variant === "secondary" && "border border-line bg-card text-ink hover:bg-paper-2",
-        variant === "ghost" && "text-ink-soft hover:bg-paper-2 hover:text-ink",
+        variant === "secondary" && "border border-line bg-paper text-ink hover:bg-surface",
+        variant === "ghost" && "text-ink-soft hover:text-ink",
         className,
       )}
       {...props}
