@@ -11,7 +11,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["server/**/*.test.ts", "shared/**/*.test.ts"],
+    include: ["server/**/*.test.ts", "shared/**/*.test.ts", "src/**/*.test.ts"],
     setupFiles: ["./vitest.setup.ts"],
     alias: {
       "@shared": shared,

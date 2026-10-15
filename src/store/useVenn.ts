@@ -7,7 +7,7 @@ import { openRunStream } from "@/lib/sse";
 import { clearRunId, readInput, readRunId, saveInput, saveRunId } from "@/lib/storage";
 
 export type Stage = "setup" | "researching" | "results";
-export type ResultsView = "graph" | "map" | "shortlist" | "proof";
+export type ResultsView = "graph" | "map" | "shortlist" | "proof" | "plan";
 export type StepState = "waiting" | "running" | "done" | "retry";
 
 export interface StepView {

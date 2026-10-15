@@ -34,6 +34,10 @@
 
 - 5.4 per-run call log + panel; 5.5 explainability evidence; 5.6 VenueFacts/pins/closed drop/POINT+radius; 5.1 analysis/compare with tag fallback; 5.7 taste-lift (no matchScore change). Tests: 157. Skipped 5.2/5.3 (probe).
 
+## Plan board 6.1 (2026-10-15)
+
+- Results **Plan** tab: 5-column outreach board, dnd-kit + Move menu, localStorage only. Skipped 6.2 PDF, 6.3 brand kit, e2e, 7.3. Tests: 175.
+
 ## Phase 0 — Audit, baseline, probe (2026-10-13)
 
 - Baseline: `typecheck` / `test` (12) / `build` — green.

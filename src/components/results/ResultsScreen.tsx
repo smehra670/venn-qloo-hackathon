@@ -3,6 +3,7 @@ import { AgentNotes } from "@/components/results/AgentNotes";
 import { BriefSheet } from "@/components/results/BriefSheet";
 import { MapView } from "@/components/results/MapView";
 import { PartnerDrawer } from "@/components/results/PartnerDrawer";
+import { PlanView } from "@/components/results/PlanView";
 import { ProofView } from "@/components/results/ProofView";
 import { QlooCallLog } from "@/components/results/QlooCallLog";
 import { ShortlistView } from "@/components/results/ShortlistView";
@@ -62,6 +63,7 @@ export function ResultsScreen() {
         {view === "map" ? <MapView /> : null}
         {view === "shortlist" ? <ShortlistView /> : null}
         {view === "proof" ? <ProofView /> : null}
+        {view === "plan" ? <PlanView /> : null}
         <PartnerDrawer />
         <QlooCallLog />
       </div>

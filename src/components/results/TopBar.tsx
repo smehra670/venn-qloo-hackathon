@@ -10,6 +10,7 @@ const OPTIONS: { value: ResultsView; label: string }[] = [
   { value: "map", label: "Map" },
   { value: "shortlist", label: "Shortlist" },
   { value: "proof", label: "Proof" },
+  { value: "plan", label: "Plan" },
 ];
 
 export function TopBar() {
