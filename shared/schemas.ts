@@ -1,7 +1,12 @@
 import { z } from "zod";
 import {
+  ANCHOR_STATUSES,
+  APPETITE_OPTIONS,
   BUSINESS_TYPES,
+  FEASIBILITY_LEVELS,
+  GOAL_IDS,
   PARTNER_KINDS,
+  REACH_OPTIONS,
   STEP_ORDER,
   type AgentEvent,
   type BusinessInput,
@@ -13,20 +18,20 @@ export function stripControls(value: string): string {
 
 const cleaned = (value: string): string => stripControls(value).trim();
 
+const DecisionOriginSchema = z.enum(["rule", "qloo", "ai"]);
+
 const GoalsSchema = z.object({
-  preferLocal: z.boolean().optional(),
-  preferSurprising: z.boolean().optional(),
-  budget: z.enum(["low", "medium", "flexible"]).optional(),
-  avoidKinds: z.array(z.enum(PARTNER_KINDS)).max(PARTNER_KINDS.length).optional(),
-  notes: z
-    .string()
-    .optional()
-    .transform((value) => {
-      if (value === undefined) return undefined;
-      const next = cleaned(value);
-      return next.length === 0 ? undefined : next;
-    })
-    .pipe(z.string().max(200).optional()),
+  wants: z.array(z.enum(GOAL_IDS)).max(2),
+  reach: z.enum(REACH_OPTIONS),
+  appetite: z.enum(APPETITE_OPTIONS),
+  avoid: z
+    .array(
+      z
+        .string()
+        .transform((value) => cleaned(value))
+        .pipe(z.string().min(1).max(40)),
+    )
+    .max(10),
 });
 
 export const BusinessInputSchema = z
@@ -107,6 +112,22 @@ export const HeatmapQuerySchema = z.object({
 
 export const CompareRequestSchema = z.object({
   partnerId: z.string().min(1),
+});
+
+export const AnchorResolveRequestSchema = z.object({
+  anchors: z
+    .array(
+      z
+        .string()
+        .transform((value) => cleaned(value))
+        .pipe(z.string().min(1).max(60)),
+    )
+    .min(1)
+    .max(6),
+  city: z
+    .string()
+    .optional()
+    .transform((value) => (value === undefined ? undefined : cleaned(value))),
 });
 
 export const CheckRequestSchema = z.object({
@@ -195,7 +216,13 @@ export const PartnerSchema = z.object({
   origin: z.enum(["discovered", "user_added"]).optional(),
   scoreBasis: ScoreBasisSchema.optional(),
   goalFit: z.number().min(0).max(1).optional(),
-  feasibility: z.object({ ok: z.boolean(), notes: z.array(z.string()) }).optional(),
+  feasibility: z
+    .object({
+      level: z.enum(FEASIBILITY_LEVELS),
+      reason: z.string(),
+      origin: DecisionOriginSchema,
+    })
+    .optional(),
 });
 
 const TopPickSchema = z.object({
@@ -250,7 +277,16 @@ export const RunResultSchema = z.object({
   }),
   normalization: NormalizationSchema.optional(),
   decisions: z
-    .array(z.object({ step: StepIdSchema.optional(), decision: z.string(), reason: z.string() }))
+    .array(
+      z.object({
+        step: StepIdSchema.optional(),
+        decision: z.string(),
+        reason: z.string(),
+        origin: DecisionOriginSchema,
+        kind: PartnerKindSchema.optional(),
+        subject: z.string().optional(),
+      }),
+    )
     .optional(),
   discoverSpecs: z.array(DiscoverSpecSchema).optional(),
 });
@@ -348,6 +384,9 @@ export const AgentEventSchema: z.ZodType<AgentEvent> = z.discriminatedUnion("typ
     step: StepIdSchema.optional(),
     decision: z.string(),
     reason: z.string(),
+    origin: DecisionOriginSchema,
+    kind: PartnerKindSchema.optional(),
+    subject: z.string().optional(),
   }),
   z.object({
     type: z.literal("step_completed"),
@@ -427,6 +466,19 @@ export const ComparePayloadSchema = z.object({
   popularityDelta: z.number(),
   signals: z.array(CompareSignalSchema),
   note: z.string(),
+});
+
+const AnchorCandidateSchema = z.object({
+  entityId: z.string(),
+  entityName: z.string(),
+  entityType: EntityTypeSchema,
+  score: z.number(),
+});
+
+export const AnchorResolutionSchema = z.object({
+  input: z.string(),
+  status: z.enum(ANCHOR_STATUSES),
+  candidates: z.array(AnchorCandidateSchema),
 });
 
 export function parseBusinessInput(value: unknown): BusinessInput {

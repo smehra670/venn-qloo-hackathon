@@ -1,4 +1,4 @@
-import type { BusinessType, StepId } from "./types.js";
+import type { AppetiteOption, BusinessType, DecisionOrigin, FeasibilityLevel, GoalId, ReachOption, StepId } from "./types.js";
 
 export const BUSINESS_TYPE_LABELS: Record<BusinessType, string> = {
   cafe: "café",
@@ -39,6 +39,40 @@ export const DEMO_LIMITS = [
 
 export const UNKNOWN_CITY_LIMIT =
   "Map preview and local places are available for London, Manchester and New York in demo mode.";
+
+export const GOAL_LABELS: Record<GoalId, string> = {
+  footfall: "More footfall",
+  new_audience: "A new audience",
+  content: "Content to share",
+  events: "Co-host events",
+  bundles: "Bundle offers",
+  shared_costs: "Share costs",
+  stockists: "Get stocked",
+};
+
+export const REACH_LABELS: Record<ReachOption, string> = {
+  near: "Just nearby",
+  local_and_brands: "Local + known brands",
+  anywhere: "Anywhere",
+};
+
+export const APPETITE_LABELS: Record<AppetiteOption, string> = {
+  light: "Light — a small trial",
+  medium: "Medium",
+  ambitious: "Ambitious",
+};
+
+export const FEASIBILITY_LABELS: Record<FeasibilityLevel, string> = {
+  easy: "Easy ask",
+  warm_intro: "Warm intro",
+  long_shot: "Long shot",
+};
+
+export const DECISION_ORIGIN_LABELS: Record<DecisionOrigin, string> = {
+  rule: "Rule",
+  qloo: "Qloo",
+  ai: "AI",
+};
 
 /** Qloo surfaces actually called by `server/providers/qloo/client.ts`. Keep in sync; see capabilities.test.ts. */
 export const QLOO_CAPABILITIES = [

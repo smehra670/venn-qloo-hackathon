@@ -1,8 +1,18 @@
+import { DECISION_ORIGIN_LABELS } from "@shared/constants";
+import type { DecisionOrigin } from "@shared/types";
 import { useState } from "react";
 import { useVenn } from "@/store/useVenn";
 
-/** "How Venn decided": the agent's decision log plus any rule-based feasibility notes on
- * the current top picks. Hidden entirely when there is nothing to show. */
+function OriginPill({ origin }: { origin?: DecisionOrigin }) {
+  return (
+    <span className="inline-flex shrink-0 items-center rounded-full border border-line px-2 py-0.5 text-[10px] uppercase tracking-wide text-ink-soft">
+      {DECISION_ORIGIN_LABELS[origin ?? "rule"]}
+    </span>
+  );
+}
+
+/** "How Venn decided": the agent's decision log plus any feasibility tiers worse than "easy"
+ * on the current top picks. Hidden entirely when there is nothing to show. */
 export function AgentNotes() {
   const result = useVenn((state) => state.result);
   const [open, setOpen] = useState(false);
@@ -10,7 +20,8 @@ export function AgentNotes() {
 
   const decisions = result.decisions ?? [];
   const flagged = result.partners.filter(
-    (partner) => result.topPicks.some((pick) => pick.partnerId === partner.id) && partner.feasibility && !partner.feasibility.ok,
+    (partner) =>
+      result.topPicks.some((pick) => pick.partnerId === partner.id) && partner.feasibility && partner.feasibility.level !== "easy",
   );
   if (decisions.length === 0 && flagged.length === 0) return null;
 
@@ -32,8 +43,11 @@ export function AgentNotes() {
               <h3 className="text-xs tracking-wide text-ink-soft">Agent decisions</h3>
               <ul className="mt-2 space-y-2">
                 {decisions.map((item, index) => (
-                  <li key={`${item.step ?? "run"}-${index}`}>
-                    <span className="font-medium">{item.decision}.</span> <span className="text-ink-soft">{item.reason}</span>
+                  <li key={`${item.step ?? "run"}-${index}`} className="flex flex-wrap items-start gap-2">
+                    <OriginPill origin={item.origin} />
+                    <span>
+                      <span className="font-medium">{item.decision}.</span> <span className="text-ink-soft">{item.reason}</span>
+                    </span>
                   </li>
                 ))}
               </ul>
@@ -43,9 +57,12 @@ export function AgentNotes() {
             <div>
               <h3 className="text-xs tracking-wide text-ink-soft">Worth checking on your top picks</h3>
               <ul className="mt-2 space-y-2 text-ink-soft">
-                {flagged.flatMap((partner) =>
-                  (partner.feasibility?.notes ?? []).map((note, index) => <li key={`${partner.id}-${index}`}>{note}</li>),
-                )}
+                {flagged.map((partner) => (
+                  <li key={partner.id} className="flex flex-wrap items-start gap-2">
+                    <OriginPill origin={partner.feasibility?.origin} />
+                    <span>{partner.feasibility?.reason}</span>
+                  </li>
+                ))}
               </ul>
             </div>
           ) : null}

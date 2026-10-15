@@ -1,3 +1,4 @@
+import { DECISION_ORIGIN_LABELS } from "@shared/constants";
 import { useEffect, useRef } from "react";
 import { useVenn } from "@/store/useVenn";
 
@@ -9,7 +10,10 @@ export function ToolLog() {
   const lines = events.flatMap((event) => {
     if (event.type === "tool_call") return [`→ ${prefix}.${event.tool}(${event.args})`];
     if (event.type === "tool_result") return [`← ${event.summary} · ${event.ms} ms`];
-    if (event.type === "decision") return [`◆ ${event.decision} — ${event.reason}`];
+    if (event.type === "decision") {
+      const originLabel = DECISION_ORIGIN_LABELS[event.origin ?? "rule"];
+      return [`◆ [${originLabel}] ${event.decision} — ${event.reason}`];
+    }
     return [];
   });
 

@@ -5,6 +5,7 @@ import Fastify from "fastify";
 import path from "node:path";
 import { ZodError } from "zod";
 import { config } from "./config.js";
+import { registerAnchors } from "./routes/anchors.js";
 import { registerHealth } from "./routes/health.js";
 import { registerRuns } from "./routes/runs.js";
 import { registerShare } from "./routes/share.js";
@@ -45,6 +46,7 @@ export async function buildApp() {
   registerHealth(app);
   registerRuns(app);
   registerShare(app);
+  registerAnchors(app);
 
   if (config.nodeEnv === "production") {
     const root = path.resolve(import.meta.dirname, "../client");

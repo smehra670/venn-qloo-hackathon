@@ -1,4 +1,4 @@
-import { MAX_PARTNERS } from "@shared/constants";
+import { DECISION_ORIGIN_LABELS, FEASIBILITY_LABELS, MAX_PARTNERS } from "@shared/constants";
 import { X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { AudienceCompare } from "@/components/results/AudienceCompare";
@@ -6,6 +6,7 @@ import { EvidencePanel } from "@/components/results/EvidencePanel";
 import { MatchRing } from "@/components/results/MatchRing";
 import { Button } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
+import { goalFitLabel } from "@/lib/goals";
 import { KIND_META } from "@/lib/kinds";
 import { useVenn } from "@/store/useVenn";
 
@@ -54,6 +55,7 @@ export function PartnerDrawer() {
 
   if (!result || !partner) return null;
   const atCap = result.partners.length >= MAX_PARTNERS;
+  const goalChip = goalFitLabel(partner, result.input.goals);
 
   return (
     <aside
@@ -71,6 +73,12 @@ export function PartnerDrawer() {
             <Chip>{KIND_META[partner.kind].label}</Chip>
             <Chip>{partner.local ? `Local${partner.locationLabel ? ` · ${partner.locationLabel}` : ""}` : "Brand"}</Chip>
             {partner.userAdded ? <Chip>Your pick</Chip> : null}
+            {partner.feasibility ? (
+              <Chip>
+                {`${FEASIBILITY_LABELS[partner.feasibility.level]}${partner.feasibility.origin === "ai" ? ` · ${DECISION_ORIGIN_LABELS.ai}-reviewed` : ""}`}
+              </Chip>
+            ) : null}
+            {goalChip ? <Chip>{goalChip}</Chip> : null}
           </div>
         </div>
         <button type="button" aria-label="Close" onClick={() => select(null)} className="rounded-full p-2 hover:bg-paper-2">
@@ -81,6 +89,7 @@ export function PartnerDrawer() {
         <MatchRing score={partner.matchScore} size={120} caption />
       </div>
       <p className="mt-2 text-sm text-ink-soft">{partner.blurb}</p>
+      {partner.feasibility ? <p className="mt-2 text-sm text-ink-soft">{partner.feasibility.reason}</p> : null}
       <section className="mt-5">
         <h3 className="text-sm font-medium">Why this fits</h3>
         <ul className="mt-2 space-y-2 text-sm leading-relaxed">

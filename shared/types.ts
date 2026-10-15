@@ -52,18 +52,49 @@ export const STEP_ORDER = [
 ] as const;
 export type StepId = (typeof STEP_ORDER)[number];
 
+/** What a business wants out of a partner collaboration — up to two, used to weight
+ * `goalFit` and to influence which `PartnerKind`s are searched (see `server/agent/goals.ts`). */
+export const GOAL_IDS = [
+  "footfall",
+  "new_audience",
+  "content",
+  "events",
+  "bundles",
+  "shared_costs",
+  "stockists",
+] as const;
+export type GoalId = (typeof GOAL_IDS)[number];
+
+/** How far afield Venn should look for partners. */
+export const REACH_OPTIONS = ["near", "local_and_brands", "anywhere"] as const;
+export type ReachOption = (typeof REACH_OPTIONS)[number];
+
+/** How big a collaboration the business has appetite for. */
+export const APPETITE_OPTIONS = ["light", "medium", "ambitious"] as const;
+export type AppetiteOption = (typeof APPETITE_OPTIONS)[number];
+
 /**
  * Optional fine-tune preferences set on the setup screen. Purely advisory: they drive the
- * rule-based `goalFit` on each `Partner` and a display-only re-rank of `topPicks`, but never
- * change `matchScore` (see `server/agent/goals.ts`).
+ * rule-based `goalFit` on each `Partner`, a display-only re-rank of `topPicks`, and a soft
+ * influence on which kinds get searched — but never change `matchScore`
+ * (see `server/agent/goals.ts`). Older saved searches may still have the pre-GoalId shape
+ * (`preferLocal`/`budget`/`avoidKinds`/`notes`); the client maps that onto this shape when
+ * loading from `localStorage` (see `src/lib/storage.ts`), so the schema here only has to know
+ * about the current shape.
  */
 export interface Goals {
-  preferLocal?: boolean;
-  preferSurprising?: boolean;
-  budget?: "low" | "medium" | "flexible";
-  avoidKinds?: PartnerKind[];
-  notes?: string;
+  /** 0-2 items. */
+  wants: GoalId[];
+  reach: ReachOption;
+  appetite: AppetiteOption;
+  /** Free-text partner kinds/names to avoid — matched case-insensitively against `PartnerKind`
+   * ids where possible. */
+  avoid: string[];
 }
+
+/** Where a decision's judgment came from: a hard-coded rule, a read of Qloo's data shape, or
+ * an LLM. Surfaced as a small pill next to each entry in "How Venn decided" / the tool log. */
+export type DecisionOrigin = "rule" | "qloo" | "ai";
 
 export interface BusinessInput {
   businessName?: string;
@@ -82,6 +113,29 @@ export interface ResolvedAnchor {
   entityType?: EntityType;
   tags: string[];
   note: string;
+}
+
+/** Confidence bucket for one free-text anchor against the taste dataset, used by the "Check
+ * your anchors" confirm step (`POST /api/anchors/resolve`): "auto" needs no confirmation,
+ * "ambiguous" has two or more plausible readings (e.g. "Aesop" the skincare brand vs "Aesop"
+ * the ancient storyteller), "unresolved" has nothing close enough to suggest. */
+export const ANCHOR_STATUSES = ["auto", "ambiguous", "unresolved"] as const;
+export type AnchorStatus = (typeof ANCHOR_STATUSES)[number];
+
+export interface AnchorCandidate {
+  entityId: string;
+  entityName: string;
+  entityType: EntityType;
+  /** 0-1 similarity to the raw input text; 1 is an exact match. */
+  score: number;
+}
+
+/** One anchor's resolution result: the candidates it could mean, and the status that follows
+ * from their similarity scores (see `classifyAnchorStatus` in `server/anchors/resolve.ts`). */
+export interface AnchorResolution {
+  input: string;
+  status: AnchorStatus;
+  candidates: AnchorCandidate[];
 }
 
 export interface SignalBreakdown {
@@ -144,10 +198,20 @@ export interface Partner {
    * only secondary ordering (e.g. top-pick tiebreaks) and UI notes. Absent when no goals
    * were set for this run. */
   goalFit?: number;
-  /** Rule-based sanity checks run on top picks only (see `server/agent/feasibility.ts`):
-   * flags things like a kind clash with the business's own category or thin evidence.
-   * `ok: false` does not remove the partner, just surfaces a caveat in the UI. */
-  feasibility?: { ok: boolean; notes: string[] };
+  /** Outreach-readiness tier run on top picks only (see `server/agent/feasibility.ts`): never
+   * removes the partner, just surfaces a tier + one-line reason in the UI. */
+  feasibility?: Feasibility;
+}
+
+/** Outreach-readiness tiers for a top-pick partner, from easiest to hardest. "long_shot" is a
+ * caveat, not a veto — the partner stays in the run either way. */
+export const FEASIBILITY_LEVELS = ["easy", "warm_intro", "long_shot"] as const;
+export type FeasibilityLevel = (typeof FEASIBILITY_LEVELS)[number];
+
+export interface Feasibility {
+  level: FeasibilityLevel;
+  reason: string;
+  origin: DecisionOrigin;
 }
 
 /**
@@ -293,6 +357,12 @@ export interface DecisionLogEntry {
   step?: StepId;
   decision: string;
   reason: string;
+  /** Defaults to "rule" for decisions that predate this field. */
+  origin: DecisionOrigin;
+  /** Partner kind this decision was about, when there is one specific kind. */
+  kind?: PartnerKind;
+  /** Short human label for what the decision concerned (e.g. a partner name), when relevant. */
+  subject?: string;
 }
 
 export type AgentEvent =
@@ -302,7 +372,7 @@ export type AgentEvent =
   | { type: "tool_result"; step: StepId; callId: string; tool: string; summary: string; ms: number }
   | { type: "step_note"; step: StepId; text: string }
   | { type: "retry"; step: StepId; reason: string }
-  | { type: "decision"; step?: StepId; decision: string; reason: string }
+  | { type: "decision"; step?: StepId; decision: string; reason: string; origin: DecisionOrigin; kind?: PartnerKind; subject?: string }
   | { type: "step_completed"; step: StepId; summary: string }
   | { type: "result"; result: RunResult }
   | { type: "error"; message: string }

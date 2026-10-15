@@ -1,13 +1,15 @@
-import type { ExampleInput } from "@shared/types";
-import { useEffect, useState } from "react";
+import type { AnchorResolution, BusinessInput, ExampleInput } from "@shared/types";
+import { useEffect, useRef, useState } from "react";
 import { AboutDialog } from "@/components/about/AboutDialog";
 import { AmbientCircles } from "@/components/brand/AmbientCircles";
 import { Logo } from "@/components/brand/Logo";
+import { AnchorConfirm } from "@/components/setup/AnchorConfirm";
 import { ExampleChips } from "@/components/setup/ExampleChips";
 import { FineTune } from "@/components/setup/FineTune";
 import { SentenceForm, validationMessage } from "@/components/setup/SentenceForm";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { resolveAnchors } from "@/lib/api";
 import { useVenn } from "@/store/useVenn";
 
 function providerBadge(health: { provider: string; providerLabel: string; demo: boolean } | null): string {
@@ -31,6 +33,11 @@ export function SetupScreen() {
   const health = useVenn((state) => state.health);
   const [busy, setBusy] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
+  const [confirmState, setConfirmState] = useState<{ input: BusinessInput; resolutions: AnchorResolution[] } | null>(null);
+  // Examples are pre-confirmed (the demo dataset is written so they always resolve cleanly),
+  // so submitting one skips the "Check your anchors" step entirely. Any manual edit clears
+  // this, since the user is no longer necessarily using the example's exact anchors.
+  const fromExampleRef = useRef(false);
   const reason = validationMessage(input);
   const examples = meta?.examples.length ? meta.examples : FALLBACK;
   const cities = meta?.demoCities ?? ["London", "Manchester", "New York"];
@@ -49,7 +56,13 @@ export function SetupScreen() {
     }
   };
 
+  const handleInputChange = (next: BusinessInput) => {
+    fromExampleRef.current = false;
+    setInput(next);
+  };
+
   const fillExample = (example: ExampleInput) => {
+    fromExampleRef.current = true;
     setInput({ ...example, anchors: [] });
     example.anchors.forEach((anchor, index) => {
       window.setTimeout(() => {
@@ -60,6 +73,65 @@ export function SetupScreen() {
       }, 120 * (index + 1));
     });
   };
+
+  const runNow = async (next: BusinessInput) => {
+    setBusy(true);
+    try {
+      await startRun(next);
+    } finally {
+      setBusy(false);
+      setConfirmState(null);
+    }
+  };
+
+  const submit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (reason || busy) return;
+    const cleaned: BusinessInput = {
+      ...input,
+      city: input.city.trim(),
+      businessName: input.businessName?.trim() || undefined,
+      businessTypeCustom: input.businessTypeCustom?.trim() || undefined,
+    };
+    if (fromExampleRef.current) {
+      await runNow(cleaned);
+      return;
+    }
+    setBusy(true);
+    try {
+      const resolutions = await resolveAnchors(cleaned.anchors, cleaned.city);
+      const needsConfirm = resolutions.some((item) => item.status !== "auto");
+      if (needsConfirm) {
+        setConfirmState({ input: cleaned, resolutions });
+        setBusy(false);
+        return;
+      }
+      await runNow(cleaned);
+    } catch {
+      // The confirm step is advisory; if it fails, fall back to running directly.
+      await runNow(cleaned);
+    }
+  };
+
+  if (confirmState) {
+    return (
+      <div className="relative min-h-dvh overflow-hidden">
+        <AmbientCircles />
+        <header className="relative z-10 flex items-center justify-between px-5 py-5 md:px-10">
+          <Logo />
+          <Badge>{providerBadge(health)}</Badge>
+        </header>
+        <main className="relative z-10 mx-auto max-w-3xl px-5 pb-16 pt-8 md:px-8 md:pt-16">
+          <AnchorConfirm
+            resolutions={confirmState.resolutions}
+            busy={busy}
+            onBack={() => setConfirmState(null)}
+            onConfirm={(anchors) => void runNow({ ...confirmState.input, anchors })}
+          />
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-dvh overflow-hidden">
@@ -80,22 +152,9 @@ export function SetupScreen() {
             Tell Venn what you run and what your customers love. It finds the businesses whose audiences overlap with yours, then writes the pitch.
           </p>
         </div>
-        <form
-          className="flex flex-col gap-6"
-          onSubmit={(event) => {
-            event.preventDefault();
-            if (reason || busy) return;
-            setBusy(true);
-            void startRun({
-              ...input,
-              city: input.city.trim(),
-              businessName: input.businessName?.trim() || undefined,
-              businessTypeCustom: input.businessTypeCustom?.trim() || undefined,
-            }).finally(() => setBusy(false));
-          }}
-        >
-          <SentenceForm input={input} cities={cities} onChange={setInput} />
-          <FineTune input={input} onChange={setInput} />
+        <form className="flex flex-col gap-6" onSubmit={(event) => void submit(event)}>
+          <SentenceForm input={input} cities={cities} onChange={handleInputChange} />
+          <FineTune input={input} onChange={handleInputChange} />
           <div className="flex flex-col items-start gap-3">
             <Button type="submit" disabled={Boolean(reason) || busy}>
               {busy ? "Starting…" : "Find my partners"}

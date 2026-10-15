@@ -1,6 +1,7 @@
 import type {
   BusinessInput,
   CityInfo,
+  DecisionOrigin,
   DiscoverSpec,
   EntityType,
   Normalization,
@@ -37,10 +38,11 @@ export interface ProviderContext {
   /**
    * Appends a short "how Venn decided" entry (a `decision` SSE event, plus the runner's
    * decision log persisted on `RunResult.decisions`). `decision` is a short label; `reason`
-   * is one sentence of context. No-op in contexts that don't track a decision log (e.g. the
-   * quiet context used for expand/heatmap/check-a-partner calls).
+   * is one sentence of context. `meta.origin` defaults to "rule" when omitted. No-op in
+   * contexts that don't track a decision log (e.g. the quiet context used for
+   * expand/heatmap/check-a-partner calls).
    */
-  decide(decision: string, reason: string): void;
+  decide(decision: string, reason: string, meta?: { origin?: DecisionOrigin; kind?: PartnerKind; subject?: string }): void;
 }
 
 export interface TasteProvider {

@@ -19,6 +19,10 @@
 
 - `DiscoverSpec` + `rankTogether`; Proof paired lists from one call per kind; Check via rankTogether; legacy fallback. Tests: 100.
 
+## Gap-fill Phase 4 — Goals / anchors / feasibility (2026-10-15)
+
+- GoalId wants/reach/appetite/avoid; Best for your goal; AgentDecision origins; feasibility tiers; POST /api/anchors/resolve + confirm UI. Tests: 126.
+
 ## Phase 0 — Audit, baseline, probe (2026-10-13)
 
 - Baseline: `typecheck` / `test` (12) / `build` — green.

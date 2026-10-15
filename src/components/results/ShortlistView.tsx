@@ -1,3 +1,4 @@
+import { FEASIBILITY_LABELS } from "@shared/constants";
 import type { Partner } from "@shared/types";
 import { useMemo, useState } from "react";
 import { MatchRing } from "@/components/results/MatchRing";
@@ -7,7 +8,7 @@ import { downloadText, partnersToCsv } from "@/lib/format";
 import { KIND_META } from "@/lib/kinds";
 import { useVenn } from "@/store/useVenn";
 
-type SortKey = "score" | "surprise" | "name";
+type SortKey = "score" | "surprise" | "goal" | "name";
 
 export function ShortlistView() {
   const result = useVenn((state) => state.result);
@@ -27,6 +28,7 @@ export function ShortlistView() {
   }, [result, pinned, sort]);
 
   if (!result) return null;
+  const hasGoalFit = result.partners.some((partner) => typeof partner.goalFit === "number");
   const download = () => {
     const rows = [...ordered.pinnedRows, ...ordered.rest];
     downloadText("venn-shortlist.csv", partnersToCsv(rows), "text/csv");
@@ -40,6 +42,7 @@ export function ShortlistView() {
           <select className="ml-2 rounded-full bg-card px-3 py-1 text-ink" value={sort} onChange={(event) => setSort(event.target.value as SortKey)}>
             <option value="score">Match</option>
             <option value="surprise">Surprise</option>
+            {hasGoalFit ? <option value="goal">Goal fit</option> : null}
             <option value="name">Name</option>
           </select>
         </label>
@@ -62,6 +65,7 @@ export function ShortlistView() {
 function compare(a: Partner, b: Partner, sort: SortKey): number {
   if (sort === "name") return a.name.localeCompare(b.name);
   if (sort === "surprise") return b.surprise - a.surprise || b.matchScore - a.matchScore;
+  if (sort === "goal") return (b.goalFit ?? 0) - (a.goalFit ?? 0) || b.matchScore - a.matchScore;
   return b.matchScore - a.matchScore || a.name.localeCompare(b.name);
 }
 
@@ -93,6 +97,7 @@ function List({
                 <Chip>{KIND_META[partner.kind].label}</Chip>
                 <Chip>{partner.local ? "Local" : "Brand"}</Chip>
                 {partner.userAdded ? <Chip>Your pick</Chip> : null}
+                {partner.feasibility ? <Chip>{FEASIBILITY_LABELS[partner.feasibility.level]}</Chip> : null}
               </span>
               <span className="mt-1 block text-sm text-ink-soft">{partner.reasons[0] ?? partner.blurb}</span>
             </span>

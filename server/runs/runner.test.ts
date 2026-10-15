@@ -7,7 +7,7 @@ const inputWithGoals: BusinessInput = {
   businessType: "cafe",
   city: "London",
   anchors: ["Aesop", "Radiohead", "pilates"],
-  goals: { preferLocal: true },
+  goals: { wants: ["new_audience"], reach: "near", appetite: "medium", avoid: [] },
 };
 
 const inputWithoutGoals: BusinessInput = {

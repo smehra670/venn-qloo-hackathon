@@ -58,6 +58,9 @@ function entry(
 
 export const CATALOG: CatalogEntry[] = [
   entry("aesop", "Aesop", "retail", "brand", ["minimalist", "skincare", "design", "slow_living", "premium"], ["bookish", "specialty_coffee", "art_house_film"], 0.9, 0.1, "A skincare and home brand known for quiet stores and plain packaging.", { aliases: ["aesop"] }),
+  // Deliberately ambiguous fixture (same exact name, different entity) for the "Check your
+  // anchors" confirm step — see server/anchors/resolve.ts and its tests.
+  entry("aesop-the-storyteller", "Aesop", "culture", "person", ["bookish", "slow_living", "community", "design", "craft"], ["bookish", "slow_living", "community"], 0.3, 0, "The Ancient Greek storyteller behind fables like The Tortoise and the Hare — a different \"Aesop\" than the skincare brand, kept in the demo catalog on purpose so Venn has a genuinely ambiguous anchor to confirm.", {}),
   entry("patagonia", "Patagonia", "fashion", "brand", ["outdoors", "eco_conscious", "sustainable_fashion", "climbing", "community"], ["running", "specialty_coffee", "travel"], 0.9, 0.2, "Outdoor clothing with a long-running repair and environmental stance.", { aliases: ["patagonia"] }),
   entry("adidas-originals", "Adidas Originals", "fashion", "brand", ["sneakers", "streetwear", "hip_hop", "vintage", "nightlife"], ["indie_music", "electronic", "hip_hop"], 0.95, 0, "The archive side of Adidas, built around trainers and streetwear.", { aliases: ["adidas", "adidas originals"] }),
   entry("carhartt-wip", "Carhartt WIP", "fashion", "brand", ["streetwear", "vintage", "craft", "indie_music", "design"], ["vinyl", "specialty_coffee", "design"], 0.8, 0.15, "Workwear cut for cities, often stocked beside records and coffee.", { aliases: ["carhartt"] }),

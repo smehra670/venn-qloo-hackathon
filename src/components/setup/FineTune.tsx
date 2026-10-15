@@ -1,23 +1,15 @@
-import { PARTNER_KINDS, type BusinessInput, type Goals, type PartnerKind } from "@shared/types";
+import { APPETITE_LABELS, GOAL_LABELS, REACH_LABELS } from "@shared/constants";
+import { APPETITE_OPTIONS, GOAL_IDS, REACH_OPTIONS, type AppetiteOption, type BusinessInput, type GoalId, type Goals, type ReachOption } from "@shared/types";
 import { useState } from "react";
 import { Chip } from "@/components/ui/Chip";
 import { Segmented } from "@/components/ui/Segmented";
-import { KIND_META } from "@/lib/kinds";
 
-const BUDGET_OPTIONS: { value: NonNullable<Goals["budget"]>; label: string }[] = [
-  { value: "low", label: "Low-key" },
-  { value: "medium", label: "Middle of the road" },
-  { value: "flexible", label: "Flexible" },
-];
+const DEFAULT_GOALS: Goals = { wants: [], reach: "local_and_brands", appetite: "medium", avoid: [] };
 
 function cleanGoals(goals: Goals): Goals | undefined {
-  const next: Goals = {};
-  if (goals.preferLocal) next.preferLocal = true;
-  if (goals.preferSurprising) next.preferSurprising = true;
-  if (goals.budget) next.budget = goals.budget;
-  if (goals.avoidKinds && goals.avoidKinds.length > 0) next.avoidKinds = goals.avoidKinds;
-  if (goals.notes && goals.notes.trim().length > 0) next.notes = goals.notes;
-  return Object.keys(next).length > 0 ? next : undefined;
+  const isDefault =
+    goals.wants.length === 0 && goals.reach === "local_and_brands" && goals.appetite === "medium" && goals.avoid.length === 0;
+  return isDefault ? undefined : goals;
 }
 
 export function FineTune({
@@ -28,18 +20,31 @@ export function FineTune({
   onChange: (input: BusinessInput) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const goals = input.goals ?? {};
+  const [avoidDraft, setAvoidDraft] = useState("");
+  const goals = input.goals ?? DEFAULT_GOALS;
 
   const setGoals = (next: Goals) => {
     onChange({ ...input, goals: cleanGoals(next) });
   };
 
-  const toggleAvoid = (kind: PartnerKind) => {
-    const current = new Set(goals.avoidKinds ?? []);
-    if (current.has(kind)) current.delete(kind);
-    else current.add(kind);
-    setGoals({ ...goals, avoidKinds: [...current] });
+  const toggleWant = (id: GoalId) => {
+    if (goals.wants.includes(id)) {
+      setGoals({ ...goals, wants: goals.wants.filter((item) => item !== id) });
+      return;
+    }
+    if (goals.wants.length >= 2) return;
+    setGoals({ ...goals, wants: [...goals.wants, id] });
   };
+
+  const addAvoid = (raw: string) => {
+    const value = raw.trim();
+    setAvoidDraft("");
+    if (!value || goals.avoid.length >= 10) return;
+    if (goals.avoid.some((item) => item.toLowerCase() === value.toLowerCase())) return;
+    setGoals({ ...goals, avoid: [...goals.avoid, value] });
+  };
+
+  const removeAvoid = (value: string) => setGoals({ ...goals, avoid: goals.avoid.filter((item) => item !== value) });
 
   return (
     <section className="rounded-2xl border border-line">
@@ -54,49 +59,61 @@ export function FineTune({
       </button>
       {open ? (
         <div className="space-y-4 px-4 pb-4">
-          <div className="flex flex-wrap gap-2">
-            <Chip pressed={Boolean(goals.preferLocal)} onClick={() => setGoals({ ...goals, preferLocal: !goals.preferLocal })}>
-              Prefer local partners
-            </Chip>
-            <Chip
-              pressed={Boolean(goals.preferSurprising)}
-              onClick={() => setGoals({ ...goals, preferSurprising: !goals.preferSurprising })}
-            >
-              Prefer surprising wildcards
-            </Chip>
-          </div>
           <div>
-            <p className="mb-2 text-xs tracking-wide text-ink-soft">Budget feel</p>
-            <Segmented
-              value={goals.budget ?? "flexible"}
-              onChange={(value) => setGoals({ ...goals, budget: value })}
-              options={BUDGET_OPTIONS}
-              label="Budget feel"
-            />
-          </div>
-          <div>
-            <p className="mb-2 text-xs tracking-wide text-ink-soft">Avoid these partner types</p>
+            <p className="mb-2 text-xs tracking-wide text-ink-soft">What do you want from a collaboration? (up to 2)</p>
             <div className="flex flex-wrap gap-2">
-              {PARTNER_KINDS.map((kind) => (
-                <Chip key={kind} pressed={(goals.avoidKinds ?? []).includes(kind)} onClick={() => toggleAvoid(kind)}>
-                  {KIND_META[kind].label}
+              {GOAL_IDS.map((id) => (
+                <Chip key={id} pressed={goals.wants.includes(id)} onClick={() => toggleWant(id)}>
+                  {GOAL_LABELS[id]}
                 </Chip>
               ))}
             </div>
           </div>
           <div>
-            <label className="mb-2 block text-xs tracking-wide text-ink-soft" htmlFor="fine-tune-notes">
-              Notes for Venn (optional)
-            </label>
-            <textarea
-              id="fine-tune-notes"
-              value={goals.notes ?? ""}
-              onChange={(event) => setGoals({ ...goals, notes: event.target.value })}
-              placeholder="e.g. keep it low-key, no big chains"
-              maxLength={200}
-              rows={2}
-              className="w-full resize-none rounded-xl border border-line bg-paper-2 px-3 py-2 text-sm outline-none"
+            <p className="mb-2 text-xs tracking-wide text-ink-soft">How far should Venn look?</p>
+            <Segmented
+              value={goals.reach}
+              onChange={(value: ReachOption) => setGoals({ ...goals, reach: value })}
+              options={REACH_OPTIONS.map((value) => ({ value, label: REACH_LABELS[value] }))}
+              label="Reach"
             />
+          </div>
+          <div>
+            <p className="mb-2 text-xs tracking-wide text-ink-soft">Appetite for a collaboration</p>
+            <Segmented
+              value={goals.appetite}
+              onChange={(value: AppetiteOption) => setGoals({ ...goals, appetite: value })}
+              options={APPETITE_OPTIONS.map((value) => ({ value, label: APPETITE_LABELS[value] }))}
+              label="Appetite"
+            />
+          </div>
+          <div>
+            <p className="mb-2 text-xs tracking-wide text-ink-soft">Avoid (partner types or names)</p>
+            <div className="flex flex-wrap items-center gap-2">
+              {goals.avoid.map((item) => (
+                <Chip key={item} onRemove={() => removeAvoid(item)}>
+                  {item}
+                </Chip>
+              ))}
+              {goals.avoid.length < 10 ? (
+                <input
+                  value={avoidDraft}
+                  aria-label="Something to avoid"
+                  onChange={(event) => setAvoidDraft(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" || event.key === ",") {
+                      event.preventDefault();
+                      addAvoid(avoidDraft);
+                    }
+                  }}
+                  onBlur={() => {
+                    if (avoidDraft.trim()) addAvoid(avoidDraft);
+                  }}
+                  placeholder="e.g. fitness, big chains"
+                  className="min-w-28 rounded-full border border-line bg-paper-2 px-3 py-1 text-sm outline-none"
+                />
+              ) : null}
+            </div>
           </div>
           <p className="text-xs text-ink-soft">
             These are soft preferences — Venn uses them to break ties between close matches and flag notes. They never change a

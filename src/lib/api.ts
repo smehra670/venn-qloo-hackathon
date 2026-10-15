@@ -1,5 +1,5 @@
-import { BriefSchema, ComparePayloadSchema, HeatmapSchema, PartnerSchema, ProofResultSchema, RunResultSchema } from "@shared/schemas";
-import type { Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ComparePayload, ExampleInput, Heatmap, Partner, ProofResult, ProviderName, RunResult, RunStatus } from "@shared/types";
+import { AnchorResolutionSchema, BriefSchema, ComparePayloadSchema, HeatmapSchema, PartnerSchema, ProofResultSchema, RunResultSchema } from "@shared/schemas";
+import type { AnchorResolution, Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ComparePayload, ExampleInput, Heatmap, Partner, ProofResult, ProviderName, RunResult, RunStatus } from "@shared/types";
 import { z } from "zod";
 
 export class ApiError extends Error {
@@ -90,6 +90,12 @@ export function getMeta(): Promise<Meta> {
       examples: parsed.examples as ExampleInput[],
     };
   });
+}
+
+export function resolveAnchors(anchors: string[], city?: string): Promise<AnchorResolution[]> {
+  return request("/api/anchors/resolve", { method: "POST", body: JSON.stringify({ anchors, city }) }, (value) =>
+    z.array(AnchorResolutionSchema).parse(value),
+  );
 }
 
 export function createRun(input: BusinessInput): Promise<{ runId: string }> {
