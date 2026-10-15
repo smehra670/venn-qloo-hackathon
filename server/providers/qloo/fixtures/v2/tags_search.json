@@ -1,7 +1,10 @@
 {
   "status": 200,
-  "ms": 126,
-  "rateHeaders": {},
+  "ms": 168,
+  "rateHeaders": {
+    "x-month-ratelimit-remaining": "9873",
+    "x-second-ratelimit-reset": "0"
+  },
   "success": true,
   "keys": [
     "duration",
@@ -11,74 +14,8 @@
   "resultsKeys": [
     "tags"
   ],
-  "entitySample": {
-    "tags": [
-      {
-        "parents": [
-          {
-            "type": "urn:entity:place"
-          }
-        ],
-        "type": "urn:tag:category:place",
-        "id": "urn:tag:category:place:pilates_studio",
-        "name": "Pilates studio",
-        "popularity": 0.99954975,
-        "properties": {},
-        "tags": []
-      },
-      {
-        "parents": [
-          {
-            "type": "urn:entity:place"
-          }
-        ],
-        "type": "urn:tag:genre:place",
-        "id": "urn:tag:genre:place:pilates_studio",
-        "name": "Pilates studio",
-        "popularity": 0.99954975,
-        "properties": {},
-        "tags": []
-      },
-      {
-        "parents": [
-          {
-            "type": "urn:entity:place"
-          }
-        ],
-        "type": "urn:tag:genre:place",
-        "id": "urn:tag:genre:place:restaurant:pilates_studio",
-        "name": "Pilates Studio",
-        "popularity": 0.9786991,
-        "properties": {},
-        "tags": []
-      },
-      {
-        "parents": [
-          {
-            "type": "urn:entity:place"
-          }
-        ],
-        "type": "urn:tag:genre:place",
-        "id": "urn:tag:genre:place:hotel:pilates_studio",
-        "name": "Pilates Studio",
-        "popularity": 0.91041046,
-        "properties": {},
-        "tags": []
-      },
-      {
-        "parents": [
-          {
-            "type": "urn:entity:person"
-          }
-        ],
-        "type": "urn:tag:occupation:wikidata",
-        "id": "urn:tag:occupation:wikidata:pilates",
-        "name": "Pilates",
-        "popularity": 0,
-        "properties": {},
-        "tags": []
-      }
-    ]
-  },
-  "shapeHint": "tags"
+  "entityCount": 0,
+  "entitySample": [],
+  "shapeHint": "tags",
+  "emptyOn200": false
 }

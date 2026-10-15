@@ -1,7 +1,10 @@
 {
   "status": 200,
-  "ms": 597,
-  "rateHeaders": {},
+  "ms": 601,
+  "rateHeaders": {
+    "x-month-ratelimit-remaining": "9863",
+    "x-second-ratelimit-reset": "0.72"
+  },
   "success": true,
   "keys": [
     "success",
@@ -11,79 +14,8 @@
   "resultsKeys": [
     "heatmap"
   ],
-  "entitySample": {
-    "heatmap": [
-      {
-        "location": {
-          "latitude": 51.506653,
-          "longitude": -0.10437012,
-          "geohash": "gcpvj8"
-        },
-        "query": {
-          "affinity": 1,
-          "affinity_rank": 0.995028,
-          "popularity": 0.9980026631158455,
-          "entity_brand_affinity_rank": 0.995028,
-          "entity_brand_affinity": 1
-        }
-      },
-      {
-        "location": {
-          "latitude": 51.512146,
-          "longitude": -0.1373291,
-          "geohash": "gcpvhc"
-        },
-        "query": {
-          "affinity": 0.9993342210386151,
-          "affinity_rank": 0.99465,
-          "popularity": 1,
-          "entity_brand_affinity_rank": 0.99465,
-          "entity_brand_affinity": 0.9993342210386151
-        }
-      },
-      {
-        "location": {
-          "latitude": 51.523132,
-          "longitude": -0.07141113,
-          "geohash": "gcpvn7"
-        },
-        "query": {
-          "affinity": 0.9986684420772304,
-          "affinity_rank": 0.994375,
-          "popularity": 0.9973368841544608,
-          "entity_brand_affinity_rank": 0.994375,
-          "entity_brand_affinity": 0.9986684420772304
-        }
-      },
-      {
-        "location": {
-          "latitude": 51.512146,
-          "longitude": -0.12634277,
-          "geohash": "gcpvj1"
-        },
-        "query": {
-          "affinity": 0.9980026631158455,
-          "affinity_rank": 0.994198,
-          "popularity": 0.9993342210386151,
-          "entity_brand_affinity_rank": 0.994198,
-          "entity_brand_affinity": 0.9980026631158455
-        }
-      },
-      {
-        "location": {
-          "latitude": 51.528625,
-          "longitude": -0.08239746,
-          "geohash": "gcpvnh"
-        },
-        "query": {
-          "affinity": 0.9973368841544608,
-          "affinity_rank": 0.99374,
-          "popularity": 0.9966711051930759,
-          "entity_brand_affinity_rank": 0.99374,
-          "entity_brand_affinity": 0.9973368841544608
-        }
-      }
-    ]
-  },
-  "shapeHint": "insights_heatmap"
+  "entityCount": 0,
+  "entitySample": [],
+  "shapeHint": "insights_heatmap",
+  "emptyOn200": false
 }

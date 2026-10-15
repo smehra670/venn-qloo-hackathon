@@ -1,0 +1,95 @@
+{
+  "prodHostStatus": 401,
+  "aesopAmbiguity": [
+    {
+      "name": "Aesop",
+      "id": "6F3B5CAA-AC33-4B29-996D-CD070526CAAA",
+      "types": [
+        "urn:entity:author"
+      ]
+    },
+    {
+      "name": "Aesop",
+      "id": "32F867B9-E6DF-44C3-BCE4-40160C7ED5E4",
+      "types": [
+        "urn:entity:brand"
+      ]
+    },
+    {
+      "name": "Aesop",
+      "id": "11A19453-C8AF-4B08-A8DC-CC0DCFB38516",
+      "types": [
+        "urn:entity:artist"
+      ]
+    },
+    {
+      "name": "Aesop Rock",
+      "id": "2AEEC3F3-AA13-4CC2-8374-B9AC882FD935",
+      "types": [
+        "urn:entity:artist"
+      ]
+    },
+    {
+      "name": "Aesop’s Fables",
+      "id": "7208E953-11A8-4CC7-8F1B-962C07DE3AC4",
+      "types": [
+        "urn:entity:book"
+      ]
+    },
+    {
+      "name": "Aesop Rock",
+      "id": "35C911F4-B1A1-460E-A1D4-5EA09D5E86F7",
+      "types": [
+        "urn:entity:person"
+      ]
+    },
+    {
+      "name": "Aesop's Fables",
+      "id": "A80B9C72-F894-4126-8956-1E06031C30F5",
+      "types": [
+        "urn:entity:book"
+      ]
+    },
+    {
+      "name": "A.E.S.O.P.",
+      "id": "4E2860EC-37A0-4CAE-A14A-25C57C6B146E",
+      "types": [
+        "urn:entity:movie"
+      ]
+    }
+  ],
+  "rankTogether": {
+    "status": 200,
+    "asked": 12,
+    "returned": 11,
+    "intersection": 11,
+    "hasAffinity": true,
+    "emptyOn200": false,
+    "supported": true
+  },
+  "analysisCompare": {
+    "status": 200,
+    "resultsKeys": [
+      "tags",
+      "a",
+      "b",
+      "matchEntities"
+    ],
+    "tagCount": 0,
+    "supported": false
+  },
+  "demographics": {
+    "status": 200,
+    "resultsKeys": [
+      "demographics"
+    ],
+    "emptyOn200": true,
+    "supported": false
+  },
+  "trending": {
+    "status": 400,
+    "emptyOn200": false,
+    "flat": null,
+    "supported": false
+  }
+}

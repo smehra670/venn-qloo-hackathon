@@ -1,83 +1,395 @@
 {
-  "probedAt": "2026-10-13T20:02:42.947Z",
+  "probedAt": "2026-10-15T09:58:22.629Z",
   "base": "https://hackathon.api.qloo.com",
+  "callCount": 23,
+  "gates": {
+    "prodHostStatus": 401,
+    "aesopAmbiguity": [
+      {
+        "name": "Aesop",
+        "id": "6F3B5CAA-AC33-4B29-996D-CD070526CAAA",
+        "types": [
+          "urn:entity:author"
+        ]
+      },
+      {
+        "name": "Aesop",
+        "id": "32F867B9-E6DF-44C3-BCE4-40160C7ED5E4",
+        "types": [
+          "urn:entity:brand"
+        ]
+      },
+      {
+        "name": "Aesop",
+        "id": "11A19453-C8AF-4B08-A8DC-CC0DCFB38516",
+        "types": [
+          "urn:entity:artist"
+        ]
+      },
+      {
+        "name": "Aesop Rock",
+        "id": "2AEEC3F3-AA13-4CC2-8374-B9AC882FD935",
+        "types": [
+          "urn:entity:artist"
+        ]
+      },
+      {
+        "name": "Aesop’s Fables",
+        "id": "7208E953-11A8-4CC7-8F1B-962C07DE3AC4",
+        "types": [
+          "urn:entity:book"
+        ]
+      },
+      {
+        "name": "Aesop Rock",
+        "id": "35C911F4-B1A1-460E-A1D4-5EA09D5E86F7",
+        "types": [
+          "urn:entity:person"
+        ]
+      },
+      {
+        "name": "Aesop's Fables",
+        "id": "A80B9C72-F894-4126-8956-1E06031C30F5",
+        "types": [
+          "urn:entity:book"
+        ]
+      },
+      {
+        "name": "A.E.S.O.P.",
+        "id": "4E2860EC-37A0-4CAE-A14A-25C57C6B146E",
+        "types": [
+          "urn:entity:movie"
+        ]
+      }
+    ],
+    "rankTogether": {
+      "status": 200,
+      "asked": 12,
+      "returned": 11,
+      "intersection": 11,
+      "hasAffinity": true,
+      "emptyOn200": false,
+      "supported": true
+    },
+    "analysisCompare": {
+      "status": 200,
+      "resultsKeys": [
+        "tags",
+        "a",
+        "b",
+        "matchEntities"
+      ],
+      "tagCount": 0,
+      "supported": false
+    },
+    "demographics": {
+      "status": 200,
+      "resultsKeys": [
+        "demographics"
+      ],
+      "emptyOn200": true,
+      "supported": false
+    },
+    "trending": {
+      "status": 400,
+      "emptyOn200": false,
+      "flat": null,
+      "supported": false
+    }
+  },
   "probes": [
     {
       "name": "search_brand",
       "pathname": "/search",
       "status": 200,
-      "ms": 393,
-      "rateHeaders": {}
+      "ms": 315,
+      "entityCount": 1,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9877",
+        "x-second-ratelimit-reset": "1"
+      }
+    },
+    {
+      "name": "search_aesop_untyped",
+      "pathname": "/search",
+      "status": 200,
+      "ms": 129,
+      "entityCount": 8,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9876",
+        "x-second-ratelimit-reset": "0.87"
+      }
     },
     {
       "name": "search_artist",
       "pathname": "/search",
       "status": 200,
-      "ms": 117,
-      "rateHeaders": {}
+      "ms": 122,
+      "entityCount": 3,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9875",
+        "x-second-ratelimit-reset": "0.57"
+      }
     },
     {
       "name": "search_location",
       "pathname": "/search",
       "status": 200,
-      "ms": 179,
-      "rateHeaders": {}
+      "ms": 181,
+      "entityCount": 5,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9874",
+        "x-second-ratelimit-reset": "0.29"
+      }
     },
     {
       "name": "tags_search",
       "pathname": "/v2/tags",
       "status": 200,
-      "ms": 126,
-      "rateHeaders": {}
+      "ms": 168,
+      "entityCount": 0,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9873",
+        "x-second-ratelimit-reset": "0"
+      }
+    },
+    {
+      "name": "tags_place_parents",
+      "pathname": "/v2/tags",
+      "status": 200,
+      "ms": 145,
+      "entityCount": 0,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9872",
+        "x-second-ratelimit-reset": "1"
+      }
     },
     {
       "name": "insights_brand",
       "pathname": "/v2/insights",
       "status": 200,
-      "ms": 233,
-      "rateHeaders": {}
+      "ms": 252,
+      "entityCount": 15,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9871",
+        "x-second-ratelimit-reset": "0.7"
+      }
     },
     {
-      "name": "insights_heatmap",
+      "name": "insights_rank_results_entities",
       "pathname": "/v2/insights",
       "status": 200,
-      "ms": 597,
-      "rateHeaders": {}
+      "ms": 137,
+      "entityCount": 11,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9870",
+        "x-second-ratelimit-reset": "0.41"
+      }
+    },
+    {
+      "name": "analysis_compare",
+      "pathname": "/v2/analysis/compare",
+      "status": 200,
+      "ms": 126,
+      "entityCount": 0,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9869",
+        "x-second-ratelimit-reset": "0.11"
+      }
+    },
+    {
+      "name": "insights_compare_wrong_path",
+      "pathname": "/v2/insights/compare",
+      "status": 200,
+      "ms": 125,
+      "entityCount": 0,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9868",
+        "x-second-ratelimit-reset": "1"
+      }
     },
     {
       "name": "insights_compare",
       "pathname": "/v2/insights",
       "status": 200,
-      "ms": 248,
-      "rateHeaders": {}
+      "ms": 236,
+      "entityCount": 5,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9867",
+        "x-second-ratelimit-reset": "0.71"
+      }
     },
     {
       "name": "insights_demographics",
       "pathname": "/v2/insights",
       "status": 200,
-      "ms": 254,
-      "rateHeaders": {}
+      "ms": 157,
+      "entityCount": 0,
+      "emptyOn200": true,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9866",
+        "x-second-ratelimit-reset": "0.43"
+      }
+    },
+    {
+      "name": "trending",
+      "pathname": "/v2/trending",
+      "status": 400,
+      "ms": 112,
+      "entityCount": 0,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9865",
+        "x-second-ratelimit-reset": "0.14"
+      }
     },
     {
       "name": "insights_trends",
       "pathname": "/v2/insights",
       "status": 200,
-      "ms": 236,
-      "rateHeaders": {}
+      "ms": 239,
+      "entityCount": 3,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9864",
+        "x-second-ratelimit-reset": "1"
+      }
+    },
+    {
+      "name": "insights_heatmap",
+      "pathname": "/v2/insights",
+      "status": 200,
+      "ms": 601,
+      "entityCount": 0,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9863",
+        "x-second-ratelimit-reset": "0.72"
+      }
+    },
+    {
+      "name": "insights_place_point",
+      "pathname": "/v2/insights",
+      "status": 200,
+      "ms": 437,
+      "entityCount": 10,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9862",
+        "x-second-ratelimit-reset": "0.11"
+      }
+    },
+    {
+      "name": "insights_place_query",
+      "pathname": "/v2/insights",
+      "status": 200,
+      "ms": 1587,
+      "entityCount": 10,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9861",
+        "x-second-ratelimit-reset": "1"
+      }
+    },
+    {
+      "name": "coverage_place_london",
+      "pathname": "/v2/insights",
+      "status": 200,
+      "ms": 500,
+      "entityCount": 15,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9860",
+        "x-second-ratelimit-reset": "1"
+      }
+    },
+    {
+      "name": "coverage_place_manchester",
+      "pathname": "/v2/insights",
+      "status": 200,
+      "ms": 451,
+      "entityCount": 15,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9859",
+        "x-second-ratelimit-reset": "0.5"
+      }
+    },
+    {
+      "name": "coverage_place_new_york",
+      "pathname": "/v2/insights",
+      "status": 200,
+      "ms": 485,
+      "entityCount": 15,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9858",
+        "x-second-ratelimit-reset": "0.04"
+      }
     },
     {
       "name": "entities_by_id",
       "pathname": "/entities",
       "status": 400,
-      "ms": 101,
-      "rateHeaders": {}
+      "ms": 104,
+      "entityCount": 0,
+      "emptyOn200": false,
+      "rateHeaders": {
+        "x-month-ratelimit-remaining": "9857",
+        "x-second-ratelimit-reset": "1"
+      }
     },
     {
       "name": "v2_entities",
       "pathname": "/v2/entities",
       "status": 404,
-      "ms": 104,
+      "ms": 92,
+      "entityCount": 0,
+      "emptyOn200": false,
       "rateHeaders": {}
+    }
+  ],
+  "coverage": [
+    {
+      "city": "London",
+      "status": 200,
+      "count": 15,
+      "withLoc": 15,
+      "withAddr": 15,
+      "withWeb": 13,
+      "closed": 0,
+      "withDist": 15
+    },
+    {
+      "city": "Manchester",
+      "status": 200,
+      "count": 15,
+      "withLoc": 15,
+      "withAddr": 15,
+      "withWeb": 15,
+      "closed": 0,
+      "withDist": 15
+    },
+    {
+      "city": "New York",
+      "status": 200,
+      "count": 15,
+      "withLoc": 15,
+      "withAddr": 15,
+      "withWeb": 15,
+      "closed": 0,
+      "withDist": 15
     }
   ]
 }

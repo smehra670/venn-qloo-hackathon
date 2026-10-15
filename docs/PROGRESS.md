@@ -1,5 +1,12 @@
 # Venn next-features progress
 
+## Gap-fill Phase 0 — Re-probe (2026-10-15)
+
+- Extended `qloo-probe-v2.mjs`; fixtures refreshed; `QLOO_COVERAGE.md` + `SCORING.md` + contract/audit updated.
+- **Gate `filter.results.entities`: SUPPORTED** (11/12, affinities) → Phase 3 Proof rewrite proceeds.
+- `/v2/analysis/compare` 200 with tags/a/b/matchEntities (tags often empty → degrade). Demographics empty. Trending 400. Prod host 401. Quota headers present (`x-month-ratelimit-remaining`). Aesop untyped → author first.
+- Calls: 23.
+
 ## Phase 0 — Audit, baseline, probe (2026-10-13)
 
 - Baseline: `typecheck` / `test` (12) / `build` — green.

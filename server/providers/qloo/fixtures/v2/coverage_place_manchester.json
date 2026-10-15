@@ -1,0 +1,300 @@
+{
+  "status": 200,
+  "ms": 451,
+  "rateHeaders": {
+    "x-month-ratelimit-remaining": "9859",
+    "x-second-ratelimit-reset": "0.5"
+  },
+  "success": true,
+  "keys": [
+    "success",
+    "results"
+  ],
+  "resultsKeys": [
+    "entities"
+  ],
+  "entityCount": 15,
+  "entitySample": [
+    {
+      "name": "Fig + Sparrow",
+      "entity_id": "2683E22A-7624-4A13-87AE-5ADFC638E442",
+      "type": "urn:entity",
+      "subtype": "urn:entity:place",
+      "properties": {
+        "address": "20 Oldham St Manchester M1 1JA United Kingdom",
+        "website": "https://fig-sparrow.site/",
+        "is_closed": false,
+        "neighborhood": "Northern Quarter",
+        "price_level": 2
+      },
+      "popularity": 0.9811305370786608,
+      "location": {
+        "lat": 53.482562099999996,
+        "lon": -2.2355206,
+        "geohash": "gcw2m0hns875"
+      },
+      "tags": [
+        {
+          "id": "urn:tag:view:qloo:street_view",
+          "name": "Street view",
+          "type": "urn:tag:view:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:menu_highlight:qloo:sparrow_vegan_breakfast",
+          "name": "Sparrow vegan breakfast",
+          "type": "urn:tag:menu_highlight:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:culinary_style:qloo:farm_to_table",
+          "name": "Farm to table",
+          "type": "urn:tag:culinary_style:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:customer_identity:qloo:lgbtq_",
+          "name": "Lgbtq+",
+          "type": "urn:tag:customer_identity:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:beverage_offering:qloo:spirits",
+          "name": "Spirits",
+          "type": "urn:tag:beverage_offering:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:neighborhood_characteristic:qloo:trendy",
+          "name": "Trendy",
+          "type": "urn:tag:neighborhood_characteristic:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:setting:qloo:city_center",
+          "name": "City center",
+          "type": "urn:tag:setting:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:service_options:place:dine_in",
+          "name": "Dine in",
+          "type": "urn:tag:service_options:place",
+          "weight": null
+        }
+      ],
+      "references": null,
+      "query": {
+        "affinity": 0.70551265044024,
+        "distance": 507.7701774660268,
+        "measurements": {
+          "audience_growth": 0
+        }
+      },
+      "disambiguation": "20 Oldham St Manchester M1 1JA United Kingdom",
+      "external": {
+        "tripadvisor": [
+          {
+            "id": "d4976329",
+            "rating": 4.5,
+            "rating_count": 357
+          }
+        ],
+        "google_place": [
+          {
+            "id": "7aedd5a9b852e19e",
+            "place_id": "ChIJw-iNKL-xe0gRnuFSuKnV7Xo"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Sugar Junction",
+      "entity_id": "3739FA76-A82F-4A2B-9A88-3F609CB69FF9",
+      "type": "urn:entity",
+      "subtype": "urn:entity:place",
+      "properties": {
+        "address": "60 Tib St Manchester M4 1LG United Kingdom",
+        "website": "http://www.sugarjunction.co.uk/",
+        "is_closed": false,
+        "neighborhood": "Northern Quarter",
+        "price_level": 2
+      },
+      "popularity": 0.9836859761205096,
+      "location": {
+        "lat": 53.483508799999996,
+        "lon": -2.2349745,
+        "geohash": "gcw2m0ks12dq"
+      },
+      "tags": [
+        {
+          "id": "urn:tag:offerings:place:happy_hour_drinks",
+          "name": "Happy hour drinks",
+          "type": "urn:tag:offerings:place",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:ambience:qloo:lively",
+          "name": "Lively",
+          "type": "urn:tag:ambience:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:beverage_offering:qloo:coffee_and_tea",
+          "name": "Coffee and tea",
+          "type": "urn:tag:beverage_offering:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:cuisine:qloo:british",
+          "name": "British",
+          "type": "urn:tag:cuisine:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:amenities:place:bar_onsite",
+          "name": "Bar onsite",
+          "type": "urn:tag:amenities:place",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:offerings:place:wine",
+          "name": "Wine",
+          "type": "urn:tag:offerings:place",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:category:place:coffee_shop",
+          "name": "Coffee shop",
+          "type": "urn:tag:category:place",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:dining_options:place:dinner",
+          "name": "Dinner",
+          "type": "urn:tag:dining_options:place",
+          "weight": null
+        }
+      ],
+      "references": null,
+      "query": {
+        "affinity": 0.6958956635347203,
+        "distance": 587.6383009887804,
+        "measurements": {
+          "audience_growth": 0
+        }
+      },
+      "disambiguation": "60 Tib St Manchester M4 1LG United Kingdom",
+      "external": {
+        "tripadvisor": [
+          {
+            "id": "d2360881",
+            "rating": 4,
+            "rating_count": 823
+          }
+        ],
+        "google_place": [
+          {
+            "id": "d12333161b4ed5b7",
+            "place_id": "ChIJk3hDLrmxe0gRt9VOGxYzI9E"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Ezra & Gil",
+      "entity_id": "554142F4-2CCE-4DC1-9238-477561248A4D",
+      "type": "urn:entity",
+      "subtype": "urn:entity:place",
+      "properties": {
+        "address": "20 Hilton St Manchester M1 1FR United Kingdom",
+        "website": "http://www.ezraandgil.com/",
+        "is_closed": false,
+        "neighborhood": "Northern Quarter",
+        "price_level": 2
+      },
+      "popularity": 0.9898967386439067,
+      "location": {
+        "lat": 53.4820376,
+        "lon": -2.2329049,
+        "geohash": "gcw2m0n53w1r"
+      },
+      "tags": [
+        {
+          "id": "urn:tag:dietary_option:qloo:organic",
+          "name": "Organic",
+          "type": "urn:tag:dietary_option:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:offerings:place:vegetarian_options",
+          "name": "Vegetarian meals",
+          "type": "urn:tag:offerings:place",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:neighborhood_characteristic:qloo:industrial",
+          "name": "Industrial",
+          "type": "urn:tag:neighborhood_characteristic:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:genre:place",
+          "name": "Place",
+          "type": "urn:tag:genre:place",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:customer_identity:qloo:families",
+          "name": "Families",
+          "type": "urn:tag:customer_identity:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:service_type:qloo:takeout",
+          "name": "Takeout",
+          "type": "urn:tag:service_type:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:culinary_style:qloo:cafe",
+          "name": "Cafe",
+          "type": "urn:tag:culinary_style:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:ambience:qloo:stylish",
+          "name": "Stylish",
+          "type": "urn:tag:ambience:qloo",
+          "weight": null
+        }
+      ],
+      "references": null,
+      "query": {
+        "affinity": 0.6830012094810658,
+        "distance": 656.122165026562,
+        "measurements": {
+          "audience_growth": 0
+        }
+      },
+      "disambiguation": "20 Hilton St Manchester M1 1FR United Kingdom",
+      "external": {
+        "tripadvisor": [
+          {
+            "id": "d8367207",
+            "rating": 4.5,
+            "rating_count": 700
+          }
+        ],
+        "google_place": [
+          {
+            "id": "7f59f372c914908e",
+            "place_id": "ChIJzQLuvL6xe0gRjpAUyXLzWX8"
+          }
+        ]
+      }
+    }
+  ],
+  "shapeHint": "coverage",
+  "emptyOn200": false
+}

@@ -1,23 +1,32 @@
-# Venn next-features audit (Phase 0)
+# Venn next-features audit + name mappings
 
-Baseline: `npm run typecheck`, `npm test`, `npm run build` — all green (2026-10-13).
+Baseline revisited 2026-10-15. Earlier Phase 0–4 cut line is **shipped**; this table tracks gaps vs the fuller prompt.
 
-| Area | Current state | Gap for Phases 1–4 |
-| --- | --- | --- |
-| Licence | MIT `LICENSE` + `"license": "MIT"` + repository URL in `package.json` | About dialog should surface licence + repo |
-| Store | In-memory `Map` in `server/runs/store.ts`, 1h TTL, max 300 runs | SQLite (`better-sqlite3`) + memory dual store, restart-safe, IP daily cap |
-| Snapshots | None | `npm run snapshot`, replay provider, badge, `/api/examples`, `live: true` |
-| Queue | Direct `executeRun` on POST | `RunScheduler` with concurrency + queue depth |
-| CSP | Helmet registered; `contentSecurityPolicy: false` (map tiles) | Enable CSP allowing self + CARTO/OSM tile hosts; fonts already `@fontsource` |
-| LLM stub | `server/brief/llm.ts` rejects “Not configured” | Full `server/llm/` + OpenAI JSON-schema briefs |
-| Evidence IDs | Labels/strings on `EvidenceItem`; no stable IDs | Stable evidence ids for citations in AI briefs |
-| Normalisation | `stretchScores` in Qloo/mock mapping; not persisted | Persist `normalization` on `RunResult` for Proof/Check |
-| Qloo budget | Per-request retry on 429; no circuit breaker / global budget | Circuit breaker + health fields + optional call budget |
-| Share | None | Phase 6.4 if time |
-| Tests | 12 unit/integration tests, mock provider | Drift tests, fake-LLM, store/scheduler, proof/check |
+| Item | Exists? | File(s) | Note / mapping |
+| --- | --- | --- | --- |
+| About / licence | yes | `LICENSE`, `AboutDialog.tsx`, `package.json` | Extend meta via `PUBLIC_REPO_URL` |
+| Persistent store | yes | `server/runs/store.ts` | SQLite + memory; no separate `briefs`/`run_extras` tables yet |
+| Snapshots | partial | `server/providers/snapshot/`, `scripts/snapshot.ts` | `TASTE_PROVIDER=snapshot` ↔ prompt `EXAMPLES_MODE=snapshot`; commit under `server/snapshots/` |
+| Queue / IP cap / circuit | yes | `scheduler.ts`, store daily_caps, qloo client | Add RPS / monthly floor |
+| CSP / fonts | yes | `server/app.ts`, `@fontsource` | |
+| LLM | yes | `server/llm/` | OpenAI; `generatedBy` ↔ show `model`; Anthropic optional explicit only |
+| Brief evidence IDs | yes | `server/brief/facts.ts`, `validate.ts` | Keep |
+| Match score stretch | yes | `scoring.ts` | Documented in `SCORING.md`; Proof must use rankTogether |
+| Proof / Check | partial | `server/proof.ts` | Offline popularity stretch → replace with rankTogether (gate OPEN) |
+| DiscoverSpec | no | — | Add in Phase 3 |
+| Goals GoalId | no | `FineTune.tsx` uses preferLocal/budget | Migrate to wants/reach/appetite/avoid |
+| Anchors confirm | no | resolve inside run only | Add `POST /api/anchors/resolve` |
+| Feasibility tiers | partial | `{ ok, notes }` | Map to easy/warm_intro/long_shot |
+| Share | yes | `/api/share/:token` | Prompt path `/api/shared/:slug` — keep unless checklist needs rename |
+| Compare | partial | signal-based `server/compare.ts` | Prefer `/v2/analysis/compare` when tags non-empty |
+| Call log panel | partial | usage ledger only | Per-run `QlooCallRecord` still needed |
+| Venue facts / pins | no | — | Phase 5.6 |
+| Trending / demographics | no | probe unsupported/empty | Hide / degrade |
 
-## Provider notes
+## Probe gate (2026-10-15)
 
-- Mock path is the CI default (`TASTE_PROVIDER=mock` in tests).
-- Live Qloo uses `https://hackathon.api.qloo.com` + `X-Api-Key`.
-- Smoke (`npm run smoke`) needs a running server; Qloo can 429 under concurrency.
+- **rankTogether (`filter.results.entities`): SUPPORTED** (11/12 ids, affinities present)
+- analysis/compare: endpoint 200 with `tags|a|b|matchEntities` — tags may be empty; degrade OK
+- demographics: empty — hide age bands
+- trending: 400 — hide trend UI
+- Aesop untyped → author first — confirm UI required

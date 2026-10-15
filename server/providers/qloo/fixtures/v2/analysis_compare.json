@@ -1,0 +1,22 @@
+{
+  "status": 200,
+  "ms": 126,
+  "rateHeaders": {
+    "x-month-ratelimit-remaining": "9869",
+    "x-second-ratelimit-reset": "0.11"
+  },
+  "keys": [
+    "duration",
+    "results"
+  ],
+  "resultsKeys": [
+    "tags",
+    "a",
+    "b",
+    "matchEntities"
+  ],
+  "entityCount": 0,
+  "entitySample": [],
+  "shapeHint": "analysis_compare",
+  "emptyOn200": false
+}

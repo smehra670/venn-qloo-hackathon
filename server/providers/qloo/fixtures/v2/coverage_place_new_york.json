@@ -1,0 +1,290 @@
+{
+  "status": 200,
+  "ms": 485,
+  "rateHeaders": {
+    "x-month-ratelimit-remaining": "9858",
+    "x-second-ratelimit-reset": "0.04"
+  },
+  "success": true,
+  "keys": [
+    "success",
+    "results"
+  ],
+  "resultsKeys": [
+    "entities"
+  ],
+  "entityCount": 15,
+  "entitySample": [
+    {
+      "name": "Blue Bottle Coffee",
+      "entity_id": "41632B81-C0BE-4BE2-9A85-C945F6F2F3A6",
+      "type": "urn:entity",
+      "subtype": "urn:entity:place",
+      "properties": {
+        "address": "54 W 40th St New York, NY 10018",
+        "website": "https://bluebottlecoffee.com/us/eng/new-york-cafes",
+        "is_closed": false,
+        "neighborhood": "Midtown South",
+        "price_level": 1
+      },
+      "popularity": 0.9706911070572761,
+      "location": {
+        "lat": 40.75297,
+        "lon": -73.98420999999999,
+        "geohash": "dr5ru6y77089"
+      },
+      "tags": [
+        {
+          "id": "urn:tag:dietary_option:qloo:healthy_options",
+          "name": "Healthy options",
+          "type": "urn:tag:dietary_option:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:service_options:place:delivery",
+          "name": "Delivery",
+          "type": "urn:tag:service_options:place",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:neighborhood_characteristic:qloo:high_foot_traffic",
+          "name": "High foot traffic",
+          "type": "urn:tag:neighborhood_characteristic:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:amenity:qloo:takeout",
+          "name": "Takeout",
+          "type": "urn:tag:amenity:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:payments:place:price_level",
+          "name": "Price level",
+          "type": "urn:tag:payments:place",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:interests:qloo:slow_living",
+          "name": "Slow living",
+          "type": "urn:tag:interests:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:genre:place:restaurant",
+          "name": "Restaurant",
+          "type": "urn:tag:genre:place",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:menu_highlight:qloo:pour_over",
+          "name": "Pour over",
+          "type": "urn:tag:menu_highlight:qloo",
+          "weight": null
+        }
+      ],
+      "query": {
+        "affinity": 0.732045336882431,
+        "distance": 4829.3258930563525,
+        "measurements": {
+          "audience_growth": 0
+        }
+      },
+      "disambiguation": "54 W 40th St New York, NY 10018",
+      "external": {
+        "tripadvisor": [
+          {
+            "id": "d7352992",
+            "rating": 4.5,
+            "rating_count": 158
+          }
+        ],
+        "google_place": [
+          {
+            "id": "495cd4c5b93ef616",
+            "place_id": "ChIJi_eyi6pZwokRFvY-ucXUXEk"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Blue Bottle Coffee",
+      "entity_id": "73EF2AE1-6C2A-4E76-8D96-3A97ABA621C4",
+      "type": "urn:entity",
+      "subtype": "urn:entity:place",
+      "properties": {
+        "address": "60 E 42nd St #140 New York, NY 10165",
+        "website": "https://bluebottlecoffee.com/us/eng/new-york-cafes",
+        "is_closed": false,
+        "neighborhood": "Murray Hill",
+        "price_level": 1
+      },
+      "popularity": 0.76982754361742,
+      "location": {
+        "lat": 40.7522643,
+        "lon": -73.97845099999999,
+        "geohash": "dr5ruddx1hfp"
+      },
+      "tags": [
+        {
+          "id": "urn:tag:amenity:qloo:brewing_equipment",
+          "name": "Brewing equipment",
+          "type": "urn:tag:amenity:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:dining_options:place:breakfast",
+          "name": "Breakfast",
+          "type": "urn:tag:dining_options:place",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:dietary_option:qloo:vegetarian",
+          "name": "Vegetarian",
+          "type": "urn:tag:dietary_option:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:setting:qloo:transit_hub_adjacent",
+          "name": "Transit hub adjacent",
+          "type": "urn:tag:setting:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:culinary_style:qloo:cafe",
+          "name": "Cafe",
+          "type": "urn:tag:culinary_style:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:customer_identity:qloo:young_professionals",
+          "name": "Young professionals",
+          "type": "urn:tag:customer_identity:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:setting:qloo:city_center",
+          "name": "City center",
+          "type": "urn:tag:setting:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:customer_identity:qloo:regulars",
+          "name": "Regulars",
+          "type": "urn:tag:customer_identity:qloo",
+          "weight": null
+        }
+      ],
+      "query": {
+        "affinity": 0.7185686044061831,
+        "distance": 4964.363119393243,
+        "measurements": {
+          "audience_growth": 0
+        }
+      },
+      "disambiguation": "60 E 42nd St #140 New York, NY 10165",
+      "external": {
+        "tripadvisor": [
+          {
+            "id": "d13336688",
+            "rating": 4.5,
+            "rating_count": 18
+          }
+        ],
+        "google_place": [
+          {
+            "id": "99d8ee58b1524813",
+            "place_id": "ChIJr0xfoAFZwokRE0hSsVju2Jk"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Chelsea Market",
+      "entity_id": "168322E2-0EBA-4065-9F9B-A647A5AC62F2",
+      "type": "urn:entity",
+      "subtype": "urn:entity:place",
+      "properties": {
+        "address": "75 9th Ave New York, NY 10011",
+        "website": "https://www.chelseamarket.com/",
+        "is_closed": false,
+        "neighborhood": "Chelsea"
+      },
+      "popularity": 0.9999723264468904,
+      "location": {
+        "lat": 40.7424396,
+        "lon": -74.0061439,
+        "geohash": "dr5rgbymgvjh"
+      },
+      "tags": [
+        {
+          "id": "urn:tag:view:qloo:streetscape_views",
+          "name": "Streetscape views",
+          "type": "urn:tag:view:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:time_of_day_fit:qloo:evening",
+          "name": "Evening",
+          "type": "urn:tag:time_of_day_fit:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:amenity:qloo:wi_fi",
+          "name": "Wi fi",
+          "type": "urn:tag:amenity:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:activity_type:qloo:dining_drinking",
+          "name": "Dining drinking",
+          "type": "urn:tag:activity_type:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:ambience:qloo:busy",
+          "name": "Busy",
+          "type": "urn:tag:ambience:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:ambience:qloo:historic",
+          "name": "Historic",
+          "type": "urn:tag:ambience:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:ambience:qloo:comfortable",
+          "name": "Comfortable",
+          "type": "urn:tag:ambience:qloo",
+          "weight": null
+        },
+        {
+          "id": "urn:tag:nearby_attraction:qloo:high_line",
+          "name": "High line",
+          "type": "urn:tag:nearby_attraction:qloo",
+          "weight": null
+        }
+      ],
+      "references": null,
+      "query": {
+        "affinity": 0.716523875162716,
+        "distance": 3295.799992001979,
+        "measurements": {
+          "audience_growth": -1
+        }
+      },
+      "disambiguation": "75 9th Ave New York, NY 10011",
+      "external": {
+        "google_place": [
+          {
+            "id": "7e61762e972dc0a2",
+            "place_id": "ChIJw2lMFL9ZwokRosAtly52YX4"
+          }
+        ]
+      }
+    }
+  ],
+  "shapeHint": "coverage",
+  "emptyOn200": false
+}

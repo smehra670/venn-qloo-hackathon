@@ -1,13 +1,17 @@
 {
   "status": 200,
-  "ms": 117,
-  "rateHeaders": {},
+  "ms": 122,
+  "rateHeaders": {
+    "x-month-ratelimit-remaining": "9875",
+    "x-second-ratelimit-reset": "0.57"
+  },
   "keys": [
     "results"
   ],
   "resultsKeys": [
     "(array)"
   ],
+  "entityCount": 3,
   "entitySample": [
     {
       "name": "Radiohead",
@@ -15,6 +19,7 @@
       "types": [
         "urn:entity:artist"
       ],
+      "properties": {},
       "popularity": 0.9999966263060412,
       "disambiguation": "Radiohead",
       "tags": [
@@ -74,6 +79,7 @@
       "types": [
         "urn:entity:artist"
       ],
+      "properties": {},
       "popularity": 0.46901430783607895,
       "disambiguation": "Radiohead Tribute"
     },
@@ -83,9 +89,11 @@
       "types": [
         "urn:entity:artist"
       ],
+      "properties": {},
       "popularity": 0.7304081157581871,
       "disambiguation": "Dub Tribute To Radiohead"
     }
   ],
-  "shapeHint": "search"
+  "shapeHint": "search",
+  "emptyOn200": false
 }

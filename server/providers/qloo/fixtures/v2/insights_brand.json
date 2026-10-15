@@ -1,7 +1,10 @@
 {
   "status": 200,
-  "ms": 233,
-  "rateHeaders": {},
+  "ms": 252,
+  "rateHeaders": {
+    "x-month-ratelimit-remaining": "9871",
+    "x-second-ratelimit-reset": "0.7"
+  },
   "success": true,
   "keys": [
     "success",
@@ -10,12 +13,14 @@
   "resultsKeys": [
     "entities"
   ],
+  "entityCount": 15,
   "entitySample": [
     {
       "name": "Diptyque",
       "entity_id": "EE6E5064-E9B8-4EB2-AD63-2E082EBF7726",
       "type": "urn:entity",
       "subtype": "urn:entity:brand",
+      "properties": {},
       "popularity": 0.960790629079012,
       "tags": [
         {
@@ -84,6 +89,7 @@
       "entity_id": "902D8AE1-F74E-4D8F-8E52-FEABC35DBFC9",
       "type": "urn:entity",
       "subtype": "urn:entity:brand",
+      "properties": {},
       "popularity": 0.9663592751436659,
       "tags": [
         {
@@ -152,6 +158,7 @@
       "entity_id": "25C88914-2BC2-4E6B-A787-A8DD2DD4F45E",
       "type": "urn:entity",
       "subtype": "urn:entity:brand",
+      "properties": {},
       "popularity": 0.9761319523317116,
       "tags": [
         {
@@ -211,5 +218,6 @@
       }
     }
   ],
-  "shapeHint": "insights_entities"
+  "shapeHint": "insights_entities",
+  "emptyOn200": false
 }

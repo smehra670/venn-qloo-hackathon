@@ -1,10 +1,13 @@
 {
   "status": 404,
-  "ms": 104,
+  "ms": 92,
   "rateHeaders": {},
   "keys": [
     "error"
   ],
   "resultsKeys": [],
-  "shapeHint": "v2_entities"
+  "entityCount": 0,
+  "entitySample": [],
+  "shapeHint": "v2_entities",
+  "emptyOn200": false
 }

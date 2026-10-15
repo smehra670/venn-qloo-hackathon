@@ -1,0 +1,191 @@
+{
+  "status": 200,
+  "ms": 129,
+  "rateHeaders": {
+    "x-month-ratelimit-remaining": "9876",
+    "x-second-ratelimit-reset": "0.87"
+  },
+  "keys": [
+    "results"
+  ],
+  "resultsKeys": [
+    "(array)"
+  ],
+  "entityCount": 8,
+  "entitySample": [
+    {
+      "name": "Aesop",
+      "entity_id": "6F3B5CAA-AC33-4B29-996D-CD070526CAAA",
+      "types": [
+        "urn:entity:author"
+      ],
+      "properties": {},
+      "popularity": 0.9875183983840445,
+      "disambiguation": "Aesop",
+      "tags": [
+        {
+          "name": "Fairy_tales:fairy_tale_retellings",
+          "tag_id": "urn:tag:genre:fairy_tales_fairy_tale_retellings",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:fairy_tales_fairy_tale_retellings"
+        },
+        {
+          "name": "History:ancient_history",
+          "tag_id": "urn:tag:genre:history_ancient_history",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:history_ancient_history"
+        },
+        {
+          "name": "Literature:17th_century",
+          "tag_id": "urn:tag:genre:literature_17th_century",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:literature_17th_century"
+        },
+        {
+          "name": "Relationships",
+          "tag_id": "urn:tag:genre:relationships",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:relationships"
+        },
+        {
+          "name": "Self_help:personal_development",
+          "tag_id": "urn:tag:genre:self_help_personal_development",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:self_help_personal_development"
+        },
+        {
+          "name": "Young_adult",
+          "tag_id": "urn:tag:genre:young_adult",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:young_adult"
+        },
+        {
+          "name": "Business:google",
+          "tag_id": "urn:tag:genre:business_google",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:business_google"
+        },
+        {
+          "name": "European_literature:danish",
+          "tag_id": "urn:tag:genre:european_literature_danish",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:european_literature_danish"
+        }
+      ]
+    },
+    {
+      "name": "Aesop",
+      "entity_id": "32F867B9-E6DF-44C3-BCE4-40160C7ED5E4",
+      "types": [
+        "urn:entity:brand"
+      ],
+      "properties": {},
+      "popularity": 0.9710803342882812,
+      "disambiguation": "",
+      "tags": [
+        {
+          "name": "Health & Beauty",
+          "tag_id": "urn:tag:genre:brand:health_and_beauty",
+          "type": "urn:tag:genre:brand"
+        },
+        {
+          "name": "Minimalist Packaging",
+          "tag_id": "urn:tag:aesthetic_property:qloo:minimalist_packaging",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "name": "Amber Glass Bottles",
+          "tag_id": "urn:tag:aesthetic_property:qloo:amber_glass_bottles",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "name": "Botanical Minimalism",
+          "tag_id": "urn:tag:aesthetic_property:qloo:botanical_minimalism",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "name": "Typography-Driven Design",
+          "tag_id": "urn:tag:aesthetic_property:qloo:typography_driven_design",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "name": "Architectural Store Interiors",
+          "tag_id": "urn:tag:aesthetic_property:qloo:architectural_store_interiors",
+          "type": "urn:tag:aesthetic_property:qloo"
+        },
+        {
+          "name": "Artistic Expression",
+          "tag_id": "urn:tag:lifestyle:qloo:artistic_expression",
+          "type": "urn:tag:lifestyle:qloo"
+        },
+        {
+          "name": "Architectural Appreciation",
+          "tag_id": "urn:tag:lifestyle:qloo:architectural_appreciation",
+          "type": "urn:tag:lifestyle:qloo"
+        }
+      ]
+    },
+    {
+      "name": "Aesop",
+      "entity_id": "11A19453-C8AF-4B08-A8DC-CC0DCFB38516",
+      "types": [
+        "urn:entity:artist"
+      ],
+      "properties": {},
+      "popularity": 0.6103720847067079,
+      "disambiguation": "Aesop",
+      "tags": [
+        {
+          "name": "Hip - Hop",
+          "tag_id": "urn:tag:genre:hip_hop",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:hip_hop"
+        },
+        {
+          "name": "Black Metal",
+          "tag_id": "urn:tag:genre:black_metal",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:black_metal"
+        },
+        {
+          "name": "Post Black Metal",
+          "tag_id": "urn:tag:genre:post_black_metal",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:post_black_metal"
+        },
+        {
+          "name": "Rap",
+          "tag_id": "urn:tag:genre:rap",
+          "type": "urn:tag:genre",
+          "value": "urn:tag:genre:rap"
+        },
+        {
+          "name": "Dedicated",
+          "tag_id": "urn:tag:audience:qloo:dedicated",
+          "type": "urn:tag:audience:qloo",
+          "value": "urn:tag:audience:qloo:dedicated"
+        },
+        {
+          "name": "Thoughtful",
+          "tag_id": "urn:tag:audience:qloo:thoughtful",
+          "type": "urn:tag:audience:qloo",
+          "value": "urn:tag:audience:qloo:thoughtful"
+        },
+        {
+          "name": "Underground",
+          "tag_id": "urn:tag:audience:qloo:underground",
+          "type": "urn:tag:audience:qloo",
+          "value": "urn:tag:audience:qloo:underground"
+        },
+        {
+          "name": "Loyal",
+          "tag_id": "urn:tag:audience:qloo:loyal",
+          "type": "urn:tag:audience:qloo",
+          "value": "urn:tag:audience:qloo:loyal"
+        }
+      ]
+    }
+  ],
+  "shapeHint": "search_ambiguous",
+  "emptyOn200": false
+}

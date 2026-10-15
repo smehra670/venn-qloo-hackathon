@@ -1,13 +1,17 @@
 {
   "status": 200,
-  "ms": 179,
-  "rateHeaders": {},
+  "ms": 181,
+  "rateHeaders": {
+    "x-month-ratelimit-remaining": "9874",
+    "x-second-ratelimit-reset": "0.29"
+  },
   "keys": [
     "results"
   ],
   "resultsKeys": [
     "(array)"
   ],
+  "entityCount": 5,
   "entitySample": [
     {
       "name": "London",
@@ -15,6 +19,7 @@
       "types": [
         "urn:entity:locality"
       ],
+      "properties": {},
       "popularity": 0.9998790917799683,
       "disambiguation": "London, Inner London - East, Greater London, England, United Kingdom",
       "location": {
@@ -36,6 +41,7 @@
       "types": [
         "urn:entity:destination"
       ],
+      "properties": {},
       "popularity": 0.9986731534719151,
       "disambiguation": "London",
       "location": {
@@ -93,6 +99,7 @@
       "types": [
         "urn:entity:locality"
       ],
+      "properties": {},
       "popularity": 0.9767231746512595,
       "disambiguation": "London, Laurel, Kentucky, United States of America",
       "location": {
@@ -109,5 +116,6 @@
       ]
     }
   ],
-  "shapeHint": "search_location"
+  "shapeHint": "search_location",
+  "emptyOn200": false
 }

@@ -1,80 +1,23 @@
-# Venn — next features prompt (Phases 0–9)
+# Venn — next-features prompt (gap-fill track)
 
-Saved for execution without API keys. LLM choice for this repo: **OpenAI** (`LLM_PROVIDER=openai`, `OPENAI_API_KEY` in local `.env` only).
+Full judging prompt provided in chat (2026-10-15). This file is the execution contract for the **gap-fill** track. Secrets never appear here.
 
-After each phase: `npm run typecheck`, `npm run test`, `npm run build`, commit `phase N: <title>`, append `docs/PROGRESS.md`. Probe wins over guessed Qloo shapes (`docs/QLOO_CONTRACT_V2.md`).
+## Locked decisions
 
-**Cut line for a strong submission:** complete Phases **0–4**. If time remains: **5.4 → 6.4 → 5.1 → rest of 5–9**; skip 7.3 first under pressure.
+- Cut-line gap-fill Phases 0–4 against the fuller prompt, then eligibility (1.3 + Phase 9 §1/4/5), then deepen 5.4→5.5→5.6→5.1→5.7. Plan board 6.1–6.3 only if time. Skip e2e and 7.3.
+- Phase 0 probe gates Phase 3: `filter.results.entities` must work or Proof/Check stay hidden.
+- LLM: OpenAI working provider; Anthropic only as explicit `LLM_PROVIDER=anthropic` thin adapter; no silent fallback; briefs record and show `model`.
+- Probe wins over guessed Qloo shapes (`docs/QLOO_CONTRACT_V2.md`).
 
----
+## Phase order
 
-## Phase 0 — Audit, baseline, probe
+0. Re-probe + SCORING + COVERAGE (stop and report ranking gate before Phase 3 code)
+1. Config pacing / EXAMPLES_MODE / monthly floor
+2. Brief `model` label + boot key checks
+3. DiscoverSpec + rankTogether Proof/Check **or** hide
+4. GoalId Goals, anchors confirm, feasibility tiers
+5. Eligibility: committed snapshots, hygiene, SUBMISSION_CHECKLIST
+6. Deepen: call log, explainability, venues, compare, lift
+7. Optional: Plan board 6.1–6.3
 
-1. Baseline: typecheck / test / build; note mock + Qloo smoke issues in PROGRESS.
-2. Write `docs/NEXT_AUDIT.md` table covering: licence, store, snapshots, queue, CSP, LLM stub, evidence IDs, normalisation, Qloo budget, share, tests.
-3. `scripts/qloo-probe-v2.mjs`: probe compare, demographics, trends, explanations, `/entities`, location search, rate-limit headers.
-4. Redacted fixtures → `server/providers/qloo/fixtures/v2/`.
-5. Zod passthrough schemas → `server/providers/qloo/schemas.ts`.
-6. Contract table → `docs/QLOO_CONTRACT_V2.md`.
-7. Grep fixtures for key prefixes before commit.
-
----
-
-## Phase 1 — Judge-proofing
-
-- About dialog (`#about`), footer, Qloo capability table in `shared/constants.ts` + drift test vs Qloo client paths.
-- `RunStore`: memory + `better-sqlite3` SQLite (`DATA_DIR/venn.db`), migrations, restart marking, TTL, IP hash daily cap store.
-- Snapshots: `npm run snapshot`, replay path, badge “Saved Qloo results · date”, `GET /api/examples`, `live: true` bypass.
-- `RunScheduler`, circuit breaker on Qloo client, expanded `/api/health`, Helmet CSP on + self-hosted fonts, `docs/DEPLOY.md`, `smoke:remote`.
-- Extend config Zod for all new env vars (OpenAI-flavoured defaults).
-
----
-
-## Phase 2 — OpenAI LLM + evidence-cited briefs
-
-- `server/llm/`: types, openai adapter (JSON schema), none, fake; health `llm: { enabled, provider }`.
-- Facts / prompt / validate / ai writers; template remains fallback; brief route gains tone/length/regenerate + budget.
-- UI: generator chip, tone/length controls, citation superscripts + Sources, editable outreach.
-- Fake-LLM unit tests for invent/repair/fallback/injection.
-
----
-
-## Phase 3 — Proof + Check a partner
-
-- Persist `normalization` on `RunResult`; shared score-with-frozen-norm helper.
-- `POST .../proof`, Proof view (4th tab), popularity baseline when LLM off / AI baseline when OpenAI on.
-- `POST .../check`, dashed “Your pick” nodes, cap 5 user-added.
-- Regenerate snapshots at end of phase.
-
----
-
-## Phase 4 — Goals, decisions, feasibility
-
-- Setup “Fine-tune” goals UI; `server/agent/goals.ts`; `goalFit` without changing match score.
-- `ctx.decide` + SSE `decision`; Agent notes + “How Venn decided” panel.
-- Feasibility rules + optional `llm.critic` via OpenAI fast model.
-
----
-
-## After cut line (if time)
-
-### 5.x Deeper Qloo / usage
-
-- **5.1** Audience compare (demographics / segment overlap when probe confirms).
-- **5.4** Usage ledger (local SQLite counters for Qloo + LLM calls).
-
-### 6.x Share / workflow
-
-- **6.4** Share links (signed or opaque tokens, TTL, read-only result view).
-
-### 7–9
-
-- Remaining polish, export, and judge-facing narrative; skip **7.3** first under time pressure.
-
----
-
-## Secrets
-
-- Never commit `.env` or live keys.
-- Placeholders only in `.env.example`.
-- Rotate any key that appeared in chat.
+After each phase: `npm run typecheck`, `npm run test`, `npm run build`, commit `phase N: <title>`, append `docs/PROGRESS.md`.

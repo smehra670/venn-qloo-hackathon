@@ -1,13 +1,17 @@
 {
   "status": 200,
-  "ms": 393,
-  "rateHeaders": {},
+  "ms": 315,
+  "rateHeaders": {
+    "x-month-ratelimit-remaining": "9877",
+    "x-second-ratelimit-reset": "1"
+  },
   "keys": [
     "results"
   ],
   "resultsKeys": [
     "(array)"
   ],
+  "entityCount": 1,
   "entitySample": [
     {
       "name": "Aesop",
@@ -15,6 +19,7 @@
       "types": [
         "urn:entity:brand"
       ],
+      "properties": {},
       "popularity": 0.9710803342882812,
       "disambiguation": "",
       "tags": [
@@ -61,5 +66,6 @@
       ]
     }
   ],
-  "shapeHint": "search"
+  "shapeHint": "search",
+  "emptyOn200": false
 }
