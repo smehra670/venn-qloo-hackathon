@@ -55,6 +55,99 @@ function assertCircuitClosed(): void {
   }
 }
 
+// --- Client-side pacing -----------------------------------------------------------------
+// Caps outbound request rate (QLOO_MAX_RPS) and concurrency (QLOO_MAX_IN_FLIGHT) so a burst
+// of runs can't blow through the hackathon key's monthly quota in a few minutes. Admission is
+// a small FIFO queue pumped synchronously, so there's no race between concurrent callers
+// checking/incrementing the shared counters.
+
+interface QueuedSlot {
+  resolve: () => void;
+  reject: (error: Error) => void;
+  signal?: AbortSignal;
+}
+
+let inFlight = 0;
+let lastRequestStartedAt = 0;
+let pumpTimer: ReturnType<typeof setTimeout> | null = null;
+const slotQueue: QueuedSlot[] = [];
+
+function minIntervalMs(): number {
+  return config.qlooMaxRps > 0 ? 1000 / config.qlooMaxRps : 0;
+}
+
+function pumpSlotQueue(): void {
+  if (pumpTimer !== null) {
+    clearTimeout(pumpTimer);
+    pumpTimer = null;
+  }
+  while (slotQueue.length > 0) {
+    const next = slotQueue[0];
+    if (next?.signal?.aborted) {
+      slotQueue.shift();
+      next.reject(new DOMException("The search was cancelled.", "AbortError"));
+      continue;
+    }
+    if (inFlight >= config.qlooMaxInFlight) return;
+    const wait = lastRequestStartedAt + minIntervalMs() - Date.now();
+    if (wait > 0) {
+      pumpTimer = setTimeout(pumpSlotQueue, wait);
+      return;
+    }
+    slotQueue.shift();
+    inFlight += 1;
+    lastRequestStartedAt = Date.now();
+    next?.resolve();
+  }
+}
+
+function acquireQlooSlot(signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    slotQueue.push({ resolve, reject, signal });
+    pumpSlotQueue();
+  });
+}
+
+function releaseQlooSlot(): void {
+  inFlight = Math.max(0, inFlight - 1);
+  pumpSlotQueue();
+}
+
+// --- Monthly quota tracking --------------------------------------------------------------
+// Qloo reports remaining monthly calls on an `x-month-ratelimit-remaining` response header;
+// we remember the most recent value and use it to refuse new live runs before the key is
+// exhausted (see isQuotaBelowFloor() and POST /api/runs).
+
+let quotaRemaining: number | null = null;
+
+/** Pure parse of the quota header value; `null` for a missing/non-numeric header. */
+export function parseQuotaRemaining(headerValue: string | null): number | null {
+  if (headerValue === null || headerValue.trim() === "") return null;
+  const value = Number(headerValue);
+  return Number.isFinite(value) ? value : null;
+}
+
+function updateQuotaFromHeaders(headers: Headers): void {
+  const parsed = parseQuotaRemaining(headers.get("x-month-ratelimit-remaining"));
+  if (parsed !== null) quotaRemaining = parsed;
+}
+
+/** Most recent `x-month-ratelimit-remaining` seen from Qloo, or `null` before any response
+ * has reported it (e.g. on mock/snapshot providers, or before the first live call). */
+export function getQlooQuotaRemaining(): number | null {
+  return quotaRemaining;
+}
+
+/** Pure comparison, exported for unit testing; `isQuotaBelowFloor()` is the one routes use. */
+export function isQuotaBelowFloorValue(remaining: number | null, floor: number): boolean {
+  return remaining !== null && remaining < floor;
+}
+
+/** True once Qloo has reported fewer than `QLOO_MONTHLY_FLOOR` calls remaining this month. */
+export function isQuotaBelowFloor(): boolean {
+  return isQuotaBelowFloorValue(quotaRemaining, config.qlooMonthlyFloor);
+}
+
 export type QueryValue = string | number | boolean | undefined | null | Array<string | number>;
 
 function buildQuery(params: Record<string, QueryValue>): string {
@@ -104,6 +197,7 @@ export async function qlooGet<T>(
   while (true) {
     attempt += 1;
     let response: Response;
+    await acquireQlooSlot(signal);
     try {
       response = await fetch(url, {
         method: "GET",
@@ -117,7 +211,10 @@ export async function qlooGet<T>(
       if (error instanceof Error && error.name === "AbortError") throw error;
       recordFailure();
       throw new QlooHttpError("Could not reach Qloo. Check your connection and try again.", 0);
+    } finally {
+      releaseQlooSlot();
     }
+    updateQuotaFromHeaders(response.headers);
 
     if (response.status === 401) {
       throw new QlooHttpError(

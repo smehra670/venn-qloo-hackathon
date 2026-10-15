@@ -2,10 +2,12 @@ import { MAX_PARTNERS } from "@shared/constants";
 import type {
   BusinessInput,
   CityInfo,
+  DiscoverSpec,
   Heatmap,
   Normalization,
   Partner,
   PartnerKind,
+  RankEntry,
   ResolvedAnchor,
   RunResult,
 } from "@shared/types";
@@ -28,11 +30,15 @@ import {
   blurbFromEntity,
   buildPartner,
   businessSignalFilter,
+  chunk,
   cityInfoFromSearch,
+  entityTypeForKind,
   entityTypeFromUrns,
+  filterTypeForEntityType,
   filterTypeForKind,
   heatmapSpotsFromQloo,
   kindFromEntityTypes,
+  paramsToStrings,
   searchTypesForAnchor,
   stretchScores,
   tagLabelsFromEntity,
@@ -193,11 +199,12 @@ export class QlooTasteProvider implements TasteProvider {
     resolved: ResolvedAnchor[],
     kind: PartnerKind,
     ctx: ProviderContext,
+    out?: { spec?: DiscoverSpec },
   ): Promise<Candidate[]> {
     return ctx.trace(
       "get_insights",
       `kind: ${kind}, city: ${input.city}`,
-      async () => this.discoverKind(input, resolved, kind, ctx.signal),
+      async () => this.discoverKind(input, resolved, kind, ctx.signal, out),
       (list) => `${kind} · ${list.length} candidates`,
     );
   }
@@ -207,6 +214,7 @@ export class QlooTasteProvider implements TasteProvider {
     resolved: ResolvedAnchor[],
     kind: PartnerKind,
     signal: AbortSignal,
+    out?: { spec?: DiscoverSpec },
   ): Promise<Candidate[]> {
     const entityIds = resolved
       .filter((item) => item.status === "matched" && item.entityId)
@@ -225,6 +233,7 @@ export class QlooTasteProvider implements TasteProvider {
     if (tagIds.length > 0 && entityIds.length === 0) {
       // Tags from resolve are humanized; Qloo wants tag URNs. Prefer entities when available.
       // When only keywords exist, search brands/places by the original anchor text instead.
+      // No `DiscoverSpec` here: a text search isn't a replayable rank-together shape.
       return this.discoverBySearch(input, kind, signal);
     }
     if (city?.hasLocalData && filterType === "urn:entity:place") {
@@ -256,7 +265,16 @@ export class QlooTasteProvider implements TasteProvider {
         provisional: Math.max(affinityOf(entity), entry.popularity * 0.5),
       });
     }
-    return candidates.sort((a, b) => b.provisional - a.provisional);
+    candidates.sort((a, b) => b.provisional - a.provisional);
+    if (out) {
+      out.spec = {
+        kind,
+        entityType: entityTypeForKind(kind),
+        params: paramsToStrings(params),
+        poolIds: candidates.map((candidate) => candidate.entry.id),
+      };
+    }
+    return candidates;
   }
 
   private async discoverBySearch(
@@ -628,5 +646,51 @@ export class QlooTasteProvider implements TasteProvider {
       median: frozen.medianScore,
     });
     return { ...partner, userAdded: true };
+  }
+
+  async rankTogether(spec: DiscoverSpec, extraEntityIds: string[], ctx: ProviderContext): Promise<RankEntry[]> {
+    return ctx.trace(
+      "get_insights",
+      `rank_together: ${spec.kind}, pool: ${spec.poolIds.length}`,
+      async () => this.rankTogetherEntities(spec, extraEntityIds, ctx.signal),
+      (list) => `${list.length} ranked`,
+    );
+  }
+
+  private async rankTogetherEntities(
+    spec: DiscoverSpec,
+    extraEntityIds: string[],
+    signal: AbortSignal,
+  ): Promise<RankEntry[]> {
+    const ids = [...new Set([...spec.poolIds, ...extraEntityIds])];
+    if (ids.length === 0) return [];
+    const filterType = filterTypeForEntityType(spec.entityType);
+    const byId = new Map<string, RankEntry>();
+    // Qloo's `filter.results.entities` is probed to work up to ~20 ids per call; chunk and
+    // merge rather than risking a dropped/odd response on a larger ask.
+    for (const idsChunk of chunk(ids, 20)) {
+      const params: Record<string, string | number | string[]> = {
+        ...spec.params,
+        "filter.type": filterType,
+        "filter.results.entities": idsChunk,
+        take: idsChunk.length,
+      };
+      try {
+        const result = await insights(params, signal);
+        for (const entity of result.entities) {
+          const id = entityIdOf(entity);
+          if (!id) continue;
+          byId.set(id, {
+            entityId: id,
+            affinity: affinityOf(entity),
+            popularity: typeof entity.popularity === "number" ? Math.max(0, Math.min(1, entity.popularity)) : 0,
+          });
+        }
+      } catch {
+        // A failed chunk just means fewer ranked ids come back; the caller (Proof) degrades
+        // gracefully rather than throwing the whole comparison away.
+      }
+    }
+    return [...byId.values()];
   }
 }

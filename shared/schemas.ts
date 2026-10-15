@@ -158,6 +158,20 @@ const NormalizationSchema = z.object({
   maxRaw: z.number(),
 });
 
+const ScoreBasisSchema = z.object({
+  callId: z.string(),
+  poolSize: z.number(),
+  rawAffinity: z.number(),
+  popularity: z.number(),
+});
+
+const DiscoverSpecSchema = z.object({
+  kind: PartnerKindSchema,
+  entityType: EntityTypeSchema,
+  params: z.record(z.string(), z.string()),
+  poolIds: z.array(z.string()),
+});
+
 export const PartnerSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -178,6 +192,8 @@ export const PartnerSchema = z.object({
   parentId: z.string().optional(),
   expanded: z.boolean().optional(),
   userAdded: z.boolean().optional(),
+  origin: z.enum(["discovered", "user_added"]).optional(),
+  scoreBasis: ScoreBasisSchema.optional(),
   goalFit: z.number().min(0).max(1).optional(),
   feasibility: z.object({ ok: z.boolean(), notes: z.array(z.string()) }).optional(),
 });
@@ -236,6 +252,7 @@ export const RunResultSchema = z.object({
   decisions: z
     .array(z.object({ step: StepIdSchema.optional(), decision: z.string(), reason: z.string() }))
     .optional(),
+  discoverSpecs: z.array(DiscoverSpecSchema).optional(),
 });
 
 export const HeatmapSchema = z.object({
@@ -283,6 +300,7 @@ export const BriefSchema = z.object({
   outreach: z.object({ subject: z.string(), body: z.string() }),
   limits: z.string(),
   generatedBy: z.enum(["template", "llm"]),
+  model: z.string().optional(),
   tone: z.enum(["warm", "direct", "playful"]).optional(),
   length: z.enum(["short", "standard"]).optional(),
   sources: z.array(BriefSourceSchema).optional(),
@@ -349,20 +367,48 @@ export const AgentEventSchema: z.ZodType<AgentEvent> = z.discriminatedUnion("typ
   }),
 ]);
 
-const ProofRowSchema = z.object({
-  partnerId: z.string(),
-  partnerName: z.string(),
-  matchScore: z.number(),
-  baselineScore: z.number(),
-  delta: z.number(),
-  explanation: z.string(),
+const ProofItemSchema = z.object({
+  entityId: z.string(),
+  name: z.string(),
+  score: z.number(),
+  rawAffinity: z.number().optional(),
+  popularity: z.number().optional(),
 });
 
-export const ProofPayloadSchema = z.object({
+const ProofKindGroupSchema = z.object({
+  kind: PartnerKindSchema,
+  callId: z.string().optional(),
+  poolSize: z.number(),
+  vennItems: z.array(ProofItemSchema),
+  baselineItems: z.array(ProofItemSchema),
+  note: z.string().optional(),
+});
+
+const ProofSummarySchema = z.object({
+  kindsCompared: z.number(),
+  avgVennScore: z.number(),
+  avgBaselineScore: z.number(),
+  avgDelta: z.number(),
+  vennWins: z.number(),
+  baselineWins: z.number(),
+  ties: z.number(),
+});
+
+const ProofCallLogSchema = z.object({
+  callId: z.string(),
+  kind: PartnerKindSchema,
+  poolSize: z.number(),
+});
+
+export const ProofResultSchema = z.object({
   runId: z.string(),
   baseline: z.enum(["popularity", "ai"]),
   narrative: z.string(),
-  rows: z.array(ProofRowSchema),
+  perKind: z.array(ProofKindGroupSchema),
+  summary: ProofSummarySchema,
+  caveats: z.array(z.string()),
+  calls: z.array(ProofCallLogSchema),
+  legacy: z.boolean(),
 });
 
 const CompareSignalSchema = z.object({

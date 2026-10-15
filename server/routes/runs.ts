@@ -12,8 +12,10 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { writeAiBrief } from "../brief/ai.js";
 import { buildCompare } from "../compare.js";
 import { config } from "../config.js";
-import { getProvider } from "../providers/index.js";
+import { getProvider, isLiveQlooProvider } from "../providers/index.js";
 import { attachRelated, median } from "../providers/mock/engine.js";
+import { isQuotaBelowFloor } from "../providers/qloo/client.js";
+import { stretchWithNormalization } from "../providers/scoring.js";
 import type { ProviderContext } from "../providers/types.js";
 import { buildProof } from "../proof.js";
 import { executeRun } from "../runs/runner.js";
@@ -88,6 +90,12 @@ export function registerRuns(app: FastifyInstance): void {
         return reply.code(503).send({ error: "Too many searches queued right now. Try again shortly." });
       }
       const live = isRecord(request.body) && request.body.live === true;
+      if (isLiveQlooProvider(getProvider({ live, input: parsed.data })) && isQuotaBelowFloor()) {
+        return reply.code(429).send({
+          code: "quota_low",
+          error: "Venn is close to this month's Qloo quota, so live searches are paused for now. Try a demo example instead.",
+        });
+      }
       const run = createRun(parsed.data, { live });
       recordRun(request.ip);
       scheduler.enqueue(run, () => {
@@ -246,7 +254,10 @@ export function registerRuns(app: FastifyInstance): void {
   app.post("/api/runs/:id/proof", async (request: FastifyRequest<{ Params: { id: string } }>) => {
     const run = requireRun(request.params.id);
     const result = requireResult(run);
-    return buildProof(result);
+    if (run.proof) return run.proof;
+    const proof = await buildProof(result, quietContext());
+    run.proof = proof;
+    return proof;
   });
 
   app.post("/api/runs/:id/check", async (request: FastifyRequest<{ Params: { id: string } }>, reply) => {
@@ -267,12 +278,14 @@ export function registerRuns(app: FastifyInstance): void {
     }
     const normalization = result.normalization ?? { minRaw: 0, maxRaw: 1 };
     const medianScore = median(result.partners.map((partner) => partner.matchScore));
-    const checked = await getProvider().checkPartner(
+    const ctx = quietContext();
+    const provider = getProvider();
+    const checked = await provider.checkPartner(
       result.input,
       result.resolvedAnchors,
       { name: parsed.data.name, entityHint: parsed.data.entityHint },
       { normalization, medianScore },
-      quietContext(),
+      ctx,
     );
     if (!checked) {
       return reply
@@ -283,7 +296,25 @@ export function registerRuns(app: FastifyInstance): void {
     if (existing) {
       return { partner: existing, message: `${existing.name} is already in this search.` };
     }
-    const added: Partner = { ...checked, userAdded: true };
+    // Resolve + rankTogether: re-score the checked partner by ranking it together with the
+    // same pool the matching kind originally discovered, so its score is comparable to the
+    // rest of this run rather than coming from a separate reverse-insights probe. Falls back
+    // to `checkPartner`'s own frozen-normalization score when there's no DiscoverSpec to
+    // replay (legacy run, or a kind that was never discovered this run).
+    let matchScore = checked.matchScore;
+    const spec = (result.discoverSpecs ?? []).find((item) => item.kind === checked.kind);
+    if (spec) {
+      try {
+        const ranked = await provider.rankTogether(spec, [checked.id], ctx);
+        const own = ranked.find((entry) => entry.entityId === checked.id);
+        if (own) {
+          matchScore = stretchWithNormalization(Math.max(0, Math.min(1, own.affinity)), normalization);
+        }
+      } catch {
+        // Keep checkPartner's own score; rankTogether is a best-effort refinement here.
+      }
+    }
+    const added: Partner = { ...checked, matchScore, userAdded: true, origin: "user_added" };
     result.partners = [...result.partners, added];
     attachRelated(result.partners);
     return { partner: added };

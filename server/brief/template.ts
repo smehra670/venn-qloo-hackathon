@@ -321,5 +321,6 @@ export function renderBrief(result: RunResult, partner: Partner, variant: number
     outreach: { subject, body },
     limits: LIMITS_TEXT,
     generatedBy: "template",
+    model: "template",
   };
 }

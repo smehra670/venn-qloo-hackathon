@@ -1,12 +1,25 @@
-import type { BusinessInput, CityInfo, Heatmap, Normalization, Partner, PartnerKind, ResolvedAnchor, RunResult } from "@shared/types";
+import type {
+  BusinessInput,
+  CityInfo,
+  DiscoverSpec,
+  Heatmap,
+  Normalization,
+  Partner,
+  PartnerKind,
+  RankEntry,
+  ResolvedAnchor,
+  RunResult,
+} from "@shared/types";
 import type { Candidate, ProviderContext, TasteProvider } from "../types.js";
 import { tagLabel } from "./taxonomy.js";
 import {
   candidatesForKind,
   cityFor,
+  discoverSpecForKind,
   expandFrom,
   heatmapFor,
   planKinds,
+  rankTogetherMock,
   resolveCandidateEntry,
   resolveOne,
   scoreCandidates,
@@ -78,11 +91,28 @@ export class MockTasteProvider implements TasteProvider {
     return kinds;
   }
 
-  async discover(input: BusinessInput, resolved: ResolvedAnchor[], kind: PartnerKind, ctx: ProviderContext): Promise<Candidate[]> {
+  async discover(
+    input: BusinessInput,
+    resolved: ResolvedAnchor[],
+    kind: PartnerKind,
+    ctx: ProviderContext,
+    out?: { spec?: DiscoverSpec },
+  ): Promise<Candidate[]> {
     return ctx.trace(
       "get_insights",
       `kind: ${kind}, city: ${input.city}`,
-      async () => candidatesForKind(input, resolved, kind),
+      async () => {
+        const found = candidatesForKind(input, resolved, kind);
+        if (out) {
+          out.spec = discoverSpecForKind(
+            input,
+            resolved,
+            kind,
+            found.map((candidate) => candidate.entry.id),
+          );
+        }
+        return found;
+      },
       (list) => `${kind} · ${list.length} candidates`,
     );
   }
@@ -151,6 +181,15 @@ export class MockTasteProvider implements TasteProvider {
         return { ...partner, userAdded: true };
       },
       (partner) => `${partner.name} · ${partner.matchScore}`,
+    );
+  }
+
+  async rankTogether(spec: DiscoverSpec, extraEntityIds: string[], ctx: ProviderContext): Promise<RankEntry[]> {
+    return ctx.trace(
+      "score_shortlist",
+      `rank_together: ${spec.kind}, pool: ${spec.poolIds.length}`,
+      async () => rankTogetherMock(spec, extraEntityIds),
+      (list) => `${list.length} ranked`,
     );
   }
 }

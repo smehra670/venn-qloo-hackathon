@@ -1,5 +1,5 @@
-import { BriefSchema, ComparePayloadSchema, HeatmapSchema, PartnerSchema, ProofPayloadSchema, RunResultSchema } from "@shared/schemas";
-import type { Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ComparePayload, ExampleInput, Heatmap, Partner, ProofPayload, ProviderName, RunResult, RunStatus } from "@shared/types";
+import { BriefSchema, ComparePayloadSchema, HeatmapSchema, PartnerSchema, ProofResultSchema, RunResultSchema } from "@shared/schemas";
+import type { Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ComparePayload, ExampleInput, Heatmap, Partner, ProofResult, ProviderName, RunResult, RunStatus } from "@shared/types";
 import { z } from "zod";
 
 export class ApiError extends Error {
@@ -142,8 +142,8 @@ export function createBrief(id: string, partnerId: string, options: CreateBriefO
   );
 }
 
-export function postProof(id: string): Promise<ProofPayload> {
-  return request(`/api/runs/${id}/proof`, { method: "POST" }, (value) => ProofPayloadSchema.parse(value));
+export function postProof(id: string): Promise<ProofResult> {
+  return request(`/api/runs/${id}/proof`, { method: "POST" }, (value) => ProofResultSchema.parse(value));
 }
 
 export interface CheckPartnerOptions {

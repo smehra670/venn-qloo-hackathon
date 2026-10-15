@@ -1,8 +1,64 @@
 import { MAX_USER_ADDED_PARTNERS } from "@shared/constants";
+import type { ProofKindGroup, ProofResult } from "@shared/types";
 import { type FormEvent, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
+import { KIND_META } from "@/lib/kinds";
 import { useVenn } from "@/store/useVenn";
+
+function SummaryStrip({ summary }: { summary: ProofResult["summary"] }) {
+  if (summary.kindsCompared === 0) return null;
+  const deltaLabel = `${summary.avgDelta >= 0 ? "+" : ""}${summary.avgDelta} avg delta`;
+  return (
+    <div className="mt-3 flex flex-wrap gap-2">
+      <Chip>{`${summary.kindsCompared} kind${summary.kindsCompared === 1 ? "" : "s"} compared`}</Chip>
+      <Chip>{`Venn avg ${summary.avgVennScore}`}</Chip>
+      <Chip>{`Baseline avg ${summary.avgBaselineScore}`}</Chip>
+      <Chip className={summary.avgDelta >= 0 ? "text-emerald-700" : "text-rose-700"}>{deltaLabel}</Chip>
+      <Chip>{`Venn wins ${summary.vennWins} · baseline wins ${summary.baselineWins} · ties ${summary.ties}`}</Chip>
+    </div>
+  );
+}
+
+function ItemList({ items, empty }: { items: ProofKindGroup["vennItems"]; empty: string }) {
+  if (items.length === 0) return <p className="text-sm text-ink-soft">{empty}</p>;
+  return (
+    <ul className="space-y-1.5">
+      {items.map((item) => (
+        <li key={item.entityId} className="flex items-center justify-between gap-2 rounded-xl bg-paper-2 px-3 py-2">
+          <span className="min-w-0 truncate text-sm font-medium">{item.name}</span>
+          <span className="font-mono text-xs text-ink-soft">{item.score}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function KindGroupCard({ group }: { group: ProofKindGroup }) {
+  const meta = KIND_META[group.kind];
+  return (
+    <div className="rounded-2xl border border-line p-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="font-medium">{meta?.label ?? group.kind}</span>
+        {group.poolSize > 0 ? <span className="text-xs text-ink-soft">pool of {group.poolSize}</span> : null}
+      </div>
+      {group.note ? (
+        <p className="mt-2 text-sm text-ink-soft">{group.note}</p>
+      ) : (
+        <div className="mt-2 grid gap-3 sm:grid-cols-2">
+          <div>
+            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-ink-soft">Venn&apos;s pick</p>
+            <ItemList items={group.vennItems} empty="No score came back for Venn's pick this time." />
+          </div>
+          <div>
+            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-ink-soft">Obvious baseline</p>
+            <ItemList items={group.baselineItems} empty="No baseline score came back this time." />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function ProofView() {
   const result = useVenn((state) => state.result);
@@ -62,31 +118,39 @@ export function ProofView() {
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="font-serif text-2xl">Proof</h2>
           {proof ? (
-            <Chip>{proof.baseline === "ai" ? "AI-written baseline narrative" : "Popularity baseline"}</Chip>
+            <Chip>{proof.baseline === "ai" ? "AI-suggested baseline" : "Popularity baseline"}</Chip>
           ) : null}
         </div>
-        {proofLoading ? <p className="mt-2 text-sm text-ink-soft">Comparing against a baseline…</p> : null}
+        {proofLoading ? <p className="mt-2 text-sm text-ink-soft">Ranking each kind together with a baseline…</p> : null}
         {proof ? (
           <>
-            <p className="mt-2 text-sm leading-relaxed text-ink-soft">{proof.narrative}</p>
-            {proof.rows.length === 0 ? (
-              <p className="mt-4 text-sm text-ink-soft">Not enough partners in this search to compare yet.</p>
+            {proof.legacy ? (
+              <p className="mt-2 text-sm leading-relaxed text-ink-soft">
+                This search predates Venn&apos;s rank-together Proof, so there&apos;s no discover-call record to replay.
+                Run a fresh search to see Venn&apos;s picks ranked together with a baseline, call by call.
+              </p>
             ) : (
-              <ul className="mt-4 divide-y divide-line overflow-hidden rounded-2xl border border-line">
-                {proof.rows.map((row) => (
-                  <li key={row.partnerId} className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 py-3">
-                    <span className="min-w-0 flex-1 truncate font-medium">{row.partnerName}</span>
-                    <span className="font-mono text-xs text-ink-soft">Venn {row.matchScore}</span>
-                    <span className="font-mono text-xs text-ink-soft">baseline {row.baselineScore}</span>
-                    <span className={`font-mono text-xs ${row.delta >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
-                      {row.delta >= 0 ? "+" : ""}
-                      {row.delta}
-                    </span>
-                    <span className="basis-full text-sm text-ink-soft">{row.explanation}</span>
-                  </li>
+              <>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{proof.narrative}</p>
+                <SummaryStrip summary={proof.summary} />
+                {proof.perKind.length > 0 ? (
+                  <div className="mt-4 space-y-3">
+                    {proof.perKind.map((group) => (
+                      <KindGroupCard key={group.kind} group={group} />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="mt-4 text-sm text-ink-soft">Not enough partners in this search to compare yet.</p>
+                )}
+              </>
+            )}
+            {proof.caveats.length > 0 ? (
+              <ul className="mt-4 space-y-1 border-t border-line pt-3 text-xs text-ink-soft">
+                {proof.caveats.map((caveat) => (
+                  <li key={caveat}>{caveat}</li>
                 ))}
               </ul>
-            )}
+            ) : null}
           </>
         ) : null}
       </section>

@@ -1,5 +1,5 @@
 import { DEMO_LIMITS, STEP_TITLES, UNKNOWN_CITY_LIMIT } from "@shared/constants";
-import type { DecisionLogEntry, Normalization, PartnerKind, RunResult, StepId } from "@shared/types";
+import type { DecisionLogEntry, DiscoverSpec, Normalization, PartnerKind, RunResult, StepId } from "@shared/types";
 import { nanoid } from "nanoid";
 import { applyFeasibility, critiqueFeasibility, flaggedPartners } from "../agent/feasibility.js";
 import { applyGoals, hasAnyGoal, rerankTopPicks, summarizeGoals } from "../agent/goals.js";
@@ -49,7 +49,7 @@ export function executeRun(run: Run, log: (fields: Record<string, string | numbe
 
 async function pipeline(run: Run, log: (fields: Record<string, string | number>) => void): Promise<void> {
   const started = Date.now();
-  const provider = getProvider({ live: run.live });
+  const provider = getProvider({ live: run.live, input: run.input });
   let step: StepId = "resolve";
   const decisions: DecisionLogEntry[] = [];
   const ctx: ProviderContext = {
@@ -121,9 +121,12 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
 
     step = "discover";
     append(run, { type: "step_started", step, title: STEP_TITLES.discover });
+    const discoverSpecs: DiscoverSpec[] = [];
     let pool = (
       await mapPool(planned, provider.name === "qloo" ? 2 : 3, async (kind, index) => {
-        const found = await provider.discover(run.input, resolved, kind, ctx);
+        const specOut: { spec?: DiscoverSpec } = {};
+        const found = await provider.discover(run.input, resolved, kind, ctx, specOut);
+        if (specOut.spec) discoverSpecs.push(specOut.spec);
         return keepForKind(found, index);
       })
     ).flat();
@@ -170,7 +173,9 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       ctx.decide("Widened the search", retryReason);
       const widened = (
         await mapPool(extra, 2, async (kind) => {
-          const found = await provider.discover(run.input, resolved, kind, ctx);
+          const specOut: { spec?: DiscoverSpec } = {};
+          const found = await provider.discover(run.input, resolved, kind, ctx, specOut);
+          if (specOut.spec) discoverSpecs.push(specOut.spec);
           return found.filter((candidate) => candidate.provisional >= 0.12).slice(0, 3);
         })
       ).flat();
@@ -201,6 +206,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     topPicks = goalRerank.topPicks;
     for (const note of goalRerank.notes) ctx.decide("Adjusted a top pick for your preferences", note);
 
+    partners = partners.map((partner) => ({ ...partner, origin: partner.userAdded ? "user_added" : "discovered" }));
     partners = applyFeasibility(partners, topPicks, run.input);
     const flagged = flaggedPartners(partners, topPicks);
     if (flagged.length > 0) {
@@ -242,6 +248,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       },
       normalization: scoreOut.normalization,
       decisions,
+      discoverSpecs,
     };
     append(run, { type: "step_completed", step, summary: "Your map is ready." });
     append(run, { type: "result", result });

@@ -1,10 +1,13 @@
-import { PARTNER_KINDS, type BusinessInput } from "@shared/types";
+import { PARTNER_KINDS, type BusinessInput, type DiscoverSpec } from "@shared/types";
 import { describe, expect, it } from "vitest";
 import { formatsFor } from "../../brief/template.js";
 import { CATALOG } from "./catalog.js";
 import { CITIES } from "./cities.js";
 import {
+  discoverSpecForKind,
   planKinds,
+  rankTogetherMock,
+  resolveCandidateEntry,
   resolveOne,
   scoreCandidates,
   candidatesForKind,
@@ -89,5 +92,57 @@ describe("mock taste data", () => {
     expect(resolveOne("Aesop").status).toBe("matched");
     expect(resolveOne("pilates").status).toBe("keyword");
     expect(resolveOne("zz-not-a-real-thing").status).toBe("guessed");
+  });
+
+  describe("rankTogetherMock (works entirely offline)", () => {
+    it("builds a replayable DiscoverSpec whose params encode the audience profile", () => {
+      const resolved = cafe.anchors.map((anchor) => resolveOne(anchor));
+      const poolIds = CATALOG.filter((entry) => entry.kind === "retail").map((entry) => entry.id);
+      const spec = discoverSpecForKind(cafe, resolved, "retail", poolIds);
+      expect(spec.kind).toBe("retail");
+      expect(spec.entityType).toBe("brand");
+      expect(spec.poolIds).toEqual(poolIds);
+      expect(spec.params["signal.audience"]).toBeTruthy();
+      // Params are plain strings, so the spec is safe to persist as JSON on RunResult.
+      for (const value of Object.values(spec.params)) expect(typeof value).toBe("string");
+    });
+
+    it("ranks the same pool deterministically every time, with no network access", () => {
+      const resolved = cafe.anchors.map((anchor) => resolveOne(anchor));
+      const poolIds = CATALOG.filter((entry) => entry.kind === "retail").map((entry) => entry.id);
+      const spec = discoverSpecForKind(cafe, resolved, "retail", poolIds);
+
+      const first = rankTogetherMock(spec, []);
+      const second = rankTogetherMock(spec, []);
+      expect(first).toEqual(second);
+      expect(first.map((entry) => entry.entityId).sort()).toEqual([...poolIds].sort());
+      for (const entry of first) {
+        expect(entry.affinity).toBeGreaterThanOrEqual(0);
+        expect(entry.affinity).toBeLessThanOrEqual(1);
+      }
+    });
+
+    it("ranks a higher-overlap entity above an unrelated one for the same audience", () => {
+      const resolved = cafe.anchors.map((anchor) => resolveOne(anchor));
+      // Aesop (minimalist/skincare/design) overlaps the cafe's anchors far more than a
+      // streetwear-leaning entry like Vans does.
+      const spec: DiscoverSpec = discoverSpecForKind(cafe, resolved, "retail", ["aesop", "vans"]);
+      const ranked = rankTogetherMock(spec, []);
+      const aesop = ranked.find((entry) => entry.entityId === "aesop");
+      const vans = ranked.find((entry) => entry.entityId === "vans");
+      expect(aesop).toBeDefined();
+      expect(vans).toBeDefined();
+      expect(aesop!.affinity).toBeGreaterThan(vans!.affinity);
+    });
+
+    it("still ranks a synthetic 'Check a partner' id resolved earlier in the same process", () => {
+      const resolved = cafe.anchors.map((anchor) => resolveOne(anchor));
+      const synthetic = resolveCandidateEntry("Totally Not In The Demo Set Ltd");
+      expect(synthetic.id).toMatch(/^custom-/);
+      const spec = discoverSpecForKind(cafe, resolved, synthetic.kind, []);
+      const ranked = rankTogetherMock(spec, [synthetic.id]);
+      expect(ranked).toHaveLength(1);
+      expect(ranked[0]?.entityId).toBe(synthetic.id);
+    });
   });
 });

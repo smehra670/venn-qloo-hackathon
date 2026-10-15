@@ -59,6 +59,7 @@ export function toBrief(
   variant: number,
   tone: BriefTone,
   length: BriefLength,
+  model: string,
 ): Brief {
   return {
     runId: result.runId,
@@ -78,6 +79,7 @@ export function toBrief(
     // The disclaimer is fixed, trustworthy copy — never LLM-authored.
     limits: LIMITS_TEXT,
     generatedBy: "llm",
+    model,
     tone,
     length,
     sources: factPack.evidence,

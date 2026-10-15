@@ -65,6 +65,42 @@ export function entityTypeForKind(kind: PartnerKind): EntityType {
   return KIND_ENTITY[kind];
 }
 
+const ENTITY_TYPE_FILTER: Record<EntityType, QlooFilterType> = {
+  artist: "urn:entity:artist",
+  brand: "urn:entity:brand",
+  place: "urn:entity:place",
+  person: "urn:entity:person",
+  podcast: "urn:entity:podcast",
+  tv_show: "urn:entity:tv_show",
+  movie: "urn:entity:movie",
+  book: "urn:entity:book",
+  destination: "urn:entity:destination",
+};
+
+/** Inverse of `entityTypeForKind`-ish: the Qloo URN to filter by for a `DiscoverSpec.entityType`,
+ * used by `rankTogether` to replay the same filter.type as the original discover call. */
+export function filterTypeForEntityType(entityType: EntityType): QlooFilterType {
+  return ENTITY_TYPE_FILTER[entityType] ?? "urn:entity:brand";
+}
+
+/** Converts the mixed string/number/array param bag used for a live Qloo call into the plain
+ * `Record<string, string>` shape `DiscoverSpec.params` persists (and that `rankTogether` later
+ * replays), so a spec is plain JSON and safe to store on `RunResult`. */
+export function paramsToStrings(params: Record<string, string | number | string[]>): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const [key, value] of Object.entries(params)) {
+    out[key] = Array.isArray(value) ? value.join(",") : String(value);
+  }
+  return out;
+}
+
+export function chunk<T>(items: T[], size: number): T[][] {
+  if (size <= 0) return [items];
+  const out: T[][] = [];
+  for (let i = 0; i < items.length; i += size) out.push(items.slice(i, i + size));
+  return out;
+}
+
 export function searchTypesForAnchor(): string[] {
   return [
     "urn:entity:brand",

@@ -1,5 +1,6 @@
 import type { Partner, RunResult } from "@shared/types";
 import { describe, expect, it } from "vitest";
+import { config } from "../config.js";
 import { FakeLlmClient } from "../llm/fake.js";
 import type { LlmClient, LlmCompletionRequest } from "../llm/types.js";
 import { briefBudgetRemaining, writeAiBrief } from "./ai.js";
@@ -95,6 +96,8 @@ describe("writeAiBrief", () => {
     expect(brief.generatedBy).toBe("llm");
     expect(brief.sources?.map((s) => s.id)).toContain("ev-0");
     expect(brief.whyItFits[0]?.evidence).toEqual(["ev-0"]);
+    // Model attribution: an LLM-written brief records the model id actually used.
+    expect(brief.model).toBe(config.llmModel);
   });
 
   it("repairs an invented evidence id and keeps the llm brief", async () => {
@@ -141,6 +144,8 @@ describe("writeAiBrief", () => {
     const llm = new FakeLlmClient({ throwOnCall: 1 });
     const brief = await writeAiBrief(result, partner, { variant: 0 }, llm);
     expect(brief.generatedBy).toBe("template");
+    // Model attribution: the template fallback records "template", not an LLM model id.
+    expect(brief.model).toBe("template");
   });
 
   it("never lets a business name override the fixed system prompt", async () => {

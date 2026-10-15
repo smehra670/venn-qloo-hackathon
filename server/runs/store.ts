@@ -1,4 +1,4 @@
-import type { AgentEvent, Brief, BusinessInput, Heatmap, RunResult, StoredEvent } from "@shared/types";
+import type { AgentEvent, Brief, BusinessInput, Heatmap, ProofResult, RunResult, StoredEvent } from "@shared/types";
 import Database from "better-sqlite3";
 import { createHash } from "node:crypto";
 import { mkdirSync } from "node:fs";
@@ -18,6 +18,10 @@ export interface Run {
   subscribers: Set<(event: StoredEvent) => void>;
   heatmaps: Map<string, Heatmap | null>;
   briefs: Map<string, Brief>;
+  /** Cached Proof build (see `server/proof.ts`): rebuilding it re-does rank-together calls, so
+   * the first successful build for a run is kept until the process restarts. Not persisted to
+   * the sqlite row — a restart losing the cache just costs one rebuild, same as `briefs`. */
+  proof?: ProofResult;
   toolCalls: number;
   /** Forces the live Qloo provider for this run even when TASTE_PROVIDER=snapshot. */
   live?: boolean;
@@ -281,9 +285,10 @@ export function getStoreStats(): {
   };
 }
 
-/** Share links outlive the run itself (runs expire after `RUN_TTL_HOURS`, shares after 7
- * days), so the row snapshots the finished result rather than pointing back at the run. */
-const SHARE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
+/** Share links outlive the run itself (runs expire after `RUN_TTL_HOURS`, shares after
+ * `SHARE_TTL_HOURS`, 7 days by default), so the row snapshots the finished result rather than
+ * pointing back at the run. */
+const SHARE_TTL_MS = config.shareTtlHours * 60 * 60 * 1000;
 
 interface ShareRow {
   token: string;

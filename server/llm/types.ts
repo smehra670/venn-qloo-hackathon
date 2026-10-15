@@ -11,7 +11,7 @@ export interface LlmCompletionRequest {
   model?: string;
 }
 
-export type LlmProviderName = "openai" | "none" | "fake" | "empty";
+export type LlmProviderName = "openai" | "anthropic" | "none" | "fake" | "empty";
 
 export interface LlmClient {
   readonly provider: LlmProviderName;

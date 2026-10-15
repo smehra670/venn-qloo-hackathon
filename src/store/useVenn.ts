@@ -1,5 +1,5 @@
 import { MAX_USER_ADDED_PARTNERS, STEP_TITLES } from "@shared/constants";
-import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BriefLength, type BriefTone, type BusinessInput, type ComparePayload, type Heatmap, type PartnerKind, type ProofPayload, type RunResult, type StepId, type StoredEvent } from "@shared/types";
+import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BriefLength, type BriefTone, type BusinessInput, type ComparePayload, type Heatmap, type PartnerKind, type ProofResult, type RunResult, type StepId, type StoredEvent } from "@shared/types";
 import { toast } from "sonner";
 import { create } from "zustand";
 import { ApiError, cancelRun, createBrief, createRun, createShare, expandRun, getHealth, getHeatmap, getMeta, getRun, postCheck, postCompare, postProof, type Health, type Meta } from "@/lib/api";
@@ -78,7 +78,7 @@ interface VennState {
   briefLoading: boolean;
   briefs: Record<string, Brief>;
   heatmaps: Record<string, Heatmap | null>;
-  proof: ProofPayload | null;
+  proof: ProofResult | null;
   proofLoading: boolean;
   checking: boolean;
   compare: Record<string, ComparePayload>;

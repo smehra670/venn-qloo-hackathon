@@ -98,7 +98,10 @@ function Citations({ evidence, sources }: { evidence: string[]; sources: BriefSo
 }
 
 function GeneratorChip({ brief }: { brief: Brief }) {
-  return <Badge>{brief.generatedBy === "llm" ? "OpenAI" : "Template"}</Badge>;
+  if (brief.generatedBy === "llm") {
+    return <Badge>{`AI${brief.model ? ` · ${brief.model}` : ""}`}</Badge>;
+  }
+  return <Badge>Template</Badge>;
 }
 
 function BriefBody({ brief, dataLabel }: { brief: Brief; dataLabel: string }) {

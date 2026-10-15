@@ -58,7 +58,10 @@ export async function writeAiBrief(
   const factPack = buildFactPack(result, partner, variant);
   const system = buildSystemPrompt({ tone, length });
   const user = buildUserPrompt(factPack, { tone, length });
-  const request: LlmCompletionRequest = { system, user, schema: LLM_BRIEF_JSON_SCHEMA, model: config.llmModel };
+  // The actual model id used for the call — recorded on the brief so the UI can attribute
+  // it (e.g. "AI · gpt-4.1-mini") rather than just "AI".
+  const model = config.llmModel;
+  const request: LlmCompletionRequest = { system, user, schema: LLM_BRIEF_JSON_SCHEMA, model };
 
   spend(result.runId);
   try {
@@ -71,7 +74,7 @@ export async function writeAiBrief(
       outcome = validateLlmPayload(repaired, factPack);
     }
     if (!outcome.ok) return renderBrief(result, partner, variant);
-    return toBrief(outcome.value, factPack, result, partner, variant, tone, length);
+    return toBrief(outcome.value, factPack, result, partner, variant, tone, length, model);
   } catch {
     return renderBrief(result, partner, variant);
   }

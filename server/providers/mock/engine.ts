@@ -2,6 +2,7 @@ import { DEMO_LIMITS, UNKNOWN_CITY_LIMIT } from "@shared/constants";
 import type {
   BusinessInput,
   CityInfo,
+  DiscoverSpec,
   EntityType,
   EvidenceItem,
   Heatmap,
@@ -9,6 +10,7 @@ import type {
   Normalization,
   Partner,
   PartnerKind,
+  RankEntry,
   ResolvedAnchor,
   RunResult,
   SignalBreakdown,
@@ -455,9 +457,29 @@ const ENTITY_TYPE_FOR_KIND: Record<PartnerKind, EntityType> = {
   culture: "place",
 };
 
+export function entityTypeForKind(kind: PartnerKind): EntityType {
+  return ENTITY_TYPE_FOR_KIND[kind];
+}
+
 function hintedKind(entityHint?: string): PartnerKind {
   if (entityHint && (PARTNER_KINDS as readonly string[]).includes(entityHint)) return entityHint as PartnerKind;
   return "culture";
+}
+
+/** Synthetic ("Check a partner" stand-in) entries are a pure function of their name, but the
+ * name itself isn't recoverable from the resulting id — so `rankTogether` keeps a small,
+ * capped registry of entries it has already synthesized this process, keyed by id, to look
+ * tags back up for ids it's asked to rank that didn't come from the catalog. */
+const SYNTHETIC_REGISTRY = new Map<string, CatalogEntry>();
+const SYNTHETIC_REGISTRY_MAX = 500;
+
+function registerSynthetic(entry: CatalogEntry): CatalogEntry {
+  if (!SYNTHETIC_REGISTRY.has(entry.id) && SYNTHETIC_REGISTRY.size >= SYNTHETIC_REGISTRY_MAX) {
+    const oldestKey = SYNTHETIC_REGISTRY.keys().next().value;
+    if (oldestKey !== undefined) SYNTHETIC_REGISTRY.delete(oldestKey);
+  }
+  SYNTHETIC_REGISTRY.set(entry.id, entry);
+  return entry;
 }
 
 function syntheticCatalogEntry(name: string, entityHint?: string): CatalogEntry {
@@ -505,7 +527,77 @@ export function resolveCandidateEntry(name: string, entityHint?: string): Catalo
     const entry = CATALOG.find((item) => item.id === best.item.id);
     if (entry) return entry;
   }
-  return syntheticCatalogEntry(name, entityHint);
+  return registerSynthetic(syntheticCatalogEntry(name, entityHint));
+}
+
+/** Encodes a weighted tag map into a flat `tag:weight,tag:weight` string so it fits
+ * `DiscoverSpec.params` (plain strings) and can be decoded again by `rankTogetherMock`
+ * without needing the original `BusinessInput`/`ResolvedAnchor[]` — mirroring how a live Qloo
+ * `rankTogether` call only needs the params it was given, not the original anchors. */
+function encodeWeights(map: Map<string, number>): string {
+  return [...map.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 16)
+    .map(([tag, weight]) => `${tag}:${weight.toFixed(3)}`)
+    .join(",");
+}
+
+function decodeWeights(param?: string): Map<string, number> {
+  const map = new Map<string, number>();
+  if (!param) return map;
+  for (const pair of param.split(",")) {
+    if (!pair) continue;
+    const idx = pair.lastIndexOf(":");
+    if (idx === -1) continue;
+    const tag = pair.slice(0, idx);
+    const weight = Number(pair.slice(idx + 1));
+    if (tag) map.set(tag, Number.isFinite(weight) ? weight : 0.5);
+  }
+  return map;
+}
+
+/** Builds the `DiscoverSpec` for one mock discover call: the audience's weighted tag profile
+ * (so `rankTogetherMock` can replay the same affinity math later without re-deriving it from
+ * the original anchors) plus the pool of entity ids that call actually returned. */
+export function discoverSpecForKind(
+  input: BusinessInput,
+  resolved: ResolvedAnchor[],
+  kind: PartnerKind,
+  poolIds: string[],
+): DiscoverSpec {
+  const profiles = buildProfiles(input, resolved);
+  return {
+    kind,
+    entityType: entityTypeForKind(kind),
+    params: {
+      kind,
+      category: profileFor(input.businessType).category,
+      "signal.audience": encodeWeights(profiles.audience),
+    },
+    poolIds,
+  };
+}
+
+/**
+ * Deterministic "ranked together" affinities for the mock provider: cosine similarity between
+ * the audience profile encoded in `spec.params` and each id's catalog tags. Ids outside the
+ * demo catalog (synthetic "Check" entries from this process, or genuinely unknown ids) fall
+ * back to a stable popularity-ish estimate derived from the id itself, so the shape of the
+ * response never depends on network access.
+ */
+export function rankTogetherMock(spec: DiscoverSpec, extraEntityIds: string[]): RankEntry[] {
+  const ids = [...new Set([...spec.poolIds, ...extraEntityIds])];
+  const audience = decodeWeights(spec.params["signal.audience"]);
+  return ids.map((id) => {
+    const entry = CATALOG.find((item) => item.id === id) ?? SYNTHETIC_REGISTRY.get(id);
+    if (!entry) {
+      const roll = unitFor(hashString(id), spec.kind);
+      return { entityId: id, affinity: Math.max(0.15, Math.min(0.55, roll)), popularity: 0.5 };
+    }
+    const tagMap = recordToMap(entry.tags);
+    const affinity = audience.size > 0 ? cosine(audience, tagMap) : entry.popularity;
+    return { entityId: id, affinity, popularity: entry.popularity };
+  });
 }
 
 /**

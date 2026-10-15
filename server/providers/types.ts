@@ -1,10 +1,12 @@
 import type {
   BusinessInput,
   CityInfo,
+  DiscoverSpec,
   EntityType,
   Normalization,
   PartnerKind,
   ProviderName,
+  RankEntry,
 } from "@shared/types";
 
 /** Provider-agnostic entity used as a discover/score candidate. */
@@ -56,6 +58,11 @@ export interface TasteProvider {
     resolved: import("@shared/types").ResolvedAnchor[],
     kind: PartnerKind,
     ctx: ProviderContext,
+    /** Set by the implementation to the `DiscoverSpec` it used (request shape + pool ids),
+     * so the runner can attach it to `RunResult.discoverSpecs` for later `rankTogether` calls.
+     * Left unset when the call doesn't correspond to a replayable spec (e.g. a text-search
+     * fallback instead of a real insights call). */
+    out?: { spec?: DiscoverSpec },
   ): Promise<Candidate[]>;
   score(
     input: BusinessInput,
@@ -94,4 +101,18 @@ export interface TasteProvider {
     frozen: { normalization: Normalization; medianScore: number },
     ctx: ProviderContext,
   ): Promise<import("@shared/types").Partner | null>;
+  /**
+   * Ranks `spec.poolIds` plus `extraEntityIds` together in one call (or the mock/snapshot
+   * equivalent), so every returned affinity is comparable — the core fix behind Proof/Check
+   * (see `docs/SCORING.md`). Returns one `RankEntry` per id Qloo (or the mock catalog) could
+   * place; ids it has no information for are simply omitted rather than guessed.
+   *
+   * - Qloo: `GET /v2/insights` with `spec.params` plus `filter.results.entities` (chunked at
+   *   20 ids) and `filter.type` from `spec.entityType`.
+   * - Mock: deterministic cosine affinity against the demo catalog using the audience profile
+   *   encoded in `spec.params`.
+   * - Snapshot: best-effort from the run's own stored partners; empty array (with the caller
+   *   expected to surface a "legacy" note) when nothing can be recomputed.
+   */
+  rankTogether(spec: DiscoverSpec, extraEntityIds: string[], ctx: ProviderContext): Promise<RankEntry[]>;
 }

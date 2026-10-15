@@ -1,11 +1,13 @@
 import type {
   BusinessInput,
   CityInfo,
+  DiscoverSpec,
   Heatmap,
   Normalization,
   Partner,
   PartnerKind,
   ProviderName,
+  RankEntry,
   ResolvedAnchor,
   RunResult,
 } from "@shared/types";
@@ -18,6 +20,14 @@ import { latestSnapshotDate, snapshotDirPath } from "./manifest.js";
 interface SnapshotFile {
   meta: { date: string; provider: string; exampleIndex: number; businessName?: string };
   result: RunResult;
+}
+
+/** True when a saved snapshot file exists on disk for this exact input (business type, city,
+ * anchors). Lets callers (e.g. `getProvider()`'s `EXAMPLES_MODE=snapshot` replay) check before
+ * committing to the snapshot provider, instead of catching `SnapshotNotFoundError`. */
+export function hasSnapshot(input: BusinessInput): boolean {
+  const hash = hashInput(input);
+  return existsSync(path.join(snapshotDirPath(), `${hash}.json`));
 }
 
 export class SnapshotNotFoundError extends Error {
@@ -91,6 +101,9 @@ export class SnapshotTasteProvider implements TasteProvider {
     _resolved: ResolvedAnchor[],
     kind: PartnerKind,
     _ctx: ProviderContext,
+    // Snapshots are a static replay of a past run, not a fresh call, so there is no request
+    // shape to record — `out.spec` is deliberately left unset (see `rankTogether` below).
+    _out?: { spec?: DiscoverSpec },
   ): Promise<Candidate[]> {
     const { result } = this.load(input);
     return result.partners
@@ -152,5 +165,16 @@ export class SnapshotTasteProvider implements TasteProvider {
       result.partners.find((partner) => partner.name.toLowerCase().includes(needle));
     if (!match) return null;
     return { ...match, relatedIds: [...match.relatedIds], userAdded: true };
+  }
+
+  /**
+   * Snapshots have no live call to replay and `rankTogether`'s signature doesn't carry the
+   * `BusinessInput` needed to look up which saved run's partners to read from — so this is
+   * the "return empty with legacy note" branch: no `DiscoverSpec`s are ever recorded for this
+   * provider either (see `discover` above), so Proof already knows to show its legacy message
+   * rather than call this at all; this just keeps the contract honest if it is called anyway.
+   */
+  async rankTogether(_spec: DiscoverSpec, _extraEntityIds: string[], _ctx: ProviderContext): Promise<RankEntry[]> {
+    return [];
   }
 }

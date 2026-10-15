@@ -7,6 +7,18 @@
 - `/v2/analysis/compare` 200 with tags/a/b/matchEntities (tags often empty → degrade). Demographics empty. Trending 400. Prod host 401. Quota headers present (`x-month-ratelimit-remaining`). Aesop untyped → author first.
 - Calls: 23.
 
+## Gap-fill Phase 1 — Config / pacing (2026-10-15)
+
+- `EXAMPLES_MODE`, Qloo RPS/in-flight/monthly floor, quota 429 on live runs, health/meta fields, `PUBLIC_REPO_URL`.
+
+## Gap-fill Phase 2 — Model label (2026-10-15)
+
+- Brief.`model` + UI chip; explicit LLM_PROVIDER boot checks; thin Anthropic adapter; OpenAI remains default working provider.
+
+## Gap-fill Phase 3 — rankTogether Proof (2026-10-15)
+
+- `DiscoverSpec` + `rankTogether`; Proof paired lists from one call per kind; Check via rankTogether; legacy fallback. Tests: 100.
+
 ## Phase 0 — Audit, baseline, probe (2026-10-13)
 
 - Baseline: `typecheck` / `test` (12) / `build` — green.

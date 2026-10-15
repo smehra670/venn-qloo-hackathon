@@ -1,35 +1,39 @@
 import { BUSINESS_TYPE_LABELS } from "@shared/constants";
-import { BUSINESS_TYPES, type ExampleInput } from "@shared/types";
+import { BUSINESS_TYPES } from "@shared/types";
 import type { FastifyInstance } from "fastify";
 import { accessSync, constants as fsConstants, mkdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { config } from "../config.js";
+import { EXAMPLES } from "../examples.js";
 import { isLlmEnabled } from "../llm/index.js";
 import { getProvider } from "../providers/index.js";
-import { getCircuitState } from "../providers/qloo/client.js";
+import { getCircuitState, getQlooQuotaRemaining } from "../providers/qloo/client.js";
 import { hashInput } from "../providers/snapshot/hash.js";
 import { loadManifest } from "../providers/snapshot/manifest.js";
 import { getScheduler } from "../runs/scheduler.js";
 import { getStoreStats } from "../runs/store.js";
 import { getUsageHistory, getUsageSummary } from "../usage/ledger.js";
 
-export const EXAMPLES: ExampleInput[] = [
-  { businessType: "cafe", city: "London", anchors: ["Aesop", "Radiohead", "pilates"], businessName: "Brew & Co" },
-  { businessType: "gym_studio", city: "Manchester", anchors: ["Patagonia", "craft beer", "bouldering"] },
-  { businessType: "retail_shop", city: "New York", anchors: ["Bandcamp", "Polaroid", "natural wine"], businessName: "Second Spin Records" },
-];
+export { EXAMPLES };
 
-function version(): string {
+function readPackageJson(): Record<string, unknown> {
   try {
     const raw = readFileSync(path.resolve(process.cwd(), "package.json"), "utf8");
     const parsed: unknown = JSON.parse(raw);
-    if (parsed && typeof parsed === "object" && "version" in parsed && typeof parsed.version === "string") {
-      return parsed.version;
-    }
+    return parsed && typeof parsed === "object" ? (parsed as Record<string, unknown>) : {};
   } catch {
-    return "0.1.0";
+    return {};
   }
-  return "0.1.0";
+}
+
+function version(): string {
+  const field = readPackageJson().version;
+  return typeof field === "string" ? field : "0.1.0";
+}
+
+function license(): string | null {
+  const field = readPackageJson().license;
+  return typeof field === "string" ? field : null;
 }
 
 function dataDirOk(): boolean {
@@ -59,6 +63,8 @@ export function registerHealth(app: FastifyInstance): void {
       llm: { enabled: isLlmEnabled(), provider: config.llmProvider },
       dataDir: { path: config.dataDir, ok: dataDirOk() },
       usage: getUsageSummary(),
+      qlooQuotaRemaining: getQlooQuotaRemaining(),
+      examplesMode: config.examplesMode,
     };
   });
 
@@ -72,6 +78,8 @@ export function registerHealth(app: FastifyInstance): void {
     demoCities: ["London", "Manchester", "New York"],
     examples: EXAMPLES,
     latency: config.mockLatency,
+    publicRepoUrl: config.publicRepoUrl ?? null,
+    license: license(),
   }));
 
   app.get("/api/examples", async () => {
