@@ -1,0 +1,25 @@
+[
+  {
+    "index": 0,
+    "hash": "dbdccc94ae446b21",
+    "businessName": "Brew & Co",
+    "city": "London",
+    "provider": "qloo",
+    "date": "2026-10-15"
+  },
+  {
+    "index": 1,
+    "hash": "c71a62c21e06c79c",
+    "city": "Manchester",
+    "provider": "qloo",
+    "date": "2026-10-15"
+  },
+  {
+    "index": 2,
+    "hash": "2232d37ab2fe3342",
+    "businessName": "Second Spin Records",
+    "city": "New York",
+    "provider": "qloo",
+    "date": "2026-10-15"
+  }
+]

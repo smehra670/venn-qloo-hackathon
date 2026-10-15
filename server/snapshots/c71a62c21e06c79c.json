@@ -1,0 +1,1266 @@
+{
+  "meta": {
+    "date": "2026-10-15",
+    "provider": "qloo",
+    "exampleIndex": 1
+  },
+  "result": {
+    "runId": "ESZnZaKAezZZ",
+    "createdAt": 1792061055155,
+    "provider": "qloo",
+    "providerLabel": "Qloo",
+    "input": {
+      "businessType": "gym_studio",
+      "city": "Manchester",
+      "anchors": [
+        "Patagonia",
+        "craft beer",
+        "bouldering"
+      ]
+    },
+    "resolvedAnchors": [
+      {
+        "input": "Patagonia",
+        "status": "matched",
+        "entityId": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+        "entityName": "Patagonia",
+        "entityType": "brand",
+        "tags": [
+          "casual",
+          "fashion",
+          "athletic",
+          "functional",
+          "earthy_color_palettes",
+          "minimalist_branding",
+          "rugged_utility",
+          "technical_performance_design"
+        ],
+        "note": "Matched to Patagonia via Qloo search."
+      },
+      {
+        "input": "craft beer",
+        "status": "keyword",
+        "tags": [
+          "craft_beer",
+          "craft_beer",
+          "craft_beer",
+          "craft_beer",
+          "craft_beer"
+        ],
+        "note": "Read as interest tags from Qloo (Craft beer, Craft Beer)."
+      },
+      {
+        "input": "bouldering",
+        "status": "keyword",
+        "tags": [
+          "austin_bouldering_project"
+        ],
+        "note": "Read as interest tags from Qloo (Austin Bouldering Project)."
+      }
+    ],
+    "plannedKinds": [
+      "wellness",
+      "food",
+      "drink",
+      "fashion",
+      "retail",
+      "music"
+    ],
+    "partners": [
+      {
+        "id": "A8B58365-756C-4891-80E6-E07A4498EA26",
+        "name": "Targowa - Craft Beer and Food",
+        "kind": "food",
+        "entityType": "place",
+        "blurb": "Craft beer bar pairing local Polish dishes and late-night small plates in central Wrocław, with private dining and LGBTQ+-friendly service.",
+        "local": false,
+        "matchScore": 96,
+        "surprise": 0.65,
+        "isSurprising": true,
+        "reasons": [
+          "Your customers and Targowa - Craft Beer and Food's audience both lean perogies and hard liquor.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "perogies",
+          "hard liquor",
+          "historic"
+        ],
+        "tags": [
+          "perogies",
+          "hard_liquor",
+          "historic",
+          "groups_of_friends",
+          "cocktails",
+          "takeout",
+          "visa",
+          "large_group"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9818383485612167,
+          "affinityFromPartner": 0.9824083409149251,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6872868439928517,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "perogies, hard liquor, historic",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "98% from your anchors toward Targowa - Craft Beer and Food",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "98% from Targowa - Craft Beer and Food back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "FB605B9C-4359-4A7E-8530-AACD314C03AE",
+          "DA65695A-0502-416A-8DC1-1E17505258E1",
+          "0BCA5F34-EC46-492D-A25C-BF421595BB42"
+        ],
+        "origin": "discovered",
+        "feasibility": {
+          "level": "easy",
+          "reason": "Strong shared tags and a solid match score make Targowa - Craft Beer and Food a natural first outreach.",
+          "origin": "rule"
+        }
+      },
+      {
+        "id": "11540186-905B-4FF4-8B1A-B1C05AC68DA3",
+        "name": "Backcountry",
+        "kind": "wellness",
+        "entityType": "brand",
+        "blurb": "Backcountry is an online retailer specializing in outdoor gear and clothing for activities like skiing, snowboarding, camping, hiking, biking, climbing, and travel.",
+        "local": false,
+        "matchScore": 95,
+        "surprise": 0.3,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Backcountry's audience both lean online retailers of the united states and sporting goods retailers of the united states.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "online retailers of the united states",
+          "sporting goods retailers of the united states",
+          "retail companies established in 1996"
+        ],
+        "tags": [
+          "online_retailers_of_the_united_states",
+          "sporting_goods_retailers_of_the_united_states",
+          "retail_companies_established_in_1996",
+          "companies_based_in_salt_lake_county",
+          "retail",
+          "1996_establishments_in_utah",
+          "internet_properties_established_in_1996",
+          "minimalist_design"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9542531295279105,
+          "affinityFromPartner": 0.9863148943977406,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6859622654303198,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "online retailers of the united states, sporting goods retailers of the united states, retail companies established in 1996",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "95% from your anchors toward Backcountry",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "99% from Backcountry back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "7A016C85-D68B-446B-9D97-2B2D96ACF6F6",
+          "205AF33F-118E-4C49-9721-6BDBAF981DA0",
+          "DB03F250-64F3-47AB-8756-BC1C4E13EBFD"
+        ],
+        "origin": "discovered",
+        "feasibility": {
+          "level": "easy",
+          "reason": "Strong shared tags and a solid match score make Backcountry a natural first outreach.",
+          "origin": "rule"
+        }
+      },
+      {
+        "id": "7A016C85-D68B-446B-9D97-2B2D96ACF6F6",
+        "name": "Backpacker Magazine",
+        "kind": "wellness",
+        "entityType": "brand",
+        "blurb": "Backpacker Magazine is a publication focused on camping, hiking, backpacking gear, skills, and outdoor adventure content.",
+        "local": false,
+        "matchScore": 95,
+        "surprise": 0.3,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Backpacker Magazine's audience both lean entertainment and media.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "entertainment",
+          "media",
+          "advertising enabled"
+        ],
+        "tags": [
+          "entertainment",
+          "media",
+          "advertising_enabled",
+          "travel",
+          "website",
+          "authentic_photography",
+          "rugged_imagery",
+          "technical_documentation"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9514064218789732,
+          "affinityFromPartner": 0.9831218324007723,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.676338763540201,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "entertainment, media, advertising enabled",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "95% from your anchors toward Backpacker Magazine",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "98% from Backpacker Magazine back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "11540186-905B-4FF4-8B1A-B1C05AC68DA3",
+          "205AF33F-118E-4C49-9721-6BDBAF981DA0",
+          "DB03F250-64F3-47AB-8756-BC1C4E13EBFD"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "205AF33F-118E-4C49-9721-6BDBAF981DA0",
+        "name": "Recreational Equipment Inc",
+        "kind": "wellness",
+        "entityType": "brand",
+        "blurb": "REI is a retail co-op specializing in outdoor gear, clothing, and equipment, promoting a life outdoors since 1938.",
+        "local": false,
+        "matchScore": 95,
+        "surprise": 0.3,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Recreational Equipment Inc's audience both lean fashion and casual.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "fashion",
+          "casual"
+        ],
+        "tags": [
+          "fashion",
+          "casual",
+          "functionalist",
+          "earth-toned_palette",
+          "clean_minimalist_typography",
+          "nature-focused_photography",
+          "rugged_industrial_elements",
+          "thru-hiking"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9706037605494069,
+          "affinityFromPartner": 0.9637847610045924,
+          "tagOverlap": 0.25,
+          "localPopularity": 0.6949627909342102,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "fashion, casual",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "97% from your anchors toward Recreational Equipment Inc",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "96% from Recreational Equipment Inc back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "11540186-905B-4FF4-8B1A-B1C05AC68DA3",
+          "7A016C85-D68B-446B-9D97-2B2D96ACF6F6",
+          "DB03F250-64F3-47AB-8756-BC1C4E13EBFD"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "0BCA5F34-EC46-492D-A25C-BF421595BB42",
+        "name": "’s handwerk – craft food & beer",
+        "kind": "food",
+        "entityType": "place",
+        "blurb": "Casual German eatery serving schnitzels, steaks and salads with local ingredients, plus craft beers on an airy terrace.",
+        "local": false,
+        "matchScore": 93,
+        "surprise": 0.65,
+        "isSurprising": true,
+        "reasons": [
+          "Your customers and ’s handwerk – craft food & beer's audience both lean casual.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "casual"
+        ],
+        "tags": [
+          "casual",
+          "outdoor_seating",
+          "evening",
+          "coffee",
+          "wheelchair_accessible_parking_lot",
+          "urban",
+          "comfortable",
+          "lively"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9155800618178888,
+          "affinityFromPartner": 0.979782544078108,
+          "tagOverlap": 0.125,
+          "localPopularity": 0.6409060432725221,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "casual",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "92% from your anchors toward ’s handwerk – craft food & beer",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "98% from ’s handwerk – craft food & beer back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "A8B58365-756C-4891-80E6-E07A4498EA26",
+          "FB605B9C-4359-4A7E-8530-AACD314C03AE",
+          "DA65695A-0502-416A-8DC1-1E17505258E1"
+        ],
+        "origin": "discovered",
+        "feasibility": {
+          "level": "easy",
+          "reason": "Strong shared tags and a solid match score make ’s handwerk – craft food & beer a natural first outreach.",
+          "origin": "rule"
+        }
+      },
+      {
+        "id": "FB605B9C-4359-4A7E-8530-AACD314C03AE",
+        "name": "Piwoteka Narodowa Craft Beer & Food",
+        "kind": "food",
+        "entityType": "place",
+        "blurb": "Gastropub and craft beer bar with an attached beer shop, extensive rotating taps, barrel-aged stouts, cocktails, and casual food in central Łódź.",
+        "local": false,
+        "matchScore": 93,
+        "surprise": 0.65,
+        "isSurprising": true,
+        "reasons": [
+          "Your customers and Piwoteka Narodowa Craft Beer & Food's audience both lean outdoor seating and tourist attraction.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "outdoor seating",
+          "tourist attraction",
+          "traditional"
+        ],
+        "tags": [
+          "outdoor_seating",
+          "tourist_attraction",
+          "traditional",
+          "beer_tasting",
+          "local_gastronomy",
+          "dine_in",
+          "piotrkowska_street",
+          "contemporary"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9201129526715379,
+          "affinityFromPartner": 0.9774581168744494,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6440790668700765,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "outdoor seating, tourist attraction, traditional",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "92% from your anchors toward Piwoteka Narodowa Craft Beer & Food",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "98% from Piwoteka Narodowa Craft Beer & Food back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "A8B58365-756C-4891-80E6-E07A4498EA26",
+          "DA65695A-0502-416A-8DC1-1E17505258E1",
+          "0BCA5F34-EC46-492D-A25C-BF421595BB42"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "DB03F250-64F3-47AB-8756-BC1C4E13EBFD",
+        "name": "The North Face",
+        "kind": "wellness",
+        "entityType": "brand",
+        "blurb": "The North Face is a premier outdoor brand offering clothing, gear, backpacks, and footwear for exploration and adventure.",
+        "local": false,
+        "matchScore": 93,
+        "surprise": 0.3,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and The North Face's audience both lean casual.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "casual"
+        ],
+        "tags": [
+          "2010s_fashion",
+          "clothing_brands_of_the_united_states",
+          "mountaineering_equipment_manufacturers",
+          "sneakers",
+          "clothing_companies_established_in_1966",
+          "footwear",
+          "casual",
+          "companies_based_in_san_leandro"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9566991631255227,
+          "affinityFromPartner": 0.9401137469113057,
+          "tagOverlap": 0.125,
+          "localPopularity": 0.6980717397569121,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "casual",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "96% from your anchors toward The North Face",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "94% from The North Face back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "11540186-905B-4FF4-8B1A-B1C05AC68DA3",
+          "7A016C85-D68B-446B-9D97-2B2D96ACF6F6",
+          "205AF33F-118E-4C49-9721-6BDBAF981DA0"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "DA65695A-0502-416A-8DC1-1E17505258E1",
+        "name": "Everest BA - food & craft beer",
+        "kind": "food",
+        "entityType": "place",
+        "blurb": "Neighborhood brewpub serving craft beer, cocktails and bar food with a lively atmosphere, dancing, and outdoor seating.",
+        "local": false,
+        "matchScore": 92,
+        "surprise": 0.65,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Everest BA - food & craft beer's audience both lean rustic and sidewalk seating.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "rustic",
+          "sidewalk seating",
+          "central"
+        ],
+        "tags": [
+          "rustic",
+          "sidewalk_seating",
+          "central",
+          "classic",
+          "families",
+          "groups_of_friends",
+          "neighborhood_socializing",
+          "restrooms"
+        ],
+        "signals": {
+          "affinityToPartner": 0.8907032091292266,
+          "affinityFromPartner": 0.9841295930162521,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6234922463904586,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "rustic, sidewalk seating, central",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "89% from your anchors toward Everest BA - food & craft beer",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "98% from Everest BA - food & craft beer back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "A8B58365-756C-4891-80E6-E07A4498EA26",
+          "FB605B9C-4359-4A7E-8530-AACD314C03AE",
+          "0BCA5F34-EC46-492D-A25C-BF421595BB42"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "7AB23AE5-D02E-452B-8E56-688F788BB0FB",
+        "name": "Hop City Craft Beer and Wine - The Krog District",
+        "kind": "drink",
+        "entityType": "place",
+        "blurb": "Bottle shop and taproom in Krog Street Market offering rotating craft beers (24 taps), curated wines and ciders with on-site dining and retail sales.",
+        "local": false,
+        "matchScore": 90,
+        "surprise": 0.65,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Hop City Craft Beer and Wine - The Krog District's audience both lean beer enthusiasts and market hall interior.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "beer enthusiasts",
+          "market hall interior",
+          "in store pickup"
+        ],
+        "tags": [
+          "beer_enthusiasts",
+          "market_hall_interior",
+          "in_store_pickup",
+          "relaxing",
+          "cocktails",
+          "inman_park",
+          "knowledgeable",
+          "ciders_and_unique_specialty_alcoholic_beverages"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9985570749388675,
+          "affinityFromPartner": 0.8487735136980373,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6989899524572072,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "beer enthusiasts, market hall interior, in store pickup",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "100% from your anchors toward Hop City Craft Beer and Wine - The Krog District",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "85% from Hop City Craft Beer and Wine - The Krog District back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "8F1CE9CA-B5D2-4FE4-823C-C81C90727858",
+          "A8B58365-756C-4891-80E6-E07A4498EA26",
+          "C8543090-A342-4C40-80F9-1577454B9FF4"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "8F1CE9CA-B5D2-4FE4-823C-C81C90727858",
+        "name": "Lousiane Brewhouse Nha Trang Restaurant & Craft Beer",
+        "kind": "drink",
+        "entityType": "place",
+        "blurb": "Craft brewery and restaurant in Nha Trang offering house-brewed beers, poolside dining, live music, cooking classes, and beer-paired international cuisine.",
+        "local": false,
+        "matchScore": 90,
+        "surprise": 0.65,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Lousiane Brewhouse Nha Trang Restaurant & Craft Beer's audience both lean casual.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "casual"
+        ],
+        "tags": [
+          "beachside_chill",
+          "anniversary",
+          "international_cuisine",
+          "nfc_mobile_payments",
+          "casual",
+          "sunbathing",
+          "scenic",
+          "nha_trang_beach"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9981780029798287,
+          "affinityFromPartner": 0.8484513025328544,
+          "tagOverlap": 0.125,
+          "localPopularity": 0.69872460208588,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "casual",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "100% from your anchors toward Lousiane Brewhouse Nha Trang Restaurant & Craft Beer",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "85% from Lousiane Brewhouse Nha Trang Restaurant & Craft Beer back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "7AB23AE5-D02E-452B-8E56-688F788BB0FB",
+          "A8B58365-756C-4891-80E6-E07A4498EA26",
+          "C8543090-A342-4C40-80F9-1577454B9FF4"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "C8543090-A342-4C40-80F9-1577454B9FF4",
+        "name": "Bahamas",
+        "kind": "music",
+        "entityType": "brand",
+        "blurb": "Bahamas is the stage name of Afie Jurvanen, a Canadian musician and singer-songwriter known for his smooth blend of indie rock, folk rock, and alternative music. His music features",
+        "local": false,
+        "matchScore": 88,
+        "surprise": 0.85,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Bahamas's audience both lean indie rock and piano.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "indie rock",
+          "piano",
+          "alternative indie"
+        ],
+        "tags": [
+          "indie_rock",
+          "piano",
+          "alternative_indie",
+          "singer-songwriter",
+          "soulful",
+          "folk_rock",
+          "laid_back",
+          "acoustic_soul"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9704500410061961,
+          "affinityFromPartner": 0.8248825348552667,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6912768941404688,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "indie rock, piano, alternative indie",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "97% from your anchors toward Bahamas",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "82% from Bahamas back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "F91F4E13-923B-4DD9-AB11-CCF6FA6BCE03",
+          "5DFD7065-7552-4946-839A-FC319A472E28",
+          "7AB23AE5-D02E-452B-8E56-688F788BB0FB"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "5DFD7065-7552-4946-839A-FC319A472E28",
+        "name": "Houndmouth",
+        "kind": "music",
+        "entityType": "brand",
+        "blurb": "Houndmouth is an American indie rock band formed in New Albany, Indiana. The band is known for their distinctive blend of indie rock, folk rock, and Americana, characterized by sto",
+        "local": false,
+        "matchScore": 88,
+        "surprise": 0.85,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Houndmouth's audience both lean american life and american.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "american life",
+          "american",
+          "vintage"
+        ],
+        "tags": [
+          "american_life",
+          "american",
+          "vintage",
+          "harmonic",
+          "indie",
+          "indie_rock",
+          "bob_dylan",
+          "nostalgia"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9653675443374148,
+          "affinityFromPartner": 0.8205624126868025,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6822533079055502,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "american life, american, vintage",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "97% from your anchors toward Houndmouth",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "82% from Houndmouth back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "C8543090-A342-4C40-80F9-1577454B9FF4",
+          "F91F4E13-923B-4DD9-AB11-CCF6FA6BCE03",
+          "7AB23AE5-D02E-452B-8E56-688F788BB0FB"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "F91F4E13-923B-4DD9-AB11-CCF6FA6BCE03",
+        "name": "The Head and the Heart",
+        "kind": "music",
+        "entityType": "brand",
+        "blurb": "The Head and the Heart is an American indie folk band formed in Seattle, Washington. Known for their rich harmonies, emotive lyrics, and a blend of folk and indie rock sounds, the ",
+        "local": false,
+        "matchScore": 88,
+        "surprise": 0.85,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and The Head and the Heart's audience both lean electric guitar and harmonious.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "electric guitar",
+          "harmonious",
+          "bob dylan"
+        ],
+        "tags": [
+          "electric_guitar",
+          "harmonious",
+          "bob_dylan",
+          "simon_&_garfunkel",
+          "indie_folk",
+          "nature",
+          "indie_-_folk",
+          "love"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9670531356781848,
+          "affinityFromPartner": 0.8219951653264571,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6971695207387164,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "electric guitar, harmonious, bob dylan",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "97% from your anchors toward The Head and the Heart",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "82% from The Head and the Heart back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "C8543090-A342-4C40-80F9-1577454B9FF4",
+          "5DFD7065-7552-4946-839A-FC319A472E28",
+          "7AB23AE5-D02E-452B-8E56-688F788BB0FB"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "46DC6AA4-6297-4961-97E8-198F5CD7383F",
+        "name": "Jungle Forlì - Craft Beer, Food Drink",
+        "kind": "drink",
+        "entityType": "place",
+        "blurb": "Casual gastropub offering craft beers, cocktails, diverse pub-style dishes including vegetarian and vegan options with outdoor seating and happy hour specials.",
+        "local": false,
+        "matchScore": 52,
+        "surprise": 0.65,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Jungle Forlì - Craft Beer, Food Drink's audience both lean parking and cocktails.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "parking",
+          "cocktails",
+          "lgbtq+ friendly"
+        ],
+        "tags": [
+          "parking",
+          "cocktails",
+          "lgbtq+_friendly",
+          "debit_cards",
+          "free_parking",
+          "hamburger_restaurant",
+          "fun",
+          "couples"
+        ],
+        "signals": {
+          "affinityToPartner": 0.5263179204643511,
+          "affinityFromPartner": 0.4473702323946984,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.36842254432504573,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "parking, cocktails, lgbtq+ friendly",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "53% from your anchors toward Jungle Forlì - Craft Beer, Food Drink",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "45% from Jungle Forlì - Craft Beer, Food Drink back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "7AB23AE5-D02E-452B-8E56-688F788BB0FB",
+          "8F1CE9CA-B5D2-4FE4-823C-C81C90727858",
+          "A8B58365-756C-4891-80E6-E07A4498EA26"
+        ],
+        "origin": "discovered"
+      }
+    ],
+    "topPicks": [
+      {
+        "role": "best_overall",
+        "partnerId": "A8B58365-756C-4891-80E6-E07A4498EA26",
+        "headline": "Closest overlap"
+      },
+      {
+        "role": "best_local",
+        "partnerId": "11540186-905B-4FF4-8B1A-B1C05AC68DA3",
+        "headline": "Next strongest fit"
+      },
+      {
+        "role": "wildcard",
+        "partnerId": "0BCA5F34-EC46-492D-A25C-BF421595BB42",
+        "headline": "Unexpected but strong"
+      }
+    ],
+    "city": {
+      "name": "Manchester",
+      "center": [
+        53.451537897678605,
+        -2.232473374451043
+      ],
+      "zoom": 12,
+      "hasLocalData": true
+    },
+    "headline": "Targowa - Craft Beer and Food is your strongest overlap. Venn found 14 partners across 4 types.",
+    "notes": [
+      "Read 3 interests: 1 matched to known names, 2 read as interests, 0 given a stand-in profile."
+    ],
+    "limits": [
+      "Match scores are relative to this search and describe group-level taste, not individuals.",
+      "Partner ideas come from Qloo Insights. Briefs are templates — check them before you send one."
+    ],
+    "stats": {
+      "candidatesConsidered": 20,
+      "retries": 0,
+      "toolCalls": 26,
+      "elapsedMs": 10720
+    },
+    "normalization": {
+      "minRaw": 0.48364349448075505,
+      "maxRaw": 0.9821232620368285
+    },
+    "decisions": [
+      {
+        "step": "adapt",
+        "decision": "Did not widen the search",
+        "reason": "14 strong matches already — coverage looked solid after the first pass.",
+        "origin": "rule"
+      }
+    ],
+    "discoverSpecs": [
+      {
+        "kind": "wellness",
+        "entityType": "brand",
+        "params": {
+          "filter.type": "urn:entity:brand",
+          "take": "12",
+          "signal.interests.entities": "DB4CE34E-3A63-4947-946F-9D52502C5762"
+        },
+        "poolIds": [
+          "205AF33F-118E-4C49-9721-6BDBAF981DA0",
+          "DB03F250-64F3-47AB-8756-BC1C4E13EBFD",
+          "11540186-905B-4FF4-8B1A-B1C05AC68DA3",
+          "7A016C85-D68B-446B-9D97-2B2D96ACF6F6",
+          "18D5DBF4-9CD8-4F4D-8E20-704DE975C93C",
+          "B2A2238B-5FDC-46CD-B6F9-A32DB1474C70",
+          "F5EA6E51-2F04-4714-AAB1-779387D6F2EE",
+          "B88738CC-8415-4F18-9095-2955EC094B0C",
+          "43FC7AA8-579E-4588-BC15-51D0B3DCF9DC",
+          "E9A70778-6E65-49A4-8C38-A24D20C05BDA",
+          "2A88D01D-DE7A-410C-9A96-AA079C9AAF59",
+          "82BC424A-68CF-4F14-A831-826F28143F54"
+        ]
+      },
+      {
+        "kind": "fashion",
+        "entityType": "brand",
+        "params": {
+          "filter.type": "urn:entity:brand",
+          "take": "12",
+          "signal.interests.entities": "DB4CE34E-3A63-4947-946F-9D52502C5762"
+        },
+        "poolIds": [
+          "205AF33F-118E-4C49-9721-6BDBAF981DA0",
+          "DB03F250-64F3-47AB-8756-BC1C4E13EBFD",
+          "11540186-905B-4FF4-8B1A-B1C05AC68DA3",
+          "7A016C85-D68B-446B-9D97-2B2D96ACF6F6",
+          "18D5DBF4-9CD8-4F4D-8E20-704DE975C93C",
+          "B2A2238B-5FDC-46CD-B6F9-A32DB1474C70",
+          "F5EA6E51-2F04-4714-AAB1-779387D6F2EE",
+          "B88738CC-8415-4F18-9095-2955EC094B0C",
+          "43FC7AA8-579E-4588-BC15-51D0B3DCF9DC",
+          "E9A70778-6E65-49A4-8C38-A24D20C05BDA",
+          "2A88D01D-DE7A-410C-9A96-AA079C9AAF59",
+          "82BC424A-68CF-4F14-A831-826F28143F54"
+        ]
+      },
+      {
+        "kind": "retail",
+        "entityType": "brand",
+        "params": {
+          "filter.type": "urn:entity:brand",
+          "take": "12",
+          "signal.interests.entities": "DB4CE34E-3A63-4947-946F-9D52502C5762"
+        },
+        "poolIds": [
+          "205AF33F-118E-4C49-9721-6BDBAF981DA0",
+          "DB03F250-64F3-47AB-8756-BC1C4E13EBFD",
+          "11540186-905B-4FF4-8B1A-B1C05AC68DA3",
+          "7A016C85-D68B-446B-9D97-2B2D96ACF6F6",
+          "18D5DBF4-9CD8-4F4D-8E20-704DE975C93C",
+          "B2A2238B-5FDC-46CD-B6F9-A32DB1474C70",
+          "F5EA6E51-2F04-4714-AAB1-779387D6F2EE",
+          "B88738CC-8415-4F18-9095-2955EC094B0C",
+          "43FC7AA8-579E-4588-BC15-51D0B3DCF9DC",
+          "E9A70778-6E65-49A4-8C38-A24D20C05BDA",
+          "2A88D01D-DE7A-410C-9A96-AA079C9AAF59",
+          "82BC424A-68CF-4F14-A831-826F28143F54"
+        ]
+      },
+      {
+        "kind": "music",
+        "entityType": "artist",
+        "params": {
+          "filter.type": "urn:entity:artist",
+          "take": "12",
+          "signal.interests.entities": "DB4CE34E-3A63-4947-946F-9D52502C5762"
+        },
+        "poolIds": [
+          "C8543090-A342-4C40-80F9-1577454B9FF4",
+          "F91F4E13-923B-4DD9-AB11-CCF6FA6BCE03",
+          "5DFD7065-7552-4946-839A-FC319A472E28",
+          "5C8FCE87-124F-44DE-A195-112F36A7CAB6",
+          "02DF2599-CE52-40C1-98F3-6825DDB971F5",
+          "88E644E8-FE21-4D9A-8861-CF54254C8238",
+          "24E70404-379A-4D46-8A7B-6E33F666CAC5",
+          "461D94F8-77B3-4544-9796-D888A899048E",
+          "682BE92E-C61E-41D1-91A6-62013DE7E275",
+          "59445A60-9F23-4B8D-9355-185113E69822",
+          "D07A3760-545D-4499-9E57-3EB056D43AF0",
+          "10070F31-C90E-41FE-8E95-ABFE4C5E8392"
+        ]
+      }
+    ]
+  }
+}

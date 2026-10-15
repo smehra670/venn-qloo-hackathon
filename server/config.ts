@@ -57,7 +57,7 @@ const EnvSchema = z.object({
   MAX_CONCURRENT_RUNS: z.preprocess(blankToUndefined, z.coerce.number().int().positive().default(2)),
   QUEUE_MAX: z.preprocess(blankToUndefined, z.coerce.number().int().positive().default(20)),
   DAILY_RUN_CAP_PER_IP: z.preprocess(blankToUndefined, z.coerce.number().int().positive().default(40)),
-  SNAPSHOT_DIR: z.preprocess(blankToUndefined, z.string().min(1).default("./snapshots")),
+  SNAPSHOT_DIR: z.preprocess(blankToUndefined, z.string().min(1).default("./server/snapshots")),
   APP_SALT: z.preprocess(blankToUndefined, z.string().min(1).default("venn-hackathon-fixed-salt")),
 
   LLM_PROVIDER: z.preprocess(

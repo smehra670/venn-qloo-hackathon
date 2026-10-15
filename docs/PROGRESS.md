@@ -23,6 +23,13 @@
 
 - GoalId wants/reach/appetite/avoid; Best for your goal; AgentDecision origins; feasibility tiers; POST /api/anchors/resolve + confirm UI. Tests: 126.
 
+## Eligibility (2026-10-15)
+
+- Live Qloo snapshots committed under `server/snapshots/` (London / Manchester / New York).
+- Default `SNAPSHOT_DIR=./server/snapshots`; `docs/SUBMISSION_CHECKLIST.md` added.
+- Secret scan of fixtures/snapshots: no key prefixes. Working-tree grep clean aside from gitignored `.env`.
+- Local `.env`: `LLM_PROVIDER=none` until `OPENAI_API_KEY` is set (boot no longer fails).
+
 ## Phase 0 — Audit, baseline, probe (2026-10-13)
 
 - Baseline: `typecheck` / `test` (12) / `build` — green.

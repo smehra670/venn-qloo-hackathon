@@ -1,0 +1,1467 @@
+{
+  "meta": {
+    "date": "2026-10-15",
+    "provider": "qloo",
+    "exampleIndex": 2,
+    "businessName": "Second Spin Records"
+  },
+  "result": {
+    "runId": "HlIRrpMKUtcR",
+    "createdAt": 1792061065877,
+    "provider": "qloo",
+    "providerLabel": "Qloo",
+    "input": {
+      "businessType": "retail_shop",
+      "city": "New York",
+      "anchors": [
+        "Bandcamp",
+        "Polaroid",
+        "natural wine"
+      ],
+      "businessName": "Second Spin Records"
+    },
+    "resolvedAnchors": [
+      {
+        "input": "Bandcamp",
+        "status": "matched",
+        "entityId": "BD5D4227-0CC7-4CD4-B848-2E1D8A7E1D2B",
+        "entityName": "Bandcamp",
+        "entityType": "place",
+        "tags": [
+          "destination",
+          "casual",
+          "commercial",
+          "modern",
+          "stylish",
+          "streaming_service",
+          "e_commerce",
+          "late_night"
+        ],
+        "note": "Matched to Bandcamp via Qloo search."
+      },
+      {
+        "input": "Polaroid",
+        "status": "matched",
+        "entityId": "62926E8D-2D7E-4428-819E-BF2477D3233F",
+        "entityName": "Polaroid",
+        "entityType": "brand",
+        "tags": [
+          "electronics",
+          "camera_&_video",
+          "minimalist_design",
+          "retro-inspired_elements",
+          "bold_primary_colors",
+          "square_format",
+          "high_contrast",
+          "slow_living"
+        ],
+        "note": "Matched to Polaroid via Qloo search."
+      },
+      {
+        "input": "natural wine",
+        "status": "matched",
+        "entityId": "AB6C3529-E341-4F27-92EF-74736E3382E4",
+        "entityName": "Natural Wine",
+        "entityType": "place",
+        "tags": [
+          "nfc_mobile_payments",
+          "wheelchair_accessible_parking_lot",
+          "soft_drinks_shop",
+          "shopping",
+          "place",
+          "debit_cards",
+          "credit_cards"
+        ],
+        "note": "Matched to Natural Wine via Qloo search."
+      }
+    ],
+    "plannedKinds": [
+      "culture",
+      "food",
+      "drink",
+      "music",
+      "fashion",
+      "wellness"
+    ],
+    "partners": [
+      {
+        "id": "2E636F2F-4AAE-4892-AD66-90ECCE08FD71",
+        "name": "FOOD PYRAMID NH 44",
+        "kind": "food",
+        "entityType": "place",
+        "blurb": "Relaxed highway restaurant serving biryanis, curries and South/North Indian dishes with vegetarian, vegan and quick-bite options.",
+        "local": false,
+        "matchScore": 96,
+        "surprise": 0.55,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and FOOD PYRAMID NH 44's audience both lean childrens play area and takeout.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "childrens play area",
+          "takeout",
+          "ok to order just coffee"
+        ],
+        "tags": [
+          "childrens_play_area",
+          "takeout",
+          "ok_to_order_just_coffee",
+          "late_night_food",
+          "lively",
+          "clean",
+          "andhra_restaurant",
+          "sunset_view"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9994134692569112,
+          "affinityFromPartner": 0.9924469754459232,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6995894284798378,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "childrens play area, takeout, ok to order just coffee",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "100% from your anchors toward FOOD PYRAMID NH 44",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "99% from FOOD PYRAMID NH 44 back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "60974183-28BB-4265-A278-7E85F720C229",
+          "B88B1056-35B4-41DF-BBD6-F32C69B5741A",
+          "F1807481-0003-425D-B2C0-00165A222791"
+        ],
+        "origin": "discovered",
+        "feasibility": {
+          "level": "easy",
+          "reason": "Strong shared tags and a solid match score make FOOD PYRAMID NH 44 a natural first outreach.",
+          "origin": "rule"
+        }
+      },
+      {
+        "id": "6FE76B83-18DA-41CC-94B8-EC89FD758150",
+        "name": "Palace of Culture and Science",
+        "kind": "culture",
+        "entityType": "place",
+        "blurb": "Massive 1950s Socialist-realist skyscraper housing theaters, museums, cinemas and a 30th-floor observation terrace with panoramic views over central Warsaw.",
+        "local": false,
+        "matchScore": 96,
+        "surprise": 0.7,
+        "isSurprising": true,
+        "reasons": [
+          "Your customers and Palace of Culture and Science's audience both lean credit cards and debit cards.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "credit cards",
+          "debit cards"
+        ],
+        "tags": [
+          "exhibitions",
+          "event_venue",
+          "credit_cards",
+          "wheelchair_accessible_restroom",
+          "urban_history",
+          "exhibition_spaces",
+          "debit_cards",
+          "afternoon"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9999283087818771,
+          "affinityFromPartner": 0.9883978025006429,
+          "tagOverlap": 0.25,
+          "localPopularity": 0.6999498161473139,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "credit cards, debit cards",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "100% from your anchors toward Palace of Culture and Science",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "99% from Palace of Culture and Science back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "479E4B73-7FB7-4684-B2E2-DEC4565413A0",
+          "413FC08C-B7EB-4CA8-8A83-C700B871F260",
+          "6845AB5A-922E-43B0-9BB8-BFE6BE7FAAB0"
+        ],
+        "origin": "discovered",
+        "feasibility": {
+          "level": "easy",
+          "reason": "Strong shared tags and a solid match score make Palace of Culture and Science a natural first outreach.",
+          "origin": "rule"
+        }
+      },
+      {
+        "id": "6845AB5A-922E-43B0-9BB8-BFE6BE7FAAB0",
+        "name": "Čaliuskincaŭ Park of Culture and Recreation",
+        "kind": "culture",
+        "entityType": "place",
+        "blurb": "Historic urban park in Komarovsky forest, established in 1928, featuring about 22,000 mature trees and varied recreational facilities.",
+        "local": false,
+        "matchScore": 95,
+        "surprise": 0.7,
+        "isSurprising": true,
+        "reasons": [
+          "Your customers and Čaliuskincaŭ Park of Culture and Recreation's audience both lean place.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "place"
+        ],
+        "tags": [
+          "local_history",
+          "place",
+          "relaxing",
+          "traditional",
+          "walking_paths",
+          "residential",
+          "near_public_transit",
+          "historic"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9995913972024081,
+          "affinityFromPartner": 0.9864131822649721,
+          "tagOverlap": 0.125,
+          "localPopularity": 0.6997139780416857,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "place",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "100% from your anchors toward Čaliuskincaŭ Park of Culture and Recreation",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "99% from Čaliuskincaŭ Park of Culture and Recreation back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "479E4B73-7FB7-4684-B2E2-DEC4565413A0",
+          "6FE76B83-18DA-41CC-94B8-EC89FD758150",
+          "413FC08C-B7EB-4CA8-8A83-C700B871F260"
+        ],
+        "origin": "discovered",
+        "feasibility": {
+          "level": "easy",
+          "reason": "Strong shared tags and a solid match score make Čaliuskincaŭ Park of Culture and Recreation a natural first outreach.",
+          "origin": "rule"
+        }
+      },
+      {
+        "id": "F1807481-0003-425D-B2C0-00165A222791",
+        "name": "Shyam Vihari Food",
+        "kind": "food",
+        "entityType": "place",
+        "blurb": "Vegetarian-only Indian eatery near Huda Metro Sector 29 in Gurugram offering quick bites, coffee, small plates, wine and multiple dine-in and delivery options.",
+        "local": false,
+        "matchScore": 95,
+        "surprise": 0.55,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Shyam Vihari Food's audience both lean wheelchair accessible parking lot and place.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "wheelchair accessible parking lot",
+          "place"
+        ],
+        "tags": [
+          "metro_station_complex",
+          "midday",
+          "dine_in",
+          "efficient",
+          "casual_dining",
+          "wheelchair_accessible_parking_lot",
+          "contemporary_transit_design",
+          "place"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9996400580810304,
+          "affinityFromPartner": 0.986400472306083,
+          "tagOverlap": 0.25,
+          "localPopularity": 0.6997480406567212,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "wheelchair accessible parking lot, place",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "100% from your anchors toward Shyam Vihari Food",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "99% from Shyam Vihari Food back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "60974183-28BB-4265-A278-7E85F720C229",
+          "B88B1056-35B4-41DF-BBD6-F32C69B5741A",
+          "2E636F2F-4AAE-4892-AD66-90ECCE08FD71"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "B88B1056-35B4-41DF-BBD6-F32C69B5741A",
+        "name": "king food spicy mala",
+        "kind": "food",
+        "entityType": "place",
+        "blurb": "Colorful all-you-can-eat hot pot offering a wide selection of ingredients, desserts, and drinks near Wanhua MRT.",
+        "local": false,
+        "matchScore": 92,
+        "surprise": 0.55,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and king food spicy mala's audience both lean functional and noisy.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "functional",
+          "noisy",
+          "beer"
+        ],
+        "tags": [
+          "functional",
+          "noisy",
+          "beer",
+          "catering",
+          "traditional",
+          "dine_in",
+          "dinner_reservations_recommended",
+          "lobster"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9996309573823567,
+          "affinityFromPartner": 0.9621031749551998,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6997416701676497,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "functional, noisy, beer",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "100% from your anchors toward king food spicy mala",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "96% from king food spicy mala back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "60974183-28BB-4265-A278-7E85F720C229",
+          "2E636F2F-4AAE-4892-AD66-90ECCE08FD71",
+          "F1807481-0003-425D-B2C0-00165A222791"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "479E4B73-7FB7-4684-B2E2-DEC4565413A0",
+        "name": "Fort Mason Center for Arts & Culture",
+        "kind": "culture",
+        "entityType": "place",
+        "blurb": "Waterfront San Francisco complex of renovated historic military buildings housing galleries, theaters, event and conference spaces across 13 acres.",
+        "local": false,
+        "matchScore": 90,
+        "surprise": 0.7,
+        "isSurprising": true,
+        "reasons": [
+          "Your customers and Fort Mason Center for Arts & Culture's audience both lean relaxed and sunset view.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "relaxed",
+          "sunset view",
+          "evening"
+        ],
+        "tags": [
+          "relaxed",
+          "sunset_view",
+          "evening",
+          "amphitheater",
+          "paid_street_parking",
+          "galleries",
+          "touristic",
+          "restaurants"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9994847890179455,
+          "affinityFromPartner": 0.9517675812471594,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6996393523125618,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "relaxed, sunset view, evening",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "100% from your anchors toward Fort Mason Center for Arts & Culture",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "95% from Fort Mason Center for Arts & Culture back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "6FE76B83-18DA-41CC-94B8-EC89FD758150",
+          "413FC08C-B7EB-4CA8-8A83-C700B871F260",
+          "6845AB5A-922E-43B0-9BB8-BFE6BE7FAAB0"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "413FC08C-B7EB-4CA8-8A83-C700B871F260",
+        "name": "Museum of Pop Culture",
+        "kind": "culture",
+        "entityType": "place",
+        "blurb": "Interactive Seattle museum showcasing artifacts and immersive exhibits on music, film, gaming, and pop culture history, including Jimi Hendrix memorabilia.",
+        "local": false,
+        "matchScore": 89,
+        "surprise": 0.7,
+        "isSurprising": true,
+        "reasons": [
+          "Your customers and Museum of Pop Culture's audience both lean modern.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "modern"
+        ],
+        "tags": [
+          "wi_fi",
+          "walkable",
+          "city_center",
+          "artistic",
+          "modern",
+          "has_changing_table_s",
+          "restaurant",
+          "arts_district"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9999175365263042,
+          "affinityFromPartner": 0.9420063500558395,
+          "tagOverlap": 0.125,
+          "localPopularity": 0.6999422755684129,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "modern",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "100% from your anchors toward Museum of Pop Culture",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "94% from Museum of Pop Culture back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "479E4B73-7FB7-4684-B2E2-DEC4565413A0",
+          "6FE76B83-18DA-41CC-94B8-EC89FD758150",
+          "6845AB5A-922E-43B0-9BB8-BFE6BE7FAAB0"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "0AC6594C-3DE3-4EEB-8AE0-6A77CDA57ED9",
+        "name": "Hey Beach coconut drink",
+        "kind": "drink",
+        "entityType": "place",
+        "blurb": "Outdoor beach-bar hangout serving grilled meats, pizza, beers, cocktails, shakes, with halal and vegetarian options.",
+        "local": false,
+        "matchScore": 73,
+        "surprise": 0.55,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Hey Beach coconut drink's audience both lean happy hour drinks and leisure.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "happy hour drinks",
+          "leisure",
+          "pantai indah kapuk area"
+        ],
+        "tags": [
+          "happy_hour_drinks",
+          "leisure",
+          "pantai_indah_kapuk_area",
+          "25_29",
+          "outdoor_seating",
+          "dessert",
+          "special_occasion",
+          "beer"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9919637116140888,
+          "affinityFromPartner": 0.8431691548719754,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6943745981298621,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "happy hour drinks, leisure, pantai indah kapuk area",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "99% from your anchors toward Hey Beach coconut drink",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "84% from Hey Beach coconut drink back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "BE00C13F-60B3-4DE0-9FCF-DDBB88ACC4B5",
+          "73EF286A-39BE-4E7D-8D25-2F1DA0AD32E8",
+          "60974183-28BB-4265-A278-7E85F720C229"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "73EF286A-39BE-4E7D-8D25-2F1DA0AD32E8",
+        "name": "Carson's Food & Drink - On Main",
+        "kind": "drink",
+        "entityType": "place",
+        "blurb": "Speakeasy-style American restaurant offering inventive pub fare and creative cocktails with TVs and outdoor seating.",
+        "local": false,
+        "matchScore": 72,
+        "surprise": 0.55,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Carson's Food & Drink - On Main's audience both lean stylish.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "stylish"
+        ],
+        "tags": [
+          "dinner_reservations_recommended",
+          "seating",
+          "mashed_potatoes",
+          "walk_ins",
+          "alcohol",
+          "mastercard",
+          "urban",
+          "stylish"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9890988488173363,
+          "affinityFromPartner": 0.8407340214947359,
+          "tagOverlap": 0.125,
+          "localPopularity": 0.6923691941721354,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "stylish",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "99% from your anchors toward Carson's Food & Drink - On Main",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "84% from Carson's Food & Drink - On Main back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "0AC6594C-3DE3-4EEB-8AE0-6A77CDA57ED9",
+          "BE00C13F-60B3-4DE0-9FCF-DDBB88ACC4B5",
+          "60974183-28BB-4265-A278-7E85F720C229"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "BE00C13F-60B3-4DE0-9FCF-DDBB88ACC4B5",
+        "name": "Waterworks Food + Drink",
+        "kind": "drink",
+        "entityType": "place",
+        "blurb": "American cuisine in a historic mill with spectacular river views, creative cocktails, and a lively atmosphere.",
+        "local": false,
+        "matchScore": 72,
+        "surprise": 0.55,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Waterworks Food + Drink's audience both lean coffee and hard cider.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "coffee",
+          "hard cider",
+          "seating"
+        ],
+        "tags": [
+          "coffee",
+          "hard_cider",
+          "seating",
+          "event_planning",
+          "allergy_friendly",
+          "vegetarian",
+          "bar",
+          "brunch_reservations_recommended"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9895490548088649,
+          "affinityFromPartner": 0.8411166965875352,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6926843383662054,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "coffee, hard cider, seating",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "99% from your anchors toward Waterworks Food + Drink",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "84% from Waterworks Food + Drink back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "0AC6594C-3DE3-4EEB-8AE0-6A77CDA57ED9",
+          "73EF286A-39BE-4E7D-8D25-2F1DA0AD32E8",
+          "60974183-28BB-4265-A278-7E85F720C229"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "60974183-28BB-4265-A278-7E85F720C229",
+        "name": "Food Junction Grand Pakuwon",
+        "kind": "food",
+        "entityType": "place",
+        "blurb": "Bustling food court set around parkland and a lake, featuring varied stalls and sculptural night illumination.",
+        "local": false,
+        "matchScore": 67,
+        "surprise": 0.55,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Food Junction Grand Pakuwon's audience both lean japanese and young professionals.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "japanese",
+          "young professionals",
+          "open air contemporary"
+        ],
+        "tags": [
+          "japanese",
+          "young_professionals",
+          "open_air_contemporary",
+          "free_parking_lot",
+          "drive_thru",
+          "social_community",
+          "integrated_community",
+          "young_adults"
+        ],
+        "signals": {
+          "affinityToPartner": 0.99977508273278,
+          "affinityFromPartner": 0.799820066186224,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.699842557912946,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "japanese, young professionals, open air contemporary",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "100% from your anchors toward Food Junction Grand Pakuwon",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "80% from Food Junction Grand Pakuwon back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "B88B1056-35B4-41DF-BBD6-F32C69B5741A",
+          "2E636F2F-4AAE-4892-AD66-90ECCE08FD71",
+          "F1807481-0003-425D-B2C0-00165A222791"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "D3AB5985-AA89-48CE-9C2F-5BCC49F3B561",
+        "name": "Half Moon Run",
+        "kind": "music",
+        "entityType": "brand",
+        "blurb": "Half Moon Run is a Canadian indie rock band formed in 2009 in Montreal, Quebec. The band is known for their intricate vocal harmonies, multi-instrumental talents, and a blend of in",
+        "local": false,
+        "matchScore": 67,
+        "surprise": 0.7,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Half Moon Run's audience both lean intricate and passionate.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "intricate",
+          "passionate",
+          "folk rock"
+        ],
+        "tags": [
+          "intricate",
+          "passionate",
+          "folk_rock",
+          "dynamic",
+          "atmospheric",
+          "harmonic",
+          "guitar",
+          "introspection"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9679746322604812,
+          "affinityFromPartner": 0.822778437421409,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6918686799179494,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "intricate, passionate, folk rock",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "97% from your anchors toward Half Moon Run",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "82% from Half Moon Run back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          },
+          {
+            "label": "Trend",
+            "value": "Steady in this search (no separate Qloo trend payload).",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "A9A9BF09-9412-4D6F-93E3-38B673669314",
+          "A81BB5D9-A0A1-4DD1-91B6-8A02486BE105",
+          "60974183-28BB-4265-A278-7E85F720C229"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "A9A9BF09-9412-4D6F-93E3-38B673669314",
+        "name": "alt-J",
+        "kind": "music",
+        "entityType": "brand",
+        "blurb": "Alt-J is an English indie rock band formed in 2007 in Leeds, England. The band consists of Joe Newman (vocals, guitar), Gus Unger-Hamilton (keyboards, vocals), and Thom Sonny Green",
+        "local": false,
+        "matchScore": 66,
+        "surprise": 0.7,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and alt-J's audience both lean 3 and electronic.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "3",
+          "electronic",
+          "love"
+        ],
+        "tags": [
+          "3",
+          "electronic",
+          "love",
+          "dedicated",
+          "radiohead",
+          "talking_heads",
+          "complex",
+          "innovative"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9637715152753287,
+          "affinityFromPartner": 0.8192057879840293,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6994655578056085,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "3, electronic, love",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "96% from your anchors toward alt-J",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "82% from alt-J back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "D3AB5985-AA89-48CE-9C2F-5BCC49F3B561",
+          "A81BB5D9-A0A1-4DD1-91B6-8A02486BE105",
+          "60974183-28BB-4265-A278-7E85F720C229"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "A81BB5D9-A0A1-4DD1-91B6-8A02486BE105",
+        "name": "Daughter",
+        "kind": "music",
+        "entityType": "brand",
+        "blurb": "Daughter are a British indie folk/indie rock trio from London, formed around singer-songwriter Elena Tonra with guitarist/producer Igor Haefeli and drummer Remi Aguilella. Emerging",
+        "local": false,
+        "matchScore": 65,
+        "surprise": 0.7,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Daughter's audience both lean alternative rock and introspective.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "alternative rock",
+          "introspective",
+          "indie - folk"
+        ],
+        "tags": [
+          "alternative_rock",
+          "introspective",
+          "indie_-_folk",
+          "indie_folk",
+          "melancholic",
+          "melancholic_indie_rock",
+          "loss",
+          "sigur_ros"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9619498064197377,
+          "affinityFromPartner": 0.817657335456777,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.698559529192799,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "alternative rock, introspective, indie - folk",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "96% from your anchors toward Daughter",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "82% from Daughter back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "D3AB5985-AA89-48CE-9C2F-5BCC49F3B561",
+          "A9A9BF09-9412-4D6F-93E3-38B673669314",
+          "60974183-28BB-4265-A278-7E85F720C229"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "EB4F8E0A-0612-402D-9EFE-84377EBF5B01",
+        "name": "Canon",
+        "kind": "fashion",
+        "entityType": "brand",
+        "blurb": "Canon is a global brand specializing in imaging and optical products, including digital cameras, lenses, camcorders, and printers.",
+        "local": false,
+        "matchScore": 54,
+        "surprise": 0.3,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Canon's audience both lean electronics and camera & video.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "electronics",
+          "camera & video"
+        ],
+        "tags": [
+          "electronics",
+          "camera_&_video",
+          "ergonomic_design",
+          "minimalist_branding",
+          "professional_industrial_design",
+          "clean_functionalism",
+          "professional_cinematic_production",
+          "global_travel_documentation"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9170577276603187,
+          "affinityFromPartner": 0.7794990685112708,
+          "tagOverlap": 0.25,
+          "localPopularity": 0.6948500618738451,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "electronics, camera & video",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "92% from your anchors toward Canon",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "78% from Canon back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "DE1ED5FF-5282-4A92-8272-0BB4CB870C43",
+          "CFADEF6E-D482-4813-898E-5F99E91ED568",
+          "60974183-28BB-4265-A278-7E85F720C229"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "DE1ED5FF-5282-4A92-8272-0BB4CB870C43",
+        "name": "VSCO",
+        "kind": "fashion",
+        "entityType": "brand",
+        "blurb": "VSCO is a community-driven photo and video editing app offering premium filters, editing tools, and a creative platform for photographers and creators.",
+        "local": false,
+        "matchScore": 53,
+        "surprise": 0.3,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and VSCO's audience both lean software and minimalist interface.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "software",
+          "minimalist interface",
+          "film-inspired filters"
+        ],
+        "tags": [
+          "software",
+          "minimalist_interface",
+          "film-inspired_filters",
+          "clean_typography",
+          "understated_color_palettes",
+          "professional-level_photography",
+          "curated_digital_aesthetic",
+          "artistic_recognition"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9127354917375415,
+          "affinityFromPartner": 0.7758251679769103,
+          "tagOverlap": 0.375,
+          "localPopularity": 0.6963986031767557,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "software, minimalist interface, film-inspired filters",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "91% from your anchors toward VSCO",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "78% from VSCO back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "EB4F8E0A-0612-402D-9EFE-84377EBF5B01",
+          "CFADEF6E-D482-4813-898E-5F99E91ED568",
+          "60974183-28BB-4265-A278-7E85F720C229"
+        ],
+        "origin": "discovered"
+      },
+      {
+        "id": "CFADEF6E-D482-4813-898E-5F99E91ED568",
+        "name": "Eastman Kodak",
+        "kind": "fashion",
+        "entityType": "brand",
+        "blurb": "Eastman Kodak is a global technology company known for its products and services in commercial print, packaging, publishing, manufacturing, and entertainment.",
+        "local": false,
+        "matchScore": 52,
+        "surprise": 0.3,
+        "isSurprising": false,
+        "reasons": [
+          "Your customers and Eastman Kodak's audience both lean camera & video and electronics.",
+          "A different industry, so you'd reach new people rather than your own regulars."
+        ],
+        "sharedTags": [
+          "camera & video",
+          "electronics"
+        ],
+        "tags": [
+          "camera_&_video",
+          "software",
+          "electronics",
+          "classic_branding",
+          "minimalist_industrial_design",
+          "high_contrast_typography",
+          "mastery_of_craft",
+          "preservation_of_artistic_heritage"
+        ],
+        "signals": {
+          "affinityToPartner": 0.9080424687111583,
+          "affinityFromPartner": 0.7718360984044845,
+          "tagOverlap": 0.25,
+          "localPopularity": 0.6715032801613805,
+          "trend": 0.4285714285714286
+        },
+        "evidence": [
+          {
+            "label": "Shared tags",
+            "value": "camera & video, electronics",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity to partner",
+            "value": "91% from your anchors toward Eastman Kodak",
+            "origin": "data"
+          },
+          {
+            "label": "Affinity from partner",
+            "value": "77% from Eastman Kodak back toward your category",
+            "origin": "data"
+          },
+          {
+            "label": "Local popularity",
+            "value": "Global brand or artist",
+            "origin": "interpretation"
+          },
+          {
+            "label": "How Venn ranked it",
+            "value": "Relative match score among partners in this search, stretched to 52–96.",
+            "origin": "interpretation"
+          }
+        ],
+        "relatedIds": [
+          "DE1ED5FF-5282-4A92-8272-0BB4CB870C43",
+          "EB4F8E0A-0612-402D-9EFE-84377EBF5B01",
+          "60974183-28BB-4265-A278-7E85F720C229"
+        ],
+        "origin": "discovered"
+      }
+    ],
+    "topPicks": [
+      {
+        "role": "best_overall",
+        "partnerId": "2E636F2F-4AAE-4892-AD66-90ECCE08FD71",
+        "headline": "Closest overlap"
+      },
+      {
+        "role": "best_local",
+        "partnerId": "6FE76B83-18DA-41CC-94B8-EC89FD758150",
+        "headline": "Next strongest fit"
+      },
+      {
+        "role": "wildcard",
+        "partnerId": "6845AB5A-922E-43B0-9BB8-BFE6BE7FAAB0",
+        "headline": "Unexpected but strong"
+      }
+    ],
+    "city": {
+      "name": "New York",
+      "center": [
+        42.92258073352795,
+        -75.5978240134976
+      ],
+      "zoom": 12,
+      "hasLocalData": true
+    },
+    "headline": "FOOD PYRAMID NH 44 is your strongest overlap. Venn found 17 partners across 5 types.",
+    "notes": [
+      "Read 3 interests: 3 matched to known names, 0 read as interests, 0 given a stand-in profile."
+    ],
+    "limits": [
+      "Match scores are relative to this search and describe group-level taste, not individuals.",
+      "Partner ideas come from Qloo Insights. Briefs are templates — check them before you send one."
+    ],
+    "stats": {
+      "candidatesConsidered": 20,
+      "retries": 0,
+      "toolCalls": 24,
+      "elapsedMs": 8341
+    },
+    "normalization": {
+      "minRaw": 0.8344174036805239,
+      "maxRaw": 0.9959180397619823
+    },
+    "decisions": [
+      {
+        "step": "adapt",
+        "decision": "Did not widen the search",
+        "reason": "17 strong matches already — coverage looked solid after the first pass.",
+        "origin": "rule"
+      }
+    ],
+    "discoverSpecs": [
+      {
+        "kind": "fashion",
+        "entityType": "brand",
+        "params": {
+          "filter.type": "urn:entity:brand",
+          "take": "12",
+          "signal.interests.entities": "BD5D4227-0CC7-4CD4-B848-2E1D8A7E1D2B,62926E8D-2D7E-4428-819E-BF2477D3233F,AB6C3529-E341-4F27-92EF-74736E3382E4"
+        },
+        "poolIds": [
+          "EB4F8E0A-0612-402D-9EFE-84377EBF5B01",
+          "DE1ED5FF-5282-4A92-8272-0BB4CB870C43",
+          "CFADEF6E-D482-4813-898E-5F99E91ED568",
+          "375A11D8-C069-4938-A79D-5525E494B7F6",
+          "75105C50-F33A-4507-BAB8-E15A2A9B4596",
+          "2FCBE944-CD04-4469-BD09-B862250E3279",
+          "4F94C666-5FFA-4A42-8453-24C2F779EC36",
+          "E9A70778-6E65-49A4-8C38-A24D20C05BDA",
+          "792D10D4-FF32-4629-8185-91DB6BD2BB3F",
+          "1BFF764A-D06D-48CA-9075-1E0F2A3FCE3D",
+          "F59D6DB5-5A85-48C6-A2EC-CAAE334D4348",
+          "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02"
+        ]
+      },
+      {
+        "kind": "wellness",
+        "entityType": "brand",
+        "params": {
+          "filter.type": "urn:entity:brand",
+          "take": "12",
+          "signal.interests.entities": "BD5D4227-0CC7-4CD4-B848-2E1D8A7E1D2B,62926E8D-2D7E-4428-819E-BF2477D3233F,AB6C3529-E341-4F27-92EF-74736E3382E4"
+        },
+        "poolIds": [
+          "EB4F8E0A-0612-402D-9EFE-84377EBF5B01",
+          "DE1ED5FF-5282-4A92-8272-0BB4CB870C43",
+          "CFADEF6E-D482-4813-898E-5F99E91ED568",
+          "375A11D8-C069-4938-A79D-5525E494B7F6",
+          "75105C50-F33A-4507-BAB8-E15A2A9B4596",
+          "2FCBE944-CD04-4469-BD09-B862250E3279",
+          "4F94C666-5FFA-4A42-8453-24C2F779EC36",
+          "E9A70778-6E65-49A4-8C38-A24D20C05BDA",
+          "792D10D4-FF32-4629-8185-91DB6BD2BB3F",
+          "1BFF764A-D06D-48CA-9075-1E0F2A3FCE3D",
+          "F59D6DB5-5A85-48C6-A2EC-CAAE334D4348",
+          "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02"
+        ]
+      },
+      {
+        "kind": "music",
+        "entityType": "artist",
+        "params": {
+          "filter.type": "urn:entity:artist",
+          "take": "12",
+          "signal.interests.entities": "BD5D4227-0CC7-4CD4-B848-2E1D8A7E1D2B,62926E8D-2D7E-4428-819E-BF2477D3233F,AB6C3529-E341-4F27-92EF-74736E3382E4"
+        },
+        "poolIds": [
+          "D3AB5985-AA89-48CE-9C2F-5BCC49F3B561",
+          "A9A9BF09-9412-4D6F-93E3-38B673669314",
+          "A81BB5D9-A0A1-4DD1-91B6-8A02486BE105",
+          "69F6F2B0-57E1-4598-8E14-9B6DA37295AC",
+          "2B05E591-C138-43F9-A357-B1340AD86A10",
+          "2B424D87-074B-461B-A563-B063602E9599",
+          "1B5BE2B4-41CA-46D3-9697-8FF314D5D2F4",
+          "CF3CFD71-0320-47D1-82C5-9D5A28944FA7",
+          "F239728F-C488-44E0-A8F5-F1718DDFC357",
+          "E883F5BB-9794-4022-BBC6-F71E27CDE95F",
+          "D1ED5ED1-4BC1-4483-9897-AE553887B944",
+          "D6C2468E-47FB-4282-AB17-C06C5B224B3C"
+        ]
+      }
+    ]
+  }
+}

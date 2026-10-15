@@ -8,4 +8,7 @@ logs
 .DS_Store
 *.tsbuildinfo
 data/
+# Local/legacy snapshot dir; committed demos live under server/snapshots/
 snapshots/
+!server/snapshots/
+!server/snapshots/**
