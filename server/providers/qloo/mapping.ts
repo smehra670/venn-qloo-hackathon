@@ -9,6 +9,7 @@ import type {
   PartnerKind,
   ResolvedAnchor,
   SignalBreakdown,
+  VenueFacts,
 } from "@shared/types";
 import type { ProviderEntity } from "../types.js";
 import { profileFor } from "../mock/profiles.js";
@@ -20,6 +21,10 @@ import {
   typesOf,
   type QlooEntity,
 } from "./client.js";
+
+/** Radius (metres) used for the local place point+radius discover call (see `discoverKind` in
+ * `index.ts`) and to discard any returned place further than this from the search centre. */
+export const LOCAL_PLACE_RADIUS_M = 8000;
 
 export type QlooFilterType =
   | "urn:entity:artist"
@@ -202,7 +207,74 @@ export function geoFromEntity(entity: QlooEntity): { lat: number; lng: number } 
   return null;
 }
 
+/** True when a place entity's `properties.is_closed` is explicitly `true`. Used to drop closed
+ * places entirely from discover results (`toProviderEntity` returns `null` for them) — a
+ * permanently-closed venue is never worth recommending, so it's dropped rather than kept with
+ * an `is_closed` flag for the UI to filter later (see `VenueFacts`, which has no such field). */
+export function isClosedPlace(entity: QlooEntity): boolean {
+  return entity.properties?.is_closed === true;
+}
+
+/** Accepts only `http://`/`https://` URLs (anything else — a bare domain, `mailto:`, a
+ * malformed string — is dropped rather than rendered as a clickable link). */
+export function httpUrlOnly(url: unknown): string | undefined {
+  if (typeof url !== "string" || url.trim().length === 0) return undefined;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "http:" || parsed.protocol === "https:" ? url : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Extracts `VenueFacts` from a Qloo `place` entity's `location`/`properties`/`query.distance`.
+ * Returns `undefined` when there's no usable coordinate (nothing to plot on a map). Does not
+ * check `is_closed` itself — callers drop closed places earlier via `isClosedPlace` instead of
+ * surfacing the flag here. */
+export function venueFactsFromEntity(entity: QlooEntity): VenueFacts | undefined {
+  const geo = geoFromEntity(entity);
+  if (!geo) return undefined;
+  const props = entity.properties ?? {};
+  const address = typeof props.address === "string" && props.address.trim().length > 0 ? props.address : undefined;
+  const neighbourhoodRaw =
+    (typeof props.neighborhood === "string" && props.neighborhood) ||
+    (typeof props.neighbourhood === "string" && props.neighbourhood) ||
+    undefined;
+  const neighbourhood = neighbourhoodRaw && neighbourhoodRaw.trim().length > 0 ? neighbourhoodRaw : undefined;
+  const website = httpUrlOnly(props.website);
+  const distanceRaw = entity.query?.distance;
+  const distanceM = typeof distanceRaw === "number" && Number.isFinite(distanceRaw) ? Math.round(distanceRaw) : undefined;
+  return { lat: geo.lat, lon: geo.lng, address, neighbourhood, website, distanceM };
+}
+
+/**
+ * Reads Qloo's `feature.explainability=true` payload (`query.explainability["signal.interests.entities"]`,
+ * an array of `{ entity_id, score }`) and maps the highest-scoring one back to a resolved
+ * (matched) anchor's display name, so a candidate's evidence can honestly say "this came mostly
+ * from your anchor X" instead of a generic affinity percentage. Returns `null` when there's no
+ * explainability payload, or its top entity doesn't correspond to one of this run's matched
+ * anchors (e.g. it points at a different entity Qloo considered along the way).
+ */
+export function explainabilityAnchor(
+  entity: QlooEntity,
+  resolved: ResolvedAnchor[],
+): { anchorName: string; score: number } | null {
+  const entries = entity.query?.explainability?.["signal.interests.entities"];
+  if (!Array.isArray(entries) || entries.length === 0) return null;
+  const byId = new Map(
+    resolved.filter((item) => item.status === "matched" && item.entityId).map((item) => [item.entityId as string, item.entityName ?? item.input]),
+  );
+  const top = [...entries]
+    .filter((item): item is { entity_id?: string; score?: number } => Boolean(item))
+    .sort((a, b) => (b.score ?? 0) - (a.score ?? 0))[0];
+  if (!top?.entity_id) return null;
+  const anchorName = byId.get(top.entity_id);
+  if (!anchorName) return null;
+  return { anchorName, score: Math.max(0, Math.min(1, top.score ?? 0)) };
+}
+
 export function toProviderEntity(entity: QlooEntity, kind: PartnerKind, city?: string): ProviderEntity | null {
+  if (isClosedPlace(entity)) return null;
   const id = entityIdOf(entity);
   if (!id) return null;
   const tagsList = tagLabelsFromEntity(entity);
@@ -211,6 +283,7 @@ export function toProviderEntity(entity: QlooEntity, kind: PartnerKind, city?: s
     tags[label.toLowerCase().replace(/\s+/g, "_")] = Math.max(0.35, 1 - index * 0.1);
   });
   const popularity = typeof entity.popularity === "number" ? entity.popularity : affinityOf(entity);
+  const venueFacts = venueFactsFromEntity(entity);
   return {
     id,
     name: entityNameOf(entity),
@@ -222,6 +295,8 @@ export function toProviderEntity(entity: QlooEntity, kind: PartnerKind, city?: s
     popularity: Math.max(0, Math.min(1, popularity)),
     trend: 0,
     city,
+    neighbourhood: venueFacts?.neighbourhood,
+    venueFacts,
   };
 }
 
@@ -318,6 +393,15 @@ export function buildPartner(args: {
       origin: "interpretation",
     },
   ];
+  if (entry.explainabilityAnchorName) {
+    evidence.push({
+      label: "Explainability",
+      value: `Qloo's explainability attributes this mostly to your anchor "${entry.explainabilityAnchorName}" (${Math.round(
+        (entry.explainabilityScore ?? 0) * 100,
+      )}%).`,
+      origin: "data",
+    });
+  }
   const reasons = [
     tags.length > 0
       ? `Your customers and ${entry.name}'s audience both lean ${tags.slice(0, 2).join(" and ")}.`
@@ -346,6 +430,7 @@ export function buildPartner(args: {
     signals,
     evidence,
     relatedIds: [],
+    venueFacts: entry.venueFacts,
     parentId,
     expanded,
   };

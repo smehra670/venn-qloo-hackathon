@@ -20,6 +20,7 @@ export function TopBar() {
   const health = useVenn((state) => state.health);
   const shareRun = useVenn((state) => state.shareRun);
   const sharing = useVenn((state) => state.sharing);
+  const openCallLog = useVenn((state) => state.openCallLog);
   if (!result) return null;
   return (
     <header className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3">
@@ -29,6 +30,7 @@ export function TopBar() {
         <Segmented value={view} onChange={setView} options={OPTIONS} label="Result view" />
       </div>
       <div className="ml-auto flex items-center gap-2">
+        <Button type="button" variant="ghost" onClick={() => void openCallLog()}>How Venn used Qloo</Button>
         <Button type="button" variant="ghost" disabled={sharing} onClick={() => void shareRun()}>
           {sharing ? "Copying…" : "Share"}
         </Button>

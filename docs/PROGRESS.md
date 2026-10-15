@@ -30,6 +30,10 @@
 - Secret scan of fixtures/snapshots: no key prefixes. Working-tree grep clean aside from gitignored `.env`.
 - Local `.env`: `LLM_PROVIDER=none` until `OPENAI_API_KEY` is set (boot no longer fails).
 
+## Deepen 5.x (2026-10-15)
+
+- 5.4 per-run call log + panel; 5.5 explainability evidence; 5.6 VenueFacts/pins/closed drop/POINT+radius; 5.1 analysis/compare with tag fallback; 5.7 taste-lift (no matchScore change). Tests: 157. Skipped 5.2/5.3 (probe).
+
 ## Phase 0 — Audit, baseline, probe (2026-10-13)
 
 - Baseline: `typecheck` / `test` (12) / `build` — green.

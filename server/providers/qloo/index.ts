@@ -34,10 +34,12 @@ import {
   cityInfoFromSearch,
   entityTypeForKind,
   entityTypeFromUrns,
+  explainabilityAnchor,
   filterTypeForEntityType,
   filterTypeForKind,
   heatmapSpotsFromQloo,
   kindFromEntityTypes,
+  LOCAL_PLACE_RADIUS_M,
   paramsToStrings,
   searchTypesForAnchor,
   stretchScores,
@@ -225,9 +227,14 @@ export class QlooTasteProvider implements TasteProvider {
 
     const filterType = filterTypeForKind(kind);
     const city = await this.resolveCityQuiet(input, signal);
+    const isLocalPlace = Boolean(city?.hasLocalData && filterType === "urn:entity:place");
     const params: Record<string, string | number | string[]> = {
       "filter.type": filterType,
       take: 12,
+      // Free on discover (docs/QLOO_CONTRACT_V2.md): lets us attribute a candidate's affinity
+      // back to a specific matched anchor instead of a generic percentage — see
+      // `explainabilityAnchor` in mapping.ts.
+      "feature.explainability": "true",
     };
     if (entityIds.length > 0) params["signal.interests.entities"] = entityIds;
     if (tagIds.length > 0 && entityIds.length === 0) {
@@ -236,9 +243,13 @@ export class QlooTasteProvider implements TasteProvider {
       // No `DiscoverSpec` here: a text search isn't a replayable rank-together shape.
       return this.discoverBySearch(input, kind, signal);
     }
-    if (city?.hasLocalData && filterType === "urn:entity:place") {
-      params["filter.location"] = `${city.center[0]},${city.center[1]}`;
-      params["filter.radius"] = 25;
+    if (isLocalPlace && city) {
+      // Probe-confirmed shape: `filter.location=POINT(lng lat)` + `filter.location.radius`
+      // (metres) — prefer this over `filter.location.query`, which the contract notes can be
+      // looser (docs/QLOO_CONTRACT_V2.md). `city.center` is `[lat, lng]`.
+      const [lat, lng] = city.center;
+      params["filter.location"] = `POINT(${lng} ${lat})`;
+      params["filter.location.radius"] = LOCAL_PLACE_RADIUS_M;
     }
 
     const key = cacheKey("/v2/insights", params);
@@ -257,11 +268,20 @@ export class QlooTasteProvider implements TasteProvider {
       if (!entry) continue;
       entry.kind = kind;
       entry.entityType = entityTypeFromUrns(typesOf(entity)) || entry.entityType;
-      const local = Boolean(city?.hasLocalData && filterType === "urn:entity:place");
-      if (local && kind === businessCategory) continue;
+      // Qloo's point+radius search can still return the odd place past the asked-for radius;
+      // discard rather than show a "local" partner that's actually a long way off.
+      if (isLocalPlace && entry.venueFacts?.distanceM !== undefined && entry.venueFacts.distanceM > LOCAL_PLACE_RADIUS_M) {
+        continue;
+      }
+      if (isLocalPlace && kind === businessCategory) continue;
+      const explain = explainabilityAnchor(entity, resolved);
+      if (explain) {
+        entry.explainabilityAnchorName = explain.anchorName;
+        entry.explainabilityScore = explain.score;
+      }
       candidates.push({
         entry,
-        local,
+        local: isLocalPlace,
         provisional: Math.max(affinityOf(entity), entry.popularity * 0.5),
       });
     }
@@ -509,13 +529,16 @@ export class QlooTasteProvider implements TasteProvider {
       entities: entityIds,
     });
 
+    // Probe-confirmed POINT+radius shape (docs/QLOO_CONTRACT_V2.md); `city.center` is `[lat, lng]`.
+    const heatmapPoint = `POINT(${city.center[1]} ${city.center[0]})`;
     try {
       const result = await this.cached(key, () =>
         insights(
           {
             "filter.type": "urn:heatmap",
             "signal.interests.entities": entityIds,
-            "filter.location": `${city.center[0]},${city.center[1]}`,
+            "filter.location": heatmapPoint,
+            "filter.location.radius": LOCAL_PLACE_RADIUS_M,
             take: 20,
           },
           signal,
@@ -528,8 +551,8 @@ export class QlooTasteProvider implements TasteProvider {
           {
             "filter.type": "urn:entity:place",
             "signal.interests.entities": entityIds,
-            "filter.location": `${city.center[0]},${city.center[1]}`,
-            "filter.radius": 20,
+            "filter.location": heatmapPoint,
+            "filter.location.radius": LOCAL_PLACE_RADIUS_M,
             take: 12,
           },
           signal,

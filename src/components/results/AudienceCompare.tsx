@@ -24,6 +24,10 @@ function SignalBar({ label, value, median }: { label: string; value: number; med
   );
 }
 
+function sourceLabel(source: ComparePayload["source"]): string {
+  return source === "qloo_tags" ? "Source: Qloo tag analysis" : "Source: computed from shared tags";
+}
+
 export function AudienceCompare({ payload, loading }: { payload?: ComparePayload; loading: boolean }) {
   if (loading) {
     return (
@@ -39,7 +43,10 @@ export function AudienceCompare({ payload, loading }: { payload?: ComparePayload
 
   return (
     <div className="mt-3 rounded-[16px] border border-line bg-paper p-3">
-      <h4 className="text-sm font-medium">Your audience vs {payload.partnerName}</h4>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h4 className="text-sm font-medium">Your audience vs {payload.partnerName}</h4>
+        <span className="rounded-full bg-paper-2 px-2 py-0.5 text-[11px] text-ink-soft">{sourceLabel(payload.source)}</span>
+      </div>
       <div className="mt-2 flex flex-wrap gap-2">
         {payload.sharedTags.length === 0 ? (
           <p className="text-xs text-ink-soft">No strong shared tags to compare.</p>

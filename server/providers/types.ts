@@ -8,6 +8,7 @@ import type {
   PartnerKind,
   ProviderName,
   RankEntry,
+  VenueFacts,
 } from "@shared/types";
 
 /** Provider-agnostic entity used as a discover/score candidate. */
@@ -24,6 +25,15 @@ export interface ProviderEntity {
   city?: string;
   neighbourhood?: string;
   aliases?: string[];
+  /** Set for `place` entities from a live Qloo point+radius discover call (see
+   * `server/providers/qloo/mapping.ts`); absent for mock/snapshot and for non-place kinds. */
+  venueFacts?: VenueFacts;
+  /** Name of the resolved (matched) anchor Qloo's `feature.explainability` attributed this
+   * candidate's affinity to the most, when available — see `explainabilityAnchor` in
+   * `server/providers/qloo/mapping.ts`. Surfaced as an extra "data"-origin evidence item. */
+  explainabilityAnchorName?: string;
+  /** 0-1 score for `explainabilityAnchorName`, straight from Qloo's explainability payload. */
+  explainabilityScore?: number;
 }
 
 export interface Candidate {

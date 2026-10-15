@@ -1,8 +1,8 @@
 import { MAX_USER_ADDED_PARTNERS, STEP_TITLES } from "@shared/constants";
-import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BriefLength, type BriefTone, type BusinessInput, type ComparePayload, type Heatmap, type PartnerKind, type ProofResult, type RunResult, type StepId, type StoredEvent } from "@shared/types";
+import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BriefLength, type BriefTone, type BusinessInput, type ComparePayload, type Heatmap, type PartnerKind, type ProofResult, type QlooCallRecord, type RunResult, type StepId, type StoredEvent } from "@shared/types";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { ApiError, cancelRun, createBrief, createRun, createShare, expandRun, getHealth, getHeatmap, getMeta, getRun, postCheck, postCompare, postProof, type Health, type Meta } from "@/lib/api";
+import { ApiError, cancelRun, createBrief, createRun, createShare, expandRun, getCallLog, getHealth, getHeatmap, getMeta, getRun, postCheck, postCompare, postProof, type Health, type Meta } from "@/lib/api";
 import { openRunStream } from "@/lib/sse";
 import { clearRunId, readInput, readRunId, saveInput, saveRunId } from "@/lib/storage";
 
@@ -84,6 +84,9 @@ interface VennState {
   compare: Record<string, ComparePayload>;
   compareOpenId: string | null;
   compareLoading: boolean;
+  callLogOpen: boolean;
+  calls: QlooCallRecord[];
+  callsLoading: boolean;
   sharing: boolean;
   error: string | null;
   boot: () => Promise<void>;
@@ -108,6 +111,8 @@ interface VennState {
   checkPartner: (name: string, entityHint?: string) => Promise<void>;
   loadCompare: (partnerId: string) => Promise<void>;
   closeCompare: () => void;
+  openCallLog: () => Promise<void>;
+  closeCallLog: () => void;
   shareRun: () => Promise<void>;
   setInput: (input: BusinessInput) => void;
 }
@@ -184,6 +189,9 @@ export const useVenn = create<VennState>((set, get) => ({
   compare: {},
   compareOpenId: null,
   compareLoading: false,
+  callLogOpen: false,
+  calls: [],
+  callsLoading: false,
   sharing: false,
   error: null,
 
@@ -247,6 +255,8 @@ export const useVenn = create<VennState>((set, get) => ({
       pinnedIds: new Set(),
       compare: {},
       compareOpenId: null,
+      callLogOpen: false,
+      calls: [],
     });
     try {
       const { runId } = await createRun(input);
@@ -289,6 +299,8 @@ export const useVenn = create<VennState>((set, get) => ({
       proof: null,
       compare: {},
       compareOpenId: null,
+      callLogOpen: false,
+      calls: [],
     });
   },
 
@@ -434,6 +446,22 @@ export const useVenn = create<VennState>((set, get) => ({
   },
 
   closeCompare: () => set({ compareOpenId: null }),
+
+  openCallLog: async () => {
+    const { runId, callsLoading } = get();
+    if (!runId || callsLoading) return;
+    set({ callLogOpen: true, callsLoading: true });
+    try {
+      const calls = await getCallLog(runId);
+      set({ calls });
+    } catch (error) {
+      toast(error instanceof ApiError ? error.message : "The call log could not be loaded.");
+    } finally {
+      set({ callsLoading: false });
+    }
+  },
+
+  closeCallLog: () => set({ callLogOpen: false }),
 
   shareRun: async () => {
     const { runId, sharing } = get();

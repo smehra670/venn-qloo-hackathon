@@ -10,18 +10,21 @@ import {
 import type { AgentEvent, Partner, StoredEvent } from "@shared/types";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { writeAiBrief } from "../brief/ai.js";
-import { buildCompare } from "../compare.js";
+import { buildCompare, normalizeCompareTags } from "../compare.js";
 import { config } from "../config.js";
 import { getProvider, isLiveQlooProvider } from "../providers/index.js";
 import { attachRelated, median } from "../providers/mock/engine.js";
-import { isQuotaBelowFloor } from "../providers/qloo/client.js";
+import { arraySink, withQlooCallSink } from "../providers/qloo/callLog.js";
+import { compareEntities, isQuotaBelowFloor } from "../providers/qloo/client.js";
 import { stretchWithNormalization } from "../providers/scoring.js";
+import { applyPopularityLift } from "../providers/taste-lift.js";
 import type { ProviderContext } from "../providers/types.js";
 import { buildProof } from "../proof.js";
 import { executeRun } from "../runs/runner.js";
 import { getScheduler } from "../runs/scheduler.js";
 import { append, canStartRun, createRun, getRun, recordRun, type Run } from "../runs/store.js";
 import { waitForLatency } from "../runs/trace.js";
+import { nanoid } from "nanoid";
 
 const EXPIRED = "That search has expired. Start a new one.";
 
@@ -41,6 +44,13 @@ function quietContext(): ProviderContext {
       // Expand/heatmap/check-a-partner calls don't keep a decision log.
     },
   };
+}
+
+/** Runs `fn` (an expand/heatmap/proof/check/compare handler body) with the run's call-log sink
+ * active, so any live Qloo calls those quiet-context operations make are appended to
+ * `run.calls` alongside the ones from the original pipeline — same cap, same array. */
+function withRunCallLog<T>(run: Run, fn: () => Promise<T>): Promise<T> {
+  return withQlooCallSink(arraySink(run.calls, () => nanoid(8)), fn);
 }
 
 function httpError(statusCode: number, message: string): Error & { statusCode: number } {
@@ -173,6 +183,11 @@ export function registerRuns(app: FastifyInstance): void {
     return { status: run.status, result: run.result, error: run.error };
   });
 
+  app.get("/api/runs/:id/calls", async (request: FastifyRequest<{ Params: { id: string } }>) => {
+    const run = requireRun(request.params.id);
+    return { calls: run.calls };
+  });
+
   app.delete("/api/runs/:id", async (request: FastifyRequest<{ Params: { id: string } }>) => {
     const run = requireRun(request.params.id);
     if (run.status === "running") {
@@ -192,9 +207,9 @@ export function registerRuns(app: FastifyInstance): void {
     if (result.partners.length >= MAX_PARTNERS) {
       return { added: [], message: "This map already has 28 partners, which is the limit." };
     }
-    const added = await getProvider().expand(result, partner.id, quietContext());
+    const added = await withRunCallLog(run, () => getProvider().expand(result, partner.id, quietContext()));
     if (added.length > 0) {
-      result.partners = [...result.partners, ...added];
+      result.partners = applyPopularityLift([...result.partners, ...added]);
       attachRelated(result.partners);
     }
     return {
@@ -223,7 +238,7 @@ export function registerRuns(app: FastifyInstance): void {
         if (!cached) return reply.code(204).send();
         return cached;
       }
-      const heatmap = await getProvider().heatmap(result, partnerId, quietContext());
+      const heatmap = await withRunCallLog(run, () => getProvider().heatmap(result, partnerId, quietContext()));
       run.heatmaps.set(partnerId, heatmap);
       if (!heatmap) return reply.code(204).send();
       return heatmap;
@@ -255,7 +270,7 @@ export function registerRuns(app: FastifyInstance): void {
     const run = requireRun(request.params.id);
     const result = requireResult(run);
     if (run.proof) return run.proof;
-    const proof = await buildProof(result, quietContext());
+    const proof = await withRunCallLog(run, () => buildProof(result, quietContext()));
     run.proof = proof;
     return proof;
   });
@@ -280,12 +295,14 @@ export function registerRuns(app: FastifyInstance): void {
     const medianScore = median(result.partners.map((partner) => partner.matchScore));
     const ctx = quietContext();
     const provider = getProvider();
-    const checked = await provider.checkPartner(
-      result.input,
-      result.resolvedAnchors,
-      { name: parsed.data.name, entityHint: parsed.data.entityHint },
-      { normalization, medianScore },
-      ctx,
+    const checked = await withRunCallLog(run, () =>
+      provider.checkPartner(
+        result.input,
+        result.resolvedAnchors,
+        { name: parsed.data.name, entityHint: parsed.data.entityHint },
+        { normalization, medianScore },
+        ctx,
+      ),
     );
     if (!checked) {
       return reply
@@ -305,7 +322,7 @@ export function registerRuns(app: FastifyInstance): void {
     const spec = (result.discoverSpecs ?? []).find((item) => item.kind === checked.kind);
     if (spec) {
       try {
-        const ranked = await provider.rankTogether(spec, [checked.id], ctx);
+        const ranked = await withRunCallLog(run, () => provider.rankTogether(spec, [checked.id], ctx));
         const own = ranked.find((entry) => entry.entityId === checked.id);
         if (own) {
           matchScore = stretchWithNormalization(Math.max(0, Math.min(1, own.affinity)), normalization);
@@ -315,9 +332,9 @@ export function registerRuns(app: FastifyInstance): void {
       }
     }
     const added: Partner = { ...checked, matchScore, userAdded: true, origin: "user_added" };
-    result.partners = [...result.partners, added];
+    result.partners = applyPopularityLift([...result.partners, added]);
     attachRelated(result.partners);
-    return { partner: added };
+    return { partner: result.partners.find((partner) => partner.id === added.id) ?? added };
   });
 
   app.post("/api/runs/:id/compare", async (request: FastifyRequest<{ Params: { id: string } }>, reply) => {
@@ -327,6 +344,24 @@ export function registerRuns(app: FastifyInstance): void {
     const result = requireResult(run);
     const partner = result.partners.find((item) => item.id === parsed.data.partnerId);
     if (!partner) return reply.code(404).send({ error: "That partner is not in this search." });
-    return buildCompare(result, partner);
+
+    // Live /v2/analysis/compare attempt: only for the real Qloo provider, and only while this
+    // run's compare budget (COMPARE_MAX_CALLS_PER_RUN) allows it. `buildCompare` degrades to
+    // the always-available computed tag intersection whenever this returns null/throws/empties.
+    const provider = getProvider({ live: result.provider === "qloo" });
+    const canTryLive = isLiveQlooProvider(provider) && run.compareCallsUsed < config.compareMaxCallsPerRun;
+    const anchorIds = result.resolvedAnchors
+      .filter((item) => item.status === "matched" && item.entityId)
+      .map((item) => item.entityId!)
+      .slice(0, 5);
+    const tryLive =
+      canTryLive && anchorIds.length > 0
+        ? async () => {
+            run.compareCallsUsed += 1;
+            const { tags } = await withRunCallLog(run, () => compareEntities(anchorIds, [partner.id], quietContext().signal));
+            return normalizeCompareTags(tags);
+          }
+        : undefined;
+    return buildCompare(result, partner, tryLive);
   });
 }

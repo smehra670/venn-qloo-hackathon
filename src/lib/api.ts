@@ -1,5 +1,5 @@
-import { AnchorResolutionSchema, BriefSchema, ComparePayloadSchema, HeatmapSchema, PartnerSchema, ProofResultSchema, RunResultSchema } from "@shared/schemas";
-import type { AnchorResolution, Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ComparePayload, ExampleInput, Heatmap, Partner, ProofResult, ProviderName, RunResult, RunStatus } from "@shared/types";
+import { AnchorResolutionSchema, BriefSchema, ComparePayloadSchema, HeatmapSchema, PartnerSchema, ProofResultSchema, QlooCallRecordSchema, RunResultSchema } from "@shared/schemas";
+import type { AnchorResolution, Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ComparePayload, ExampleInput, Heatmap, Partner, ProofResult, ProviderName, QlooCallRecord, RunResult, RunStatus } from "@shared/types";
 import { z } from "zod";
 
 export class ApiError extends Error {
@@ -178,5 +178,11 @@ export function getShare(token: string): Promise<{ result: RunResult }> {
 export function postCompare(id: string, partnerId: string): Promise<ComparePayload> {
   return request(`/api/runs/${id}/compare`, { method: "POST", body: JSON.stringify({ partnerId }) }, (value) =>
     ComparePayloadSchema.parse(value),
+  );
+}
+
+export function getCallLog(id: string): Promise<QlooCallRecord[]> {
+  return request(`/api/runs/${id}/calls`, undefined, (value) =>
+    z.object({ calls: z.array(QlooCallRecordSchema) }).parse(value).calls,
   );
 }

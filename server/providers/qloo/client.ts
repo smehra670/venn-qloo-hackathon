@@ -1,6 +1,8 @@
 import { config } from "../../config.js";
 import { recordUsage } from "../../usage/ledger.js";
+import { recordQlooCall } from "./callLog.js";
 import {
+  CompareResponseSchema,
   InsightsResponseSchema,
   SearchResponseSchema,
   TagsResponseSchema,
@@ -180,6 +182,31 @@ async function sleep(ms: number, signal?: AbortSignal): Promise<void> {
   });
 }
 
+function isAbortError(error: unknown): boolean {
+  return error instanceof Error && error.name === "AbortError";
+}
+
+/**
+ * Thin wrapper around a single `qlooGet` call: runs `perform()` (the actual fetch + retry
+ * loop) and, regardless of outcome, appends one redacted `QlooCallRecord` to whatever call-log
+ * sink is active for the current async context (see `./callLog.ts`) — a no-op outside a run
+ * (e.g. in most unit tests). Cancelled requests (`AbortError`) are not logged as failures;
+ * they're not a Qloo-side problem, just the user navigating away or a quiet-context timeout.
+ */
+async function withCallLog<T>(path: string, params: Record<string, QueryValue>, perform: () => Promise<T>): Promise<T> {
+  const began = Date.now();
+  try {
+    const result = await perform();
+    recordQlooCall({ path, params, status: "ok", ms: Date.now() - began });
+    return result;
+  } catch (error) {
+    if (!isAbortError(error)) {
+      recordQlooCall({ path, params, status: "error", ms: Date.now() - began });
+    }
+    throw error;
+  }
+}
+
 export async function qlooGet<T>(
   path: string,
   params: Record<string, QueryValue>,
@@ -193,68 +220,71 @@ export async function qlooGet<T>(
 
   const query = buildQuery(params);
   const url = `${config.qlooBaseUrl}${path.startsWith("/") ? path : `/${path}`}${query ? `?${query}` : ""}`;
-  let attempt = 0;
-  while (true) {
-    attempt += 1;
-    let response: Response;
-    await acquireQlooSlot(signal);
-    try {
-      response = await fetch(url, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "X-Api-Key": key,
-        },
-        signal,
-      });
-    } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") throw error;
-      recordFailure();
-      throw new QlooHttpError("Could not reach Qloo. Check your connection and try again.", 0);
-    } finally {
-      releaseQlooSlot();
-    }
-    updateQuotaFromHeaders(response.headers);
 
-    if (response.status === 401) {
-      throw new QlooHttpError(
-        "Qloo rejected the API key. Use a hackathon key against https://hackathon.api.qloo.com.",
-        401,
-      );
-    }
-    if (response.status === 403) {
-      throw new QlooHttpError("Qloo denied that entity type or parameter for this key.", 403);
-    }
-    if (response.status === 429) {
-      if (attempt >= 5) {
-        recordFailure();
-        throw new QlooHttpError("Qloo rate limit hit. Wait a moment and try again.", 429);
-      }
-      const retryAfter = Number(response.headers.get("retry-after"));
-      const waitMs = Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 400 * attempt * attempt;
-      await sleep(waitMs, signal);
-      continue;
-    }
-    if (response.status === 404) {
-      recordSuccess();
-      return parse({ success: true, results: [] });
-    }
-    if (!response.ok) {
-      let detail = response.statusText;
+  return withCallLog(path, params, async () => {
+    let attempt = 0;
+    while (true) {
+      attempt += 1;
+      let response: Response;
+      await acquireQlooSlot(signal);
       try {
-        const body = (await response.json()) as { message?: string; reason?: string };
-        detail = body.message ?? body.reason ?? detail;
-      } catch {
-        // ignore
+        response = await fetch(url, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "X-Api-Key": key,
+          },
+          signal,
+        });
+      } catch (error) {
+        if (isAbortError(error)) throw error;
+        recordFailure();
+        throw new QlooHttpError("Could not reach Qloo. Check your connection and try again.", 0);
+      } finally {
+        releaseQlooSlot();
       }
-      if (response.status >= 500) recordFailure();
-      throw new QlooHttpError(`Qloo request failed (${response.status}): ${detail}`, response.status);
-    }
+      updateQuotaFromHeaders(response.headers);
 
-    const json: unknown = await response.json();
-    recordSuccess();
-    return parse(json);
-  }
+      if (response.status === 401) {
+        throw new QlooHttpError(
+          "Qloo rejected the API key. Use a hackathon key against https://hackathon.api.qloo.com.",
+          401,
+        );
+      }
+      if (response.status === 403) {
+        throw new QlooHttpError("Qloo denied that entity type or parameter for this key.", 403);
+      }
+      if (response.status === 429) {
+        if (attempt >= 5) {
+          recordFailure();
+          throw new QlooHttpError("Qloo rate limit hit. Wait a moment and try again.", 429);
+        }
+        const retryAfter = Number(response.headers.get("retry-after"));
+        const waitMs = Number.isFinite(retryAfter) && retryAfter > 0 ? retryAfter * 1000 : 400 * attempt * attempt;
+        await sleep(waitMs, signal);
+        continue;
+      }
+      if (response.status === 404) {
+        recordSuccess();
+        return parse({ success: true, results: [] });
+      }
+      if (!response.ok) {
+        let detail = response.statusText;
+        try {
+          const body = (await response.json()) as { message?: string; reason?: string };
+          detail = body.message ?? body.reason ?? detail;
+        } catch {
+          // ignore
+        }
+        if (response.status >= 500) recordFailure();
+        throw new QlooHttpError(`Qloo request failed (${response.status}): ${detail}`, response.status);
+      }
+
+      const json: unknown = await response.json();
+      recordSuccess();
+      return parse(json);
+    }
+  });
 }
 
 export async function searchEntities(
@@ -293,6 +323,34 @@ export async function searchTags(
       return { id, name: tag.name ?? id };
     })
     .filter((tag) => tag.id.length > 0);
+}
+
+/**
+ * `GET /v2/analysis/compare`: compares side A's and side B's signal entities, returning
+ * (when non-empty) a `tags` array scoring each tag for both sides, plus `matchEntities`. The
+ * hackathon probe found `tags` empty for its own `filter.type`; callers (`server/compare.ts`)
+ * degrade to a computed tag intersection when that happens — see `docs/QLOO_CONTRACT_V2.md`.
+ */
+export async function compareEntities(
+  aEntityIds: string[],
+  bEntityIds: string[],
+  signal?: AbortSignal,
+): Promise<{ tags: Array<Record<string, unknown>>; matchEntities: Array<Record<string, unknown>>; raw: unknown }> {
+  const raw = await qlooGet(
+    "/v2/analysis/compare",
+    {
+      "a.signal.interests.entities": aEntityIds,
+      "b.signal.interests.entities": bEntityIds,
+      "filter.type": "urn:tag",
+    },
+    signal,
+    (json) => CompareResponseSchema.parse(json),
+  );
+  return {
+    tags: raw.results?.tags ?? [],
+    matchEntities: raw.results?.matchEntities ?? [],
+    raw,
+  };
 }
 
 export function entityIdOf(entity: QlooEntity): string | undefined {

@@ -4,6 +4,8 @@ import { nanoid } from "nanoid";
 import { applyCritiques, applyFeasibility, critiqueFeasibility, flaggedPartners } from "../agent/feasibility.js";
 import { applyGoals, applyGoalsToKinds, filterByGoals, hasAnyGoal, rerankTopPicks, summarizeGoals } from "../agent/goals.js";
 import { getProvider } from "../providers/index.js";
+import { arraySink, withQlooCallSink, withQlooStep } from "../providers/qloo/callLog.js";
+import { applyPopularityLift } from "../providers/taste-lift.js";
 import type { Candidate, ProviderContext } from "../providers/types.js";
 import {
   chooseTopPicks,
@@ -44,7 +46,8 @@ async function mapPool<T, R>(items: T[], limit: number, fn: (item: T, index: num
 }
 
 export function executeRun(run: Run, log: (fields: Record<string, string | number>) => void): Promise<void> {
-  return pipeline(run, log);
+  const sink = arraySink(run.calls, () => nanoid(8));
+  return withQlooCallSink(sink, () => pipeline(run, log));
 }
 
 async function pipeline(run: Run, log: (fields: Record<string, string | number>) => void): Promise<void> {
@@ -62,7 +65,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       const began = Date.now();
       await waitForLatency(run.abort.signal);
       ensure(run);
-      const value = await fn();
+      const value = await withQlooStep(step, fn);
       append(run, {
         type: "tool_result",
         step,
@@ -250,6 +253,8 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       }
     }
 
+    partners = applyPopularityLift(partners);
+
     const elapsedMs = Date.now() - started;
     const limits =
       provider.name === "mock"
@@ -285,6 +290,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       normalization: scoreOut.normalization,
       decisions,
       discoverSpecs,
+      calls: [...run.calls],
     };
     append(run, { type: "step_completed", step, summary: "Your map is ready." });
     append(run, { type: "result", result });

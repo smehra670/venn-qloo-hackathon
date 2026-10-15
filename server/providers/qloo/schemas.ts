@@ -39,6 +39,9 @@ export const QlooEntitySchema = z
     query: z
       .object({
         affinity: z.number().optional(),
+        /** Metres from the `filter.location` POINT+radius search centre; present on place
+         * entities returned by a point+radius discover call (see `docs/QLOO_CONTRACT_V2.md`). */
+        distance: z.number().optional(),
         measurements: z
           .object({
             audience_growth: z.number().optional(),
@@ -133,5 +136,28 @@ export const EntitiesResponseSchema = z
     success: z.boolean().optional(),
     results: z.array(QlooEntitySchema).optional(),
     error: z.unknown().optional(),
+  })
+  .passthrough();
+
+/**
+ * `GET /v2/analysis/compare` — 200 with `results.tags`/`a`/`b`/`matchEntities`
+ * (`docs/QLOO_CONTRACT_V2.md`). The hackathon probe's own `filter.type` returned an empty
+ * `tags` array, so the exact per-tag shape is unconfirmed; kept loose (`passthrough` records)
+ * so `normalizeCompareTags` (`server/compare.ts`) can defensively read whichever fields are
+ * actually present rather than failing to parse.
+ */
+export const CompareResponseSchema = z
+  .object({
+    success: z.boolean().optional(),
+    duration: z.number().optional(),
+    results: z
+      .object({
+        tags: z.array(z.record(z.string(), z.unknown())).optional(),
+        a: z.record(z.string(), z.unknown()).optional(),
+        b: z.record(z.string(), z.unknown()).optional(),
+        matchEntities: z.array(z.record(z.string(), z.unknown())).optional(),
+      })
+      .passthrough()
+      .optional(),
   })
   .passthrough();

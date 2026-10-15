@@ -1,4 +1,4 @@
-import type { AgentEvent, Brief, BusinessInput, Heatmap, ProofResult, RunResult, StoredEvent } from "@shared/types";
+import type { AgentEvent, Brief, BusinessInput, Heatmap, ProofResult, QlooCallRecord, RunResult, StoredEvent } from "@shared/types";
 import Database from "better-sqlite3";
 import { createHash } from "node:crypto";
 import { mkdirSync } from "node:fs";
@@ -25,6 +25,15 @@ export interface Run {
   toolCalls: number;
   /** Forces the live Qloo provider for this run even when TASTE_PROVIDER=snapshot. */
   live?: boolean;
+  /** Redacted live-Qloo call log for this run (see `server/providers/qloo/callLog.ts`), capped
+   * at `CALL_LOG_CAP`. Grown during the initial pipeline and by any later quiet-context calls
+   * (expand/heatmap/compare/check/proof) against this run. Mirrored onto `RunResult.calls`
+   * once the pipeline finishes; not itself persisted to sqlite (same as `briefs`/`heatmaps` —
+   * a restart losing it just costs a fresh, empty log for that run). */
+  calls: QlooCallRecord[];
+  /** How many live `/v2/analysis/compare` calls this run has spent, capped at
+   * `config.compareMaxCallsPerRun` (see `server/compare.ts`). */
+  compareCallsUsed: number;
 }
 
 interface RunRow {
@@ -119,6 +128,8 @@ export function createRun(input: BusinessInput, opts?: { live?: boolean }): Run 
     briefs: new Map(),
     toolCalls: 0,
     live: opts?.live,
+    calls: [],
+    compareCallsUsed: 0,
   };
   runs.set(run.id, run);
   insertRunStmt.run({
@@ -135,19 +146,22 @@ export function createRun(input: BusinessInput, opts?: { live?: boolean }): Run 
 
 function fromRow(row: RunRow): Run {
   const events = JSON.parse(row.events_json) as StoredEvent[];
+  const result = row.result_json ? (JSON.parse(row.result_json) as RunResult) : undefined;
   const run: Run = {
     id: row.id,
     status: row.status,
     createdAt: row.created_at,
     input: JSON.parse(row.input_json) as BusinessInput,
     events,
-    result: row.result_json ? (JSON.parse(row.result_json) as RunResult) : undefined,
+    result,
     error: row.error ?? undefined,
     abort: new AbortController(),
     subscribers: new Set(),
     heatmaps: new Map(),
     briefs: new Map(),
     toolCalls: events.filter((event) => event.type === "tool_call").length,
+    calls: result?.calls ? [...result.calls] : [],
+    compareCallsUsed: 0,
   };
   if (run.status !== "running") run.abort.abort();
   return run;

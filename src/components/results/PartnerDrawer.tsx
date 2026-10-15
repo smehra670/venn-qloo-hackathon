@@ -107,6 +107,27 @@ export function PartnerDrawer() {
           ))}
         </div>
       </section>
+      {partner.venueFacts ? (
+        <section className="mt-5">
+          <h3 className="text-sm font-medium">Venue details</h3>
+          <div className="mt-2 space-y-1 text-sm text-ink-soft">
+            {partner.venueFacts.address ? <p>{partner.venueFacts.address}</p> : null}
+            {partner.venueFacts.distanceM !== undefined ? (
+              <p>{Math.round(partner.venueFacts.distanceM)}m from your search centre</p>
+            ) : null}
+            {partner.venueFacts.website ? (
+              <a
+                href={partner.venueFacts.website}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-block text-blue underline"
+              >
+                {partner.venueFacts.website}
+              </a>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
       <div className="mt-5">
         <EvidencePanel items={partner.evidence} provider={result.provider} limits={result.limits} />
       </div>

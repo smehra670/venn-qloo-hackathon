@@ -193,6 +193,25 @@ const DiscoverSpecSchema = z.object({
   poolIds: z.array(z.string()),
 });
 
+const VenueFactsSchema = z.object({
+  lat: z.number(),
+  lon: z.number(),
+  address: z.string().optional(),
+  neighbourhood: z.string().optional(),
+  website: z.string().optional(),
+  distanceM: z.number().optional(),
+});
+
+export const QlooCallRecordSchema = z.object({
+  id: z.string(),
+  at: z.number(),
+  step: StepIdSchema.optional(),
+  path: z.string(),
+  params: z.record(z.string(), z.string()),
+  status: z.enum(["ok", "error"]),
+  ms: z.number(),
+});
+
 export const PartnerSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -223,6 +242,8 @@ export const PartnerSchema = z.object({
       origin: DecisionOriginSchema,
     })
     .optional(),
+  venueFacts: VenueFactsSchema.optional(),
+  popularityLift: z.number().optional(),
 });
 
 const TopPickSchema = z.object({
@@ -289,6 +310,7 @@ export const RunResultSchema = z.object({
     )
     .optional(),
   discoverSpecs: z.array(DiscoverSpecSchema).optional(),
+  calls: z.array(QlooCallRecordSchema).optional(),
 });
 
 export const HeatmapSchema = z.object({
@@ -466,6 +488,7 @@ export const ComparePayloadSchema = z.object({
   popularityDelta: z.number(),
   signals: z.array(CompareSignalSchema),
   note: z.string(),
+  source: z.enum(["qloo_tags", "computed_from_tags"]).optional(),
 });
 
 const AnchorCandidateSchema = z.object({

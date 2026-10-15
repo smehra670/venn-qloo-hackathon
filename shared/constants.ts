@@ -79,4 +79,9 @@ export const QLOO_CAPABILITIES = [
   { path: "/search", label: "Entity search", usedFor: "resolveAnchors, resolveCity" },
   { path: "/v2/insights", label: "Insights", usedFor: "discover, score, enrich, expand, heatmap" },
   { path: "/v2/tags", label: "Tag search", usedFor: "resolveAnchors (keyword fallback)" },
+  {
+    path: "/v2/analysis/compare",
+    label: "Analysis compare",
+    usedFor: "Compare audiences (falls back to a computed tag intersection when tags come back empty)",
+  },
 ] as const;

@@ -4,6 +4,7 @@ import { BriefSheet } from "@/components/results/BriefSheet";
 import { MapView } from "@/components/results/MapView";
 import { PartnerDrawer } from "@/components/results/PartnerDrawer";
 import { ProofView } from "@/components/results/ProofView";
+import { QlooCallLog } from "@/components/results/QlooCallLog";
 import { ShortlistView } from "@/components/results/ShortlistView";
 import { TopPicks } from "@/components/results/TopPicks";
 import { MobileTabs, TopBar } from "@/components/results/TopBar";
@@ -62,6 +63,7 @@ export function ResultsScreen() {
         {view === "shortlist" ? <ShortlistView /> : null}
         {view === "proof" ? <ProofView /> : null}
         <PartnerDrawer />
+        <QlooCallLog />
       </div>
       <MobileTabs />
       <BriefSheet />

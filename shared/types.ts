@@ -201,6 +201,17 @@ export interface Partner {
   /** Outreach-readiness tier run on top picks only (see `server/agent/feasibility.ts`): never
    * removes the partner, just surfaces a tier + one-line reason in the UI. */
   feasibility?: Feasibility;
+  /** Present only for `place` partners discovered via Qloo's point+radius search (see
+   * `server/providers/qloo/mapping.ts`). Drives the map pins and the drawer's address/website
+   * section. Absent for brands/artists and for mock/snapshot providers (no per-place coords
+   * in the demo catalog). */
+  venueFacts?: VenueFacts;
+  /** Residual of an OLS fit of affinity on popularity across this run's current partner batch
+   * (see `server/providers/taste-lift.ts`): positive means this partner over-performs its
+   * popularity on taste fit, negative means it under-performs. Display-only — like `goalFit`,
+   * it never changes `matchScore`. Recomputed whenever the batch changes (new run, expand,
+   * check-a-partner), so it is only comparable to other partners from the same recomputation. */
+  popularityLift?: number;
 }
 
 /** Outreach-readiness tiers for a top-pick partner, from easiest to hardest. "long_shot" is a
@@ -292,6 +303,11 @@ export interface RunResult {
    * and pool ids so Proof/Check can call `rankTogether` on the same shape later. Absent on
    * runs from before this was tracked ("legacy" runs) — Proof degrades gracefully for those. */
   discoverSpecs?: DiscoverSpec[];
+  /** Redacted log of live Qloo HTTP calls made for this run (see `QlooCallRecord`), capped at
+   * 120 entries (oldest dropped first). Empty/absent for mock and snapshot providers, which
+   * make no real Qloo calls. Powers `GET /api/runs/:id/calls` and the "How Venn used Qloo"
+   * panel. */
+  calls?: QlooCallRecord[];
 }
 
 export interface HeatSpot {
@@ -461,9 +477,17 @@ export interface CompareSignal {
   median: number;
 }
 
+/** Where a "Compare audiences" readout's shared tags came from: a live `/v2/analysis/compare`
+ * call (`"qloo_tags"`) or the always-available signal-based tag intersection computed from this
+ * run's own data (`"computed_from_tags"`, see `server/compare.ts`). Surfaced as a small source
+ * label in the UI so the distinction is honest. */
+export type CompareSource = "qloo_tags" | "computed_from_tags";
+
 /** "Compare audiences" readout for a single partner (see `server/compare.ts`). Built
  * entirely from signals already computed during scoring, so it is deterministic and
- * network-free for every provider, including mock. */
+ * network-free for every provider, including mock. May additionally try a live
+ * `/v2/analysis/compare` call (budget-limited, Qloo only) and fall back to the computed
+ * tag intersection when that call's tags come back empty — see `source`. */
 export interface ComparePayload {
   runId: string;
   partnerId: string;
@@ -475,4 +499,37 @@ export interface ComparePayload {
   popularityDelta: number;
   signals: CompareSignal[];
   note: string;
+  /** Defaults to `"computed_from_tags"` for payloads built before this field existed. */
+  source?: CompareSource;
+}
+
+/** Fields extracted from a Qloo `place` entity (point+radius discover), kept narrow and
+ * display-safe: no raw Qloo payload, `website` only when it parses as `http(s)://`, and
+ * `is_closed` deliberately dropped after being used to filter the entity out entirely (see
+ * `isClosedPlace` in `server/providers/qloo/mapping.ts`) rather than surfaced here. */
+export interface VenueFacts {
+  lat: number;
+  lon: number;
+  address?: string;
+  neighbourhood?: string;
+  /** `http://` or `https://` only; anything else (e.g. a bare domain, `mailto:`) is dropped. */
+  website?: string;
+  /** Distance in metres from the POINT+radius search centre used to discover this place. */
+  distanceM?: number;
+}
+
+/** Redacted record of one live Qloo HTTP call (see `server/providers/qloo/callLog.ts`),
+ * appended to `RunResult.calls` (capped at 120) so the "How Venn used Qloo" panel can list
+ * every call made for a search, grouped by step. Distinct from the SQLite usage ledger
+ * (`server/usage/ledger.ts`), which only tallies daily totals. */
+export interface QlooCallRecord {
+  id: string;
+  at: number;
+  step?: StepId;
+  path: string;
+  /** Redacted request params: plain strings, arrays joined/truncated, no secrets (the API key
+   * travels only in a header, never in params). */
+  params: Record<string, string>;
+  status: "ok" | "error";
+  ms: number;
 }

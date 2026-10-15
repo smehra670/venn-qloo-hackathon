@@ -1,9 +1,44 @@
-import type { HeatSpot } from "@shared/types";
+import type { HeatSpot, Partner } from "@shared/types";
 import { divIcon } from "leaflet";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Circle, MapContainer, Marker, TileLayer, Tooltip, ZoomControl, useMap } from "react-leaflet";
+import { Segmented } from "@/components/ui/Segmented";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useVenn } from "@/store/useVenn";
+
+type PinMetric = "raw" | "lift";
+
+const PIN_METRIC_OPTIONS: { value: PinMetric; label: string }[] = [
+  { value: "raw", label: "Raw match" },
+  { value: "lift", label: "Taste lift" },
+];
+
+/** Colour + 0-1 intensity for one venue pin, under the selected metric. Never reads or changes
+ * `matchScore` itself — purely a display choice over already-computed fields. */
+function pinStyle(partner: Partner, metric: PinMetric): { color: string; intensity: number; label: string } {
+  if (metric === "lift") {
+    const lift = partner.popularityLift ?? 0;
+    const intensity = Math.max(0.25, Math.min(1, Math.abs(lift) * 3));
+    return {
+      color: lift >= 0 ? "#2E9E6B" : "#D6553F",
+      intensity,
+      label: `${lift >= 0 ? "+" : ""}${lift.toFixed(2)} taste lift`,
+    };
+  }
+  const intensity = Math.max(0.25, Math.min(1, (partner.matchScore - 52) / (96 - 52)));
+  return { color: "#4F5BFF", intensity, label: `${partner.matchScore} match` };
+}
+
+function venuePinIcon(partner: Partner, metric: PinMetric) {
+  const { color, intensity } = pinStyle(partner, metric);
+  const size = Math.round(14 + intensity * 10);
+  return divIcon({
+    className: "venn-venue-pin",
+    html: `<span style="display:block;width:${size}px;height:${size}px;border-radius:999px;background:${color};opacity:${0.5 + intensity * 0.5};border:2px solid white;box-shadow:0 1px 4px rgba(0,0,0,0.35)"></span>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
+  });
+}
 
 function FlyTo({ spot }: { spot: HeatSpot | null }) {
   const map = useMap();
@@ -18,8 +53,15 @@ export function MapView() {
   const result = useVenn((state) => state.result);
   const loadHeatmap = useVenn((state) => state.loadHeatmap);
   const heatmaps = useVenn((state) => state.heatmaps);
+  const select = useVenn((state) => state.select);
   const [partnerId, setPartnerId] = useState<string | null>(null);
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [pinMetric, setPinMetric] = useState<PinMetric>("raw");
+
+  const venuePartners = useMemo(
+    () => (result?.partners ?? []).filter((partner): partner is Partner & { venueFacts: NonNullable<Partner["venueFacts"]> } => Boolean(partner.venueFacts)),
+    [result],
+  );
 
   const defaultId = result?.topPicks.find((pick) => pick.role === "best_overall")?.partnerId ?? result?.partners[0]?.id ?? null;
   const currentId = partnerId ?? defaultId;
@@ -64,6 +106,12 @@ export function MapView() {
             </select>
           </label>
           <p className="text-sm text-ink-soft">Where does your crowd overlap with {partner?.name ?? "this partner"}?</p>
+          {venuePartners.length > 0 ? (
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-ink-soft">Pins</span>
+              <Segmented value={pinMetric} onChange={setPinMetric} options={PIN_METRIC_OPTIONS} label="Venue pin metric" />
+            </div>
+          ) : null}
         </div>
         <div className="min-h-[320px] overflow-hidden rounded-[20px] border border-line">
           {heatmap === undefined ? <Skeleton className="h-full min-h-[320px] rounded-none" /> : null}
@@ -78,6 +126,18 @@ export function MapView() {
                 url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
               />
               <FlyTo spot={active} />
+              {venuePartners.map((venuePartner) => (
+                <Marker
+                  key={`venue-${venuePartner.id}`}
+                  position={[venuePartner.venueFacts.lat, venuePartner.venueFacts.lon]}
+                  icon={venuePinIcon(venuePartner, pinMetric)}
+                  eventHandlers={{ click: () => select(venuePartner.id) }}
+                >
+                  <Tooltip>
+                    {venuePartner.name} · {pinStyle(venuePartner, pinMetric).label}
+                  </Tooltip>
+                </Marker>
+              ))}
               {heatmap.spots.map((spot) => (
                 <Fragment key={spot.id}>
                   <Circle
