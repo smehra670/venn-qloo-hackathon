@@ -3,6 +3,7 @@ import type { DecisionLogEntry, DecisionOrigin, DiscoverSpec, Normalization, Par
 import { nanoid } from "nanoid";
 import { applyCritiques, applyFeasibility, critiqueFeasibility, flaggedPartners } from "../agent/feasibility.js";
 import { applyGoals, applyGoalsToKinds, filterByGoals, hasAnyGoal, rerankTopPicks, summarizeGoals } from "../agent/goals.js";
+import { filterActionablePartners } from "../agent/reachable.js";
 import { getProvider } from "../providers/index.js";
 import { arraySink, withQlooCallSink, withQlooStep } from "../providers/qloo/callLog.js";
 import { applyPopularityLift } from "../providers/taste-lift.js";
@@ -102,7 +103,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     const guessed = resolved.filter((item) => item.status === "guessed").length;
     const resolveBits = [`Matched ${matched} of ${resolved.length}`];
     if (keywords > 0) resolveBits.push(`${keywords} read as ${keywords === 1 ? "an interest" : "interests"}`);
-    if (guessed > 0) resolveBits.push(`${guessed} placed with a stand-in`);
+    if (guessed > 0) resolveBits.push(`${guessed} kept as free-text interests`);
     append(run, { type: "step_completed", step, summary: resolveBits.join(" · ") });
 
     step = "plan";
@@ -224,6 +225,16 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     const goalFilter = filterByGoals(partners, run.input.goals);
     partners = goalFilter.partners;
     if (goalFilter.note) ctx.decide("Filtered partners for your goals", goalFilter.note, { origin: "rule" });
+
+    // Prefer places and brands you can visit or pitch — drop media networks, distant clubs, etc.
+    const actionable = filterActionablePartners(partners, run.input.goals, {
+      hasLocalGeography: Boolean(city?.hasLocalData),
+      reach: run.input.goals?.reach,
+    });
+    partners = actionable.partners;
+    if (actionable.note) {
+      ctx.decide("Kept reachable partners only", actionable.note, { origin: "rule" });
+    }
 
     let topPicks = chooseTopPicks(partners);
     const goalRerank = rerankTopPicks(partners, topPicks, run.input.goals);

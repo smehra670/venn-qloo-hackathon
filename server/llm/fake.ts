@@ -39,6 +39,9 @@ export class FakeLlmClient implements LlmClient {
 }
 
 function defaultResponse(request: LlmCompletionRequest): unknown {
+  if (request.schema.name === "anchor_suggestions") {
+    return fakeAnchorSuggestions(request.user);
+  }
   const factPack = extractFactPack(request.user);
   const partnerName = factPack?.partner.name ?? "the partner";
   const businessName = factPack?.business.name ?? "the business";
@@ -58,5 +61,87 @@ function defaultResponse(request: LlmCompletionRequest): unknown {
       subject: `An idea for ${partnerName}`,
       body: `Hello,\n\nWe would like to try one small collaboration together. Let us know if a short call works this week.\n\n${businessName}`,
     },
+  };
+}
+
+function fakeAnchorSuggestions(user: string): unknown {
+  let typed = "Food";
+  try {
+    const match = user.match(/Anchors to fix \(JSON\):\s*(\[[\s\S]*?\])\s*\n/);
+    if (match?.[1]) {
+      const parsed = JSON.parse(match[1]) as Array<{ typed?: string }>;
+      typed = parsed[0]?.typed ?? typed;
+    }
+  } catch {
+    /* keep default */
+  }
+  const key = typed.trim().toLowerCase();
+  if (key === "food") {
+    return {
+      results: [
+        {
+          id: "a1",
+          verdict: "too_broad",
+          note: "Too broad. What kind of food do they love?",
+          suggestions: [
+            { query: "specialty coffee", kind: "topic", entityType: "none", why: "Pairs with cafes" },
+            { query: "sourdough", kind: "topic", entityType: "none", why: "Bakery-friendly" },
+            { query: "ramen", kind: "topic", entityType: "none", why: "Specific cuisine" },
+          ],
+        },
+      ],
+    };
+  }
+  if (key === "music") {
+    return {
+      results: [
+        {
+          id: "a1",
+          verdict: "too_broad",
+          note: "Too broad. Which kind of music?",
+          suggestions: [
+            { query: "jazz", kind: "topic", entityType: "none", why: "Specific genre" },
+            { query: "vinyl records", kind: "topic", entityType: "none", why: "Format interest" },
+          ],
+        },
+      ],
+    };
+  }
+  if (key === "jazz music" || key === "jazzz") {
+    return {
+      results: [
+        {
+          id: "a1",
+          verdict: "rewrite",
+          note: "",
+          suggestions: [{ query: "jazz", kind: "topic", entityType: "none", why: "Short genre name" }],
+        },
+      ],
+    };
+  }
+  if (/aged|25 to 34/.test(key)) {
+    return {
+      results: [{ id: "a1", verdict: "not_a_taste_signal", note: "Type things they like: a brand, genre or hobby.", suggestions: [] }],
+    };
+  }
+  if (/religious|07700|john smith/.test(key)) {
+    return {
+      results: [{ id: "a1", verdict: "sensitive", note: "Venn can't use this. Try an activity or interest.", suggestions: [] }],
+    };
+  }
+  if (/ignore your rules|system prompt/.test(key)) {
+    return {
+      results: [{ id: "a1", verdict: "no_close_match", note: "Try a nearby topic.", suggestions: [{ query: "specialty coffee", kind: "topic", entityType: "none", why: "Safe fallback" }] }],
+    };
+  }
+  return {
+    results: [
+      {
+        id: "a1",
+        verdict: "no_close_match",
+        note: "Try a nearby topic.",
+        suggestions: [{ query: "specialty coffee", kind: "topic", entityType: "none", why: "Nearby interest" }],
+      },
+    ],
   };
 }

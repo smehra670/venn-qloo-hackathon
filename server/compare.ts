@@ -112,6 +112,7 @@ export async function buildCompare(
   let sharedTags = partner.sharedTags;
   let source: ComparePayload["source"] = "computed_from_tags";
   let note = COMPUTED_NOTE;
+  let tagScores: ComparePayload["tagScores"];
 
   if (tryLive) {
     try {
@@ -121,6 +122,7 @@ export async function buildCompare(
         sharedTags = (withBoth.length > 0 ? withBoth : liveTags.map((tag) => tag.label)).slice(0, 8);
         source = "qloo_tags";
         note = QLOO_TAGS_NOTE;
+        tagScores = liveTags.slice(0, 12).map((tag) => ({ label: tag.label, a: tag.a, b: tag.b }));
       }
       // liveTags === null: Qloo returned 200 with empty tags (probed behaviour depending on
       // filter.type) — fall through to the computed fallback already set above.
@@ -140,5 +142,6 @@ export async function buildCompare(
     signals,
     note,
     source,
+    ...(tagScores ? { tagScores } : {}),
   };
 }

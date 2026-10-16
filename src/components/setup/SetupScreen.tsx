@@ -1,16 +1,14 @@
-import type { AnchorResolution, BusinessInput, ExampleInput } from "@shared/types";
+import type { BusinessInput, ExampleInput } from "@shared/types";
 import { useEffect, useRef, useState } from "react";
 import { AboutDialog } from "@/components/about/AboutDialog";
 import { AmbientCircles } from "@/components/brand/AmbientCircles";
 import { Logo } from "@/components/brand/Logo";
-import { AnchorConfirm } from "@/components/setup/AnchorConfirm";
 import { ExampleChips } from "@/components/setup/ExampleChips";
 import { FineTune } from "@/components/setup/FineTune";
 import { SampleGraph } from "@/components/setup/SampleGraph";
 import { SentenceForm, validationMessage } from "@/components/setup/SentenceForm";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { resolveAnchors } from "@/lib/api";
 import { useVenn } from "@/store/useVenn";
 
 const FALLBACK: ExampleInput[] = [
@@ -27,7 +25,6 @@ export function SetupScreen() {
   const health = useVenn((state) => state.health);
   const [busy, setBusy] = useState(false);
   const [aboutOpen, setAboutOpen] = useState(false);
-  const [confirmState, setConfirmState] = useState<{ input: BusinessInput; resolutions: AnchorResolution[] } | null>(null);
   const fromExampleRef = useRef(false);
   const reason = validationMessage(input);
   const examples = meta?.examples.length ? meta.examples : FALLBACK;
@@ -54,7 +51,7 @@ export function SetupScreen() {
 
   const fillExample = (example: ExampleInput) => {
     fromExampleRef.current = true;
-    setInput({ ...example, anchors: [] });
+    setInput({ ...example, anchors: [], tasteAnchors: undefined, anchorNotes: undefined });
     example.anchors.forEach((anchor, index) => {
       window.setTimeout(() => {
         const current = useVenn.getState().input;
@@ -65,16 +62,6 @@ export function SetupScreen() {
     });
   };
 
-  const runNow = async (next: BusinessInput) => {
-    setBusy(true);
-    try {
-      await startRun(next);
-    } finally {
-      setBusy(false);
-      setConfirmState(null);
-    }
-  };
-
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (reason || busy) return;
@@ -83,43 +70,17 @@ export function SetupScreen() {
       city: input.city.trim(),
       businessName: input.businessName?.trim() || undefined,
       businessTypeCustom: input.businessTypeCustom?.trim() || undefined,
+      // Confirmed signals only; typed strings stay for headlines/notes.
+      tasteAnchors: input.tasteAnchors?.length ? input.tasteAnchors : undefined,
+      anchorNotes: input.anchorNotes?.length ? input.anchorNotes : undefined,
     };
-    if (fromExampleRef.current) {
-      await runNow(cleaned);
-      return;
-    }
     setBusy(true);
     try {
-      const resolutions = await resolveAnchors(cleaned.anchors, cleaned.city);
-      const needsConfirm = resolutions.some((item) => item.status !== "auto");
-      if (needsConfirm) {
-        setConfirmState({ input: cleaned, resolutions });
-        setBusy(false);
-        return;
-      }
-      await runNow(cleaned);
-    } catch {
-      await runNow(cleaned);
+      await startRun(cleaned);
+    } finally {
+      setBusy(false);
     }
   };
-
-  if (confirmState) {
-    return (
-      <div className="min-h-dvh bg-paper">
-        <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 md:px-8">
-          <Logo />
-        </header>
-        <main className="mx-auto max-w-3xl px-4 py-8 md:px-8">
-          <AnchorConfirm
-            resolutions={confirmState.resolutions}
-            busy={busy}
-            onBack={() => setConfirmState(null)}
-            onConfirm={(anchors) => void runNow({ ...confirmState.input, anchors })}
-          />
-        </main>
-      </div>
-    );
-  }
 
   return (
     <div className="relative min-h-dvh overflow-x-hidden bg-paper">
@@ -155,7 +116,12 @@ export function SetupScreen() {
             </p>
 
             <form className="mt-8 flex flex-col gap-5" onSubmit={(event) => void submit(event)}>
-              <SentenceForm input={input} cities={cities} onChange={handleInputChange} />
+              <SentenceForm
+                input={input}
+                cities={cities}
+                onChange={handleInputChange}
+                demo={health?.demo || health?.provider === "mock"}
+              />
               <FineTune input={input} onChange={handleInputChange} />
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <Button type="submit" disabled={Boolean(reason) || busy} className="min-h-12 px-7 text-base">
@@ -174,7 +140,6 @@ export function SetupScreen() {
             <SampleGraph />
           </div>
         </section>
-
       </main>
 
       <footer className="relative z-10 border-t border-line bg-paper/80 px-4 py-6 text-sm text-ink-soft backdrop-blur-sm md:px-8">

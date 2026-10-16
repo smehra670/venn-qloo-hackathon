@@ -34,6 +34,7 @@ export const MAX_USER_ADDED_PARTNERS = 5;
 export const DEMO_LIMITS = [
   "Match scores describe group-level taste patterns, not individual customers.",
   "Scores are relative to this search, not absolute probabilities.",
+  "Partners are places and brands you can visit or pitch — not media networks or distant venues.",
   "Demo dataset: illustrative affinities for building and testing the interface, not real audience data.",
 ] as const;
 

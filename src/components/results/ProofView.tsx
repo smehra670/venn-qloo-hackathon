@@ -35,7 +35,7 @@ function ItemList({ items, empty }: { items: ProofKindGroup["vennItems"]; empty:
   return (
     <ul className="space-y-1.5">
       {items.map((item) => (
-        <li key={item.entityId} className="flex items-center justify-between gap-2 rounded-2xl bg-paper-2 px-3 py-2.5">
+        <li key={item.entityId} className="flex items-center justify-between gap-2 rounded-2xl border border-line bg-paper px-3 py-2.5">
           <span className="min-w-0 truncate text-sm font-medium">{item.name}</span>
           <span className="font-mono text-xs text-ink-soft">{item.score}</span>
         </li>
@@ -111,7 +111,7 @@ export function ProofView() {
             placeholder="e.g. Patagonia"
             aria-label="Partner name to check"
             disabled={atCap}
-            className="min-h-11 min-w-[180px] flex-1 rounded-full border border-line bg-paper-2 px-4 py-2 text-sm outline-none disabled:opacity-50"
+            className="min-h-11 min-w-[180px] flex-1 rounded-full border border-line bg-paper px-4 py-2 text-sm outline-none disabled:opacity-50"
           />
           <Button type="submit" disabled={atCap || checking || name.trim().length === 0}>
             {checking ? "Checking…" : "Check"}

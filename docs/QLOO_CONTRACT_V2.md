@@ -21,3 +21,29 @@ Probed against `https://hackathon.api.qloo.com` on 2026-10-15 via `scripts/qloo-
 | Quota headers | response headers | yes | `x-month-ratelimit-remaining`, `x-second-ratelimit-reset` | Seen ~9869 remaining on probe |
 
 Auth: header `X-Api-Key` only.
+
+
+## Anchor / tag probe (2026-10-15, 26 calls)
+
+Probe script: `scripts/qloo-probe-anchors.mjs`. Fixture: `server/providers/qloo/fixtures/v2/anchors-probe-report.json`.
+
+- jazz: search=200 ents=5; tags=200 n=8 names=Jazz |  Jazz | Jazz
+- jazz music: search=200 ents=5; tags=200 n=8 names= Jazz | Jazz | Jazz
+- food: search=200 ents=5; tags=200 n=8 names=Healthy Food | Food | Health Food
+- natural wine: search=200 ents=5; tags=200 n=8 names=Natural Wine | Natural Wines | Natural Wine
+- yoga: search=200 ents=5; tags=200 n=8 names=Yoga | Yoga | Yoga
+- vinyl records: search=200 ents=5; tags=200 n=8 names=Vinyl Records | vinyl record | Vinyl Records
+- specialty coffee: search=200 ents=5; tags=200 n=8 names=Specialty Coffee | Specialty Coffee | Specialty Coffee
+- bookshop: search=200 ents=5; tags=200 n=8 names=Book Shop | Bookstores | Bookshop
+- jazz tag=Jazz: baseline=0 signal=0 overlap=0.00 changes=true
+- natural wine tag=Natural Wine: baseline=0 signal=0 overlap=0.00 changes=true
+- yoga tag=Yoga: baseline=0 signal=0 overlap=0.00 changes=true
+- operator tags=3: union=200/0 intersection=200/0
+- compare tags: status=400 keys=none
+- explainability+tags: status=200 hasExplain=true
+
+**Build defaults from this probe:**
+- Resolve topics via `GET /v2/tags` with `filter.query` + `feature.semantic_search=true&take=8` (all 8 probe words returned tags; dedupe by name).
+- Discover sends `signal.interests.tags` with `operator.signal.interests.tags=union` alongside entities when the user confirmed tag anchors. (Bare place+POINT insights returned empty in this probe — production discover already pairs location with entity signals.)
+- **Do not** send `a.signal.interests.tags` / `b.signal.interests.tags` on `/v2/analysis/compare` (400). Compare stays entity-only; UI may note that.
+- `feature.explainability=true` with tag signals returns explainability fields (200) — safe on discover.

@@ -54,7 +54,7 @@ export function QlooCallLog() {
       role="dialog"
       aria-modal="true"
       aria-labelledby="qloo-call-log-title"
-      className="fixed inset-x-0 bottom-0 z-40 flex max-h-[85dvh] flex-col overflow-auto rounded-t-[12px] border border-line bg-card p-5 shadow-soft md:inset-y-0 md:right-0 md:left-auto md:max-h-none md:w-[420px] md:rounded-none md:border-y-0 md:border-r-0"
+      className="fixed inset-x-0 bottom-0 z-40 flex max-h-[85dvh] flex-col overflow-auto rounded-t-[12px] border border-line bg-paper p-5 md:inset-y-0 md:right-0 md:left-auto md:max-h-none md:w-[420px] md:rounded-none md:border-y-0 md:border-r-0"
     >
       <div className="flex items-start justify-between gap-3">
         <h2 id="qloo-call-log-title" className="font-bold text-2xl tracking-tight">How Venn used Qloo</h2>
@@ -88,7 +88,7 @@ export function QlooCallLog() {
               </h3>
               <ul className="mt-2 space-y-2">
                 {group.calls.map((call) => (
-                  <li key={call.id} className="rounded-xl border border-line bg-paper-2 px-3 py-2 text-xs">
+                  <li key={call.id} className="rounded-xl border border-line bg-paper px-3 py-2 text-xs">
                     <div className="flex items-center justify-between gap-2 font-mono">
                       <span className={call.status === "ok" ? "text-ink" : "text-rose-700"}>{call.path}</span>
                       <span className="text-ink-soft">{call.ms} ms</span>

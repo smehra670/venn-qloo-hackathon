@@ -39,26 +39,27 @@ export type QlooFilterType =
   | "urn:heatmap";
 
 const KIND_FILTER: Record<PartnerKind, QlooFilterType> = {
-  music: "urn:entity:artist",
+  // Music partners default to places (venues, record shops) — artists are hard to reach out to.
+  music: "urn:entity:place",
   retail: "urn:entity:brand",
   fashion: "urn:entity:brand",
   food: "urn:entity:place",
   drink: "urn:entity:place",
   venue: "urn:entity:place",
   fitness: "urn:entity:place",
-  wellness: "urn:entity:brand",
+  wellness: "urn:entity:place",
   culture: "urn:entity:place",
 };
 
 const KIND_ENTITY: Record<PartnerKind, EntityType> = {
-  music: "artist",
+  music: "place",
   retail: "brand",
   fashion: "brand",
   food: "place",
   drink: "place",
   venue: "place",
   fitness: "place",
-  wellness: "brand",
+  wellness: "place",
   culture: "place",
 };
 

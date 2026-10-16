@@ -39,7 +39,7 @@ export function ShortlistView() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <label className="text-sm text-ink-soft">
           Sort
-          <select className="ml-2 rounded-full bg-card px-3 py-1 text-ink" value={sort} onChange={(event) => setSort(event.target.value as SortKey)}>
+          <select className="ml-2 rounded-full border border-line bg-paper px-3 py-1 text-ink" value={sort} onChange={(event) => setSort(event.target.value as SortKey)}>
             <option value="score">Match</option>
             <option value="surprise">Surprise</option>
             {hasGoalFit ? <option value="goal">Goal fit</option> : null}
@@ -85,7 +85,7 @@ function List({
   offset?: number;
 }) {
   return (
-    <ul className="divide-y divide-line overflow-hidden rounded-[12px] border border-line bg-card shadow-soft">
+    <ul className="divide-y divide-line overflow-hidden rounded-[12px] border border-line bg-paper">
       {partners.map((partner, index) => (
         <li key={partner.id} className="flex flex-wrap items-center gap-3 px-3 py-3">
           <button type="button" className="flex min-w-0 flex-1 items-center gap-3 text-left" onClick={() => onOpen(partner.id)}>

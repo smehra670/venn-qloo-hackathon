@@ -6,10 +6,8 @@ import { Segmented } from "@/components/ui/Segmented";
 import { useVenn, type ResultsView } from "@/store/useVenn";
 
 const OPTIONS: { value: ResultsView; label: string }[] = [
-  { value: "graph", label: "Graph" },
-  { value: "map", label: "Map" },
+  { value: "overview", label: "Overview" },
   { value: "shortlist", label: "Shortlist" },
-  { value: "proof", label: "Proof" },
   { value: "plan", label: "Plan" },
 ];
 
@@ -26,7 +24,9 @@ export function TopBar() {
   return (
     <header className="flex flex-wrap items-center gap-3 border-b border-line bg-paper px-4 py-3">
       <Logo />
-      <span className="rounded-[12px] bg-surface px-3 py-1.5 text-sm text-ink-soft">{summaryLine(result.input)}</span>
+      <span className="rounded-[12px] border border-line bg-paper px-3 py-1.5 text-sm text-ink-soft">
+        {summaryLine(result.input)}
+      </span>
       <div className="hidden md:block">
         <Segmented value={view} onChange={setView} options={OPTIONS} label="Result view" />
       </div>

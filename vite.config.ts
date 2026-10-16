@@ -22,6 +22,14 @@ export default defineConfig({
       },
     },
   },
+  worker: {
+    format: "es",
+  },
+  optimizeDeps: {
+    // Keep MapLibre out of the deps optimizer so import.meta.url / worker
+    // resolution stays predictable; we set worker URL explicitly in src/lib/maplibre.ts.
+    exclude: ["maplibre-gl"],
+  },
   build: {
     outDir: "dist/client",
     emptyOutDir: true,

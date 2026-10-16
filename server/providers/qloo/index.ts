@@ -12,6 +12,7 @@ import type {
   RunResult,
 } from "@shared/types";
 import { PARTNER_KINDS } from "@shared/types";
+import { looksLikeMediaOrContent, looksLikePublicLandmark } from "../../agent/reachable.js";
 import { profileFor } from "../mock/profiles.js";
 import { stretchWithNormalization } from "../scoring.js";
 import type { Candidate, ProviderContext, ProviderEntity, TasteProvider } from "../types.js";
@@ -96,6 +97,29 @@ export class QlooTasteProvider implements TasteProvider {
   }
 
   async resolveAnchors(input: BusinessInput, ctx: ProviderContext): Promise<ResolvedAnchor[]> {
+    // Prefer confirmed TasteAnchors from setup (entity ids + tag URNs) over re-searching.
+    if (input.tasteAnchors && input.tasteAnchors.length > 0) {
+      return input.tasteAnchors.map((anchor) => {
+        if (anchor.kind === "entity") {
+          return {
+            input: anchor.name,
+            status: "matched" as const,
+            entityId: anchor.id,
+            entityName: anchor.name,
+            entityType: (anchor.type as import("@shared/types").EntityType) || undefined,
+            tags: [],
+            note: `Confirmed ${anchor.name} from setup.`,
+          };
+        }
+        return {
+          input: anchor.name,
+          status: "keyword" as const,
+          tags: [anchor.id],
+          note: `Confirmed topic ${anchor.name} from setup.`,
+        };
+      });
+    }
+
     const resolved: ResolvedAnchor[] = [];
     for (const anchor of input.anchors) {
       const item = await ctx.trace(
@@ -218,12 +242,19 @@ export class QlooTasteProvider implements TasteProvider {
     signal: AbortSignal,
     out?: { spec?: DiscoverSpec },
   ): Promise<Candidate[]> {
-    const entityIds = resolved
-      .filter((item) => item.status === "matched" && item.entityId)
-      .map((item) => item.entityId!)
-      .slice(0, 5);
-    const tagIds = resolved.flatMap((item) => (item.status === "keyword" ? item.tags : [])).slice(0, 5);
-    if (entityIds.length === 0 && tagIds.length === 0) return [];
+    const taste = input.tasteAnchors ?? [];
+    const entityIds = (
+      taste.length > 0
+        ? taste.filter((item) => item.kind === "entity").map((item) => item.id)
+        : resolved.filter((item) => item.status === "matched" && item.entityId).map((item) => item.entityId!)
+    ).slice(0, 5);
+    // Confirmed Qloo tag URNs only (never humanized keyword slugs).
+    const tagIds = taste.filter((item) => item.kind === "tag").map((item) => item.id).slice(0, 5);
+    if (entityIds.length === 0 && tagIds.length === 0) {
+      const hadKeywords = resolved.some((item) => item.status === "keyword");
+      if (hadKeywords) return this.discoverBySearch(input, kind, signal);
+      return [];
+    }
 
     const filterType = filterTypeForKind(kind);
     const city = await this.resolveCityQuiet(input, signal);
@@ -237,11 +268,9 @@ export class QlooTasteProvider implements TasteProvider {
       "feature.explainability": "true",
     };
     if (entityIds.length > 0) params["signal.interests.entities"] = entityIds;
-    if (tagIds.length > 0 && entityIds.length === 0) {
-      // Tags from resolve are humanized; Qloo wants tag URNs. Prefer entities when available.
-      // When only keywords exist, search brands/places by the original anchor text instead.
-      // No `DiscoverSpec` here: a text search isn't a replayable rank-together shape.
-      return this.discoverBySearch(input, kind, signal);
+    if (tagIds.length > 0) {
+      params["signal.interests.tags"] = tagIds;
+      params["operator.signal.interests.tags"] = "union";
     }
     if (isLocalPlace && city) {
       // Probe-confirmed shape: `filter.location=POINT(lng lat)` + `filter.location.radius`
@@ -268,6 +297,9 @@ export class QlooTasteProvider implements TasteProvider {
       if (!entry) continue;
       entry.kind = kind;
       entry.entityType = entityTypeFromUrns(typesOf(entity)) || entry.entityType;
+      // Skip media networks, parks, landmarks — not places or brands you can pitch.
+      if (looksLikeMediaOrContent(entry.name) || looksLikePublicLandmark(entry.name)) continue;
+      if (entry.entityType === "tv_show" || entry.entityType === "movie" || entry.entityType === "podcast") continue;
       // Qloo's point+radius search can still return the odd place past the asked-for radius;
       // discard rather than show a "local" partner that's actually a long way off.
       if (isLocalPlace && entry.venueFacts?.distanceM !== undefined && entry.venueFacts.distanceM > LOCAL_PLACE_RADIUS_M) {
@@ -304,6 +336,8 @@ export class QlooTasteProvider implements TasteProvider {
   ): Promise<Candidate[]> {
     const query = `${input.anchors.slice(0, 2).join(" ")} ${kind}`.trim();
     const filterType = filterTypeForKind(kind);
+    const city = await this.resolveCityQuiet(input, signal);
+    const isLocalPlace = Boolean(city?.hasLocalData && filterType === "urn:entity:place");
     const results = await searchEntities(
       {
         query,
@@ -316,9 +350,18 @@ export class QlooTasteProvider implements TasteProvider {
     for (const entity of results) {
       const entry = toProviderEntity(entity, kind, input.city);
       if (!entry) continue;
+      if (looksLikeMediaOrContent(entry.name) || looksLikePublicLandmark(entry.name)) continue;
+      if (entry.entityType === "tv_show" || entry.entityType === "movie" || entry.entityType === "podcast") continue;
+      // Text search has no radius — drop non-local places when we have geography for this city.
+      if (isLocalPlace && !entry.venueFacts && entry.entityType === "place") {
+        // Keep only if the entity name/location vaguely matches the city; otherwise skip distant hits.
+        const cityNeedle = input.city.trim().toLowerCase();
+        const label = `${entry.name} ${entry.locationLabel ?? ""}`.toLowerCase();
+        if (cityNeedle.length >= 2 && !label.includes(cityNeedle)) continue;
+      }
       candidates.push({
         entry,
-        local: false,
+        local: isLocalPlace,
         provisional: Math.max(0.2, affinityOf(entity) || entry.popularity || 0.35),
       });
     }

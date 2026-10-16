@@ -92,9 +92,23 @@ export function getMeta(): Promise<Meta> {
   });
 }
 
-export function resolveAnchors(anchors: string[], city?: string): Promise<AnchorResolution[]> {
-  return request("/api/anchors/resolve", { method: "POST", body: JSON.stringify({ anchors, city }) }, (value) =>
-    z.array(AnchorResolutionSchema).parse(value),
+export function resolveAnchors(
+  anchors: string[],
+  opts?: { city?: string; businessType?: BusinessType; goal?: string; skipAi?: boolean },
+): Promise<AnchorResolution[]> {
+  return request(
+    "/api/anchors/resolve",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        anchors,
+        city: opts?.city,
+        businessType: opts?.businessType,
+        goal: opts?.goal,
+        skipAi: opts?.skipAi,
+      }),
+    },
+    (value) => z.array(AnchorResolutionSchema).parse(value),
   );
 }
 

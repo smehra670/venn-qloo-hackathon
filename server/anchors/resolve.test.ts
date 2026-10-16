@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { classifyAnchorStatus, resolveAnchorsForConfirm } from "./resolve.js";
 
-describe("classifyAnchorStatus (pure)", () => {
+describe("classifyAnchorStatus (legacy)", () => {
   it("is unresolved for no candidates or a very weak top score", () => {
     expect(classifyAnchorStatus([])).toBe("unresolved");
     expect(classifyAnchorStatus([0.2])).toBe("unresolved");
@@ -30,33 +30,55 @@ describe("classifyAnchorStatus (pure)", () => {
   });
 });
 
-describe("resolveAnchorsForConfirm", () => {
-  it("auto-resolves a clear, unambiguous brand name", () => {
-    const [result] = resolveAnchorsForConfirm(["Radiohead"]);
-    expect(result?.status).toBe("auto");
-    expect(result?.candidates).toHaveLength(1);
-    expect(result?.candidates[0]?.entityName).toBe("Radiohead");
+describe("resolveAnchorsForConfirm (mock)", () => {
+  it("auto-resolves a clear brand as entity", async () => {
+    const [result] = await resolveAnchorsForConfirm(["Radiohead"], { mode: "mock", skipAi: true });
+    expect(result?.status).toBe("entity");
+    expect(result?.selected?.kind).toBe("entity");
+    expect(result?.selected?.name).toBe("Radiohead");
   });
 
-  it("is ambiguous for the deliberately ambiguous 'Aesop' fixture (brand vs storyteller)", () => {
-    const [result] = resolveAnchorsForConfirm(["Aesop"]);
+  it("resolves Jazz Music as a topic", async () => {
+    const [result] = await resolveAnchorsForConfirm(["Jazz Music"], { mode: "mock", skipAi: true });
+    expect(result?.status).toBe("topic");
+    expect(result?.topicCandidates.some((c) => /jazz/i.test(c.name))).toBe(true);
+    expect(result?.selected?.kind).toBe("tag");
+  });
+
+  it("marks Food as too_broad", async () => {
+    const [result] = await resolveAnchorsForConfirm(["Food"], { mode: "mock", skipAi: true });
+    expect(result?.status).toBe("too_broad");
+  });
+
+  it("is ambiguous for Aesop (brand vs person)", async () => {
+    const [result] = await resolveAnchorsForConfirm(["Aesop"], { mode: "mock", skipAi: true });
     expect(result?.status).toBe("ambiguous");
-    const names = result?.candidates.map((candidate) => candidate.entityName) ?? [];
+    const names = result?.entityCandidates.map((c) => c.name) ?? [];
     expect(names.filter((name) => name === "Aesop").length).toBeGreaterThanOrEqual(2);
-    const entityTypes = new Set(result?.candidates.map((candidate) => candidate.entityType));
-    expect(entityTypes.has("brand")).toBe(true);
-    expect(entityTypes.has("person")).toBe(true);
   });
 
-  it("is unresolved for text with no plausible match in the demo catalog", () => {
-    const [result] = resolveAnchorsForConfirm(["zzqxnotarealbrandnamehere"]);
+  it("never surfaces candidates below the 0.6 floor", async () => {
+    const [result] = await resolveAnchorsForConfirm(["zzqxnotarealbrandnamehere"], {
+      mode: "mock",
+      skipAi: true,
+    });
     expect(result?.status).toBe("unresolved");
-    expect(result?.candidates).toEqual([]);
+    expect(result?.entityCandidates).toEqual([]);
+    expect(result?.topicCandidates).toEqual([]);
   });
 
-  it("resolves one entry per input anchor, in order", () => {
-    const results = resolveAnchorsForConfirm(["Radiohead", "Aesop", "zzqxnotarealbrandnamehere"]);
+  it("resolves mock tag fixtures", async () => {
+    const [result] = await resolveAnchorsForConfirm(["specialty coffee"], { mode: "mock", skipAi: true });
+    expect(result?.status).toBe("topic");
+    expect(result?.selected?.id).toBe("tag:specialty-coffee");
+  });
+
+  it("resolves one entry per input anchor, in order", async () => {
+    const results = await resolveAnchorsForConfirm(["Radiohead", "Aesop", "zzqxnotarealbrandnamehere"], {
+      mode: "mock",
+      skipAi: true,
+    });
     expect(results.map((item) => item.input)).toEqual(["Radiohead", "Aesop", "zzqxnotarealbrandnamehere"]);
-    expect(results.map((item) => item.status)).toEqual(["auto", "ambiguous", "unresolved"]);
+    expect(results.map((item) => item.status)).toEqual(["entity", "ambiguous", "unresolved"]);
   });
 });

@@ -97,7 +97,7 @@ export function MapView() {
           <label className="text-sm text-ink-soft">
             Partner
             <select
-              className="ml-2 rounded-full bg-card px-3 py-1 text-ink"
+              className="ml-2 rounded-full border border-line bg-paper px-3 py-1 text-ink"
               value={currentId ?? ""}
               onChange={(event) => {
                 setPartnerId(event.target.value);
@@ -181,7 +181,7 @@ export function MapView() {
               <button
                 type="button"
                 onClick={() => setActiveId(spot.id)}
-                className={`w-full rounded-2xl border px-3 py-3 text-left ${activeId === spot.id ? "border-blue bg-blue-soft" : "border-line bg-card"}`}
+                className={`w-full rounded-2xl border px-3 py-3 text-left ${activeId === spot.id ? "border-ink bg-ink text-paper" : "border-line bg-paper"}`}
               >
                 <span className="flex items-center justify-between gap-2">
                   <span className="font-medium">{spot.rank ? `${spot.rank}. ` : ""}{spot.name}</span>

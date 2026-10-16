@@ -65,7 +65,7 @@ export function BriefSheet() {
           key={`${brief.generatedBy}-${brief.variant}-${brief.tone ?? "warm"}-${brief.length ?? "standard"}`}
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="mx-auto max-w-[760px] rounded-[12px] border border-line bg-card px-8 py-10 shadow-soft md:px-14"
+          className="mx-auto max-w-[760px] rounded-[12px] border border-line bg-paper px-8 py-10 md:px-14"
         >
           <BriefBody brief={brief} dataLabel={dataLabel} />
         </motion.article>

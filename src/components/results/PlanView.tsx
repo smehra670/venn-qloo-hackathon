@@ -178,7 +178,7 @@ function Column({
     <div
       ref={setNodeRef}
       className={cn(
-        "flex w-[260px] shrink-0 flex-col gap-2 rounded-[12px] border border-line bg-paper-2 p-3 transition-colors",
+        "flex w-[260px] shrink-0 flex-col gap-2 rounded-[12px] border border-line bg-paper p-3 transition-colors",
         isOver && "border-coral bg-coral-soft/40",
       )}
     >
@@ -234,7 +234,7 @@ function Card({
     <div
       ref={setNodeRef}
       style={style}
-      className={cn("rounded-2xl border border-line bg-card p-3 shadow-soft", isDragging && "opacity-40")}
+      className={cn("rounded-2xl border border-line bg-paper p-3", isDragging && "opacity-40")}
     >
       <div className="flex items-start gap-2">
         <button
@@ -258,7 +258,7 @@ function Card({
         onChange={(event) => onNote(partner.id, event.target.value)}
         placeholder="Add a note…"
         rows={2}
-        className="mt-1 w-full resize-none rounded-xl border border-line bg-paper-2 px-2 py-1.5 text-sm text-ink outline-none"
+        className="mt-1 w-full resize-none rounded-xl border border-line bg-paper px-2 py-1.5 text-sm text-ink outline-none"
       />
       <div className="mt-2 flex items-center justify-between gap-2">
         <span className="font-mono text-[11px] text-ink-soft">{note.length}/{BOARD_NOTES_MAX}</span>
@@ -270,7 +270,7 @@ function Card({
           aria-label={`Move ${partner.name} to…`}
           value={column}
           onChange={(event) => onMove(partner.id, event.target.value as BoardColumnId)}
-          className="rounded-full border border-line bg-paper-2 px-2 py-1 text-xs text-ink"
+          className="rounded-full border border-line bg-paper px-2 py-1 text-xs text-ink"
         >
           {BOARD_COLUMNS.map((col) => (
             <option key={col} value={col}>
@@ -304,7 +304,7 @@ function CardBody({ partner, onOpen }: { partner: Partner; onOpen?: (id: string)
 
 function DragPreview({ partner }: { partner: Partner }) {
   return (
-    <div className="w-[228px] rounded-2xl border border-line bg-card p-3 shadow-soft">
+    <div className="w-[228px] rounded-2xl border border-line bg-paper p-3">
       <CardBody partner={partner} />
     </div>
   );

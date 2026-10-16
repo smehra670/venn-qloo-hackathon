@@ -2,6 +2,7 @@ import type { BusinessInput, DecisionOrigin, FeasibilityLevel, Partner, TopPick 
 import { FEASIBILITY_LEVELS } from "@shared/types";
 import { config } from "../config.js";
 import { getLlm, type LlmClient } from "../llm/index.js";
+import { looksLikeMediaOrContent } from "./reachable.js";
 import { profileFor } from "../providers/mock/profiles.js";
 import { SCORE_MIN } from "../providers/scoring.js";
 
@@ -32,10 +33,22 @@ export interface FeasibilityAssessment {
 export function assessFeasibility(partner: Partner, input: BusinessInput): FeasibilityAssessment {
   const category = profileFor(input.businessType).category;
 
+  if (looksLikeMediaOrContent(partner.name) || partner.entityType === "tv_show" || partner.entityType === "movie") {
+    return {
+      level: "long_shot",
+      reason: `${partner.name} looks like media or content rather than a place or brand you can walk into or email for a collab.`,
+    };
+  }
   if (partner.kind === category) {
     return {
       level: "long_shot",
       reason: `${partner.name} is in the same category as your business (${category}), so this reads more like a competitor than a cross-promotion partner.`,
+    };
+  }
+  if (partner.entityType === "place" && !partner.local) {
+    return {
+      level: "warm_intro",
+      reason: `${partner.name} isn't marked as local to your city — confirm you can actually visit or meet before pitching an in-person collab.`,
     };
   }
   if (partner.sharedTags.length === 0 && partner.matchScore <= SCORE_MIN + 4) {

@@ -217,11 +217,33 @@ export function resolveOne(raw: string): ResolvedAnchor {
     input,
     status: "guessed",
     tags: guessedTags(query),
-    note: `Couldn't place "${input}" in the demo dataset, so Venn used a stand-in taste profile. Connect a live data source for real matching.`,
+    note: `Couldn't place "${input}" in the demo dataset. Try a clearer brand, artist or topic — or switch to live Qloo.`,
   };
 }
 
 export function resolveAnchors(input: BusinessInput): ResolvedAnchor[] {
+  if (input.tasteAnchors && input.tasteAnchors.length > 0) {
+    return input.tasteAnchors.map((anchor) => {
+      if (anchor.kind === "entity") {
+        return {
+          input: anchor.name,
+          status: "matched" as const,
+          entityId: anchor.id,
+          entityName: anchor.name,
+          entityType: (anchor.type as import("@shared/types").EntityType) || undefined,
+          tags: [],
+          note: `Confirmed ${anchor.name} from setup.`,
+        };
+      }
+      const synonyms = lookupSynonyms(anchor.name);
+      return {
+        input: anchor.name,
+        status: "keyword" as const,
+        tags: synonyms.length > 0 ? synonyms : [anchor.name.toLowerCase().replace(/\s+/g, "_")],
+        note: `Confirmed topic ${anchor.name} from setup.`,
+      };
+    });
+  }
   return input.anchors.map((anchor) => resolveOne(anchor));
 }
 
@@ -259,12 +281,18 @@ export function provisionalRaw(input: BusinessInput, resolved: ResolvedAnchor[],
 }
 
 export function candidatesForKind(input: BusinessInput, resolved: ResolvedAnchor[], kind: PartnerKind): Candidate[] {
+  const city = matchCity(input.city);
   return eligible(input, kind)
-    .map((item) => ({
-      entry: item,
-      local: Boolean(item.city),
-      provisional: provisionalRaw(input, resolved, item),
-    }))
+    .map((item) => {
+      const local = Boolean(item.city);
+      let provisional = provisionalRaw(input, resolved, item);
+      // Prefer neighbourhood places you can walk into over global platforms / media brands.
+      if (city) {
+        if (local && item.entityType === "place") provisional += 0.18;
+        else if (!local && item.entityType !== "place") provisional -= 0.12;
+      }
+      return { entry: item, local, provisional };
+    })
     .sort((a, b) => b.provisional - a.provisional || a.entry.id.localeCompare(b.entry.id));
 }
 

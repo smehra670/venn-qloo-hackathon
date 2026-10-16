@@ -16,11 +16,11 @@ import type { Partner, ResolvedAnchor } from "@shared/types";
 
 describe("qloo mapping", () => {
   it("maps partner kinds to Insights filter types", () => {
-    expect(filterTypeForKind("music")).toBe("urn:entity:artist");
+    expect(filterTypeForKind("music")).toBe("urn:entity:place");
     expect(filterTypeForKind("retail")).toBe("urn:entity:brand");
     expect(filterTypeForKind("fashion")).toBe("urn:entity:brand");
     expect(filterTypeForKind("food")).toBe("urn:entity:place");
-    expect(filterTypeForKind("wellness")).toBe("urn:entity:brand");
+    expect(filterTypeForKind("wellness")).toBe("urn:entity:place");
   });
 
   it("reads entity types from URN lists", () => {

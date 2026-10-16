@@ -1,11 +1,36 @@
-import { STEP_ORDER } from "@shared/types";
-import { motion, useReducedMotion } from "framer-motion";
+import { STEP_ORDER, type StepId } from "@shared/types";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useMemo } from "react";
 import { deriveSteps, useVenn } from "@/store/useVenn";
 
-const PARTNER_COLORS = ["#4f5bff", "#6b3fa0", "#1FA89A", "#E8A33D", "#D9468F", "#ff6b57"] as const;
+const KIND_SHORT: Record<string, string> = {
+  music: "Music",
+  culture: "Culture",
+  fashion: "Fashion",
+  retail: "Retail",
+  fitness: "Fitness",
+  wellness: "Wellness",
+  food: "Food",
+  drink: "Drinks",
+  venue: "Venues",
+};
 
-/** Progress viz for research: hub + growing partner constellation (not a flat Venn). */
+const STEP_HINT: Partial<Record<StepId, string>> = {
+  resolve: "Matching brands and topics to taste signals",
+  plan: "Choosing which partner types to search",
+  discover: "Pulling candidates whose crowds overlap yours",
+  score: "Ranking by shared audience strength",
+  enrich: "Checking local fit and recent momentum",
+  adapt: "Widening the net if coverage is thin",
+  assemble: "Drawing your shortlist and map",
+};
+
+const KIND_ORDER = ["music", "culture", "fashion", "retail", "fitness", "wellness", "food", "drink", "venue"] as const;
+
+/**
+ * Research progress panel: readable % + step copy, animated audience overlap,
+ * and partner-kind rows that light up as the search advances.
+ */
 export function CirclesLoader() {
   const events = useVenn((state) => state.events);
   const settling = useVenn((state) => state.settling);
@@ -15,24 +40,7 @@ export function CirclesLoader() {
   const done = steps.filter((step) => step.state === "done").length;
   const running = steps.find((step) => step.state === "running");
   const progress = settling ? 1 : Math.min(1, done / STEP_ORDER.length);
-
-  const visibleCount = Math.max(2, Math.round(2 + progress * 6));
-  const nodes = useMemo(
-    () =>
-      Array.from({ length: 8 }, (_, index) => {
-        const angle = -Math.PI / 2 + (index / 8) * Math.PI * 2 + progress * 0.35;
-        const radius = 78 + (index % 3) * 18;
-        return {
-          id: index,
-          x: 200 + Math.cos(angle) * radius,
-          y: 168 + Math.sin(angle) * radius,
-          color: PARTNER_COLORS[index % PARTNER_COLORS.length]!,
-          r: 9 + (index % 3) * 2,
-          visible: index < visibleCount,
-        };
-      }),
-    [progress, visibleCount],
-  );
+  const pct = Math.round(progress * 100);
 
   const status = settling
     ? "Overlap locked in"
@@ -42,115 +50,189 @@ export function CirclesLoader() {
         ? "Warming up the search"
         : `${done} of ${STEP_ORDER.length} steps done`;
 
-  const circumference = 2 * Math.PI * 54;
+  const hint = settling
+    ? "Your shortlist is ready."
+    : running
+      ? (STEP_HINT[running.id] ?? "Working…")
+      : "Connecting to taste data…";
+
+  const youLabel = (input.businessName || input.businessTypeCustom || input.businessType || "You").slice(0, 22);
+
+  // How many partner-kind rows feel "active" based on progress / discover notes.
+  const activeKinds = useMemo(() => {
+    const plan = steps.find((step) => step.id === "plan");
+    const fromNote = plan?.summary?.match(/\b(music|culture|fashion|retail|fitness|wellness|food|drink|venue)\b/gi) ?? [];
+    const listed = [...new Set(fromNote.map((k) => k.toLowerCase()))];
+    const pool = listed.length > 0 ? listed : [...KIND_ORDER];
+    const count = settling ? pool.length : Math.max(1, Math.round(progress * pool.length));
+    return pool.slice(0, count);
+  }, [steps, progress, settling]);
+
+  const overlapScale = 0.55 + progress * 0.45;
 
   return (
-    <div className="relative mx-auto w-full max-w-md" aria-hidden="true">
-      <svg viewBox="0 0 400 320" className="h-auto w-full">
-        <defs>
-          <radialGradient id="research-glow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#ff6b57" stopOpacity="0.18" />
-            <stop offset="45%" stopColor="#4f5bff" stopOpacity="0.08" />
-            <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
-          </radialGradient>
-          <linearGradient id="research-ribbon" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#ff6b57" stopOpacity="0.7" />
-            <stop offset="100%" stopColor="#4f5bff" stopOpacity="0.7" />
-          </linearGradient>
-        </defs>
+    <div
+      className="circles-loader relative overflow-hidden rounded-[18px] bg-paper"
+      aria-hidden="true"
+      data-testid="circles-loader"
+    >
+      {/* Atmosphere — soft wash, not flat grey */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-90"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 60% at 28% 40%, rgba(255,107,87,0.16), transparent 55%), radial-gradient(ellipse 70% 55% at 72% 45%, rgba(79,91,255,0.14), transparent 50%), radial-gradient(ellipse 50% 40% at 50% 80%, rgba(107,63,160,0.08), transparent 60%)",
+        }}
+      />
 
-        <circle cx="200" cy="168" r="130" fill="url(#research-glow)" />
+      <div className="relative flex flex-col gap-5 p-5 sm:p-6">
+        {/* Header: progress + step */}
+        <div className="flex items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-soft">Audience overlap</p>
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={status}
+                initial={reduced ? false : { opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduced ? undefined : { opacity: 0, y: -4 }}
+                transition={{ duration: 0.25 }}
+                className="mt-1 truncate text-lg font-bold tracking-tight text-ink sm:text-xl"
+              >
+                {status}
+              </motion.p>
+            </AnimatePresence>
+            <p className="mt-1 text-sm text-ink-soft">{hint}</p>
+          </div>
+          <div className="shrink-0 text-right">
+            <motion.p
+              className="font-mono text-3xl font-bold tabular-nums tracking-tight text-ink sm:text-4xl"
+              animate={reduced ? undefined : { opacity: [0.85, 1, 0.85] }}
+              transition={reduced ? undefined : { duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              {pct}%
+            </motion.p>
+            <p className="text-[11px] font-medium uppercase tracking-wide text-ink-soft">mapped</p>
+          </div>
+        </div>
 
-        {/* Progress ring */}
-        <circle cx="200" cy="168" r="54" fill="none" stroke="#eef0f4" strokeWidth="6" />
-        <motion.circle
-          cx="200"
-          cy="168"
-          r="54"
-          fill="none"
-          stroke="#14151a"
-          strokeWidth="6"
-          strokeLinecap="round"
-          strokeDasharray={circumference}
-          animate={{ strokeDashoffset: circumference * (1 - progress) }}
-          transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 80, damping: 18 }}
-          transform="rotate(-90 200 168)"
-        />
+        {/* Progress track */}
+        <div className="h-1.5 overflow-hidden rounded-full bg-paper">
+          <motion.div
+            className="h-full rounded-full bg-ink"
+            initial={false}
+            animate={{ width: `${pct}%` }}
+            transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 90, damping: 20 }}
+          />
+        </div>
 
-        {/* Soft guide rings */}
-        {[78, 108, 136].map((r) => (
-          <circle key={r} cx="200" cy="168" r={r} fill="none" stroke="#eceef2" strokeWidth="1" />
-        ))}
+        {/* Overlap visual */}
+        <div className="relative mx-auto aspect-[16/10] w-full max-w-sm">
+          <svg viewBox="0 0 320 200" className="h-full w-full" role="presentation">
+            <defs>
+              <clipPath id="you-clip">
+                <circle cx="118" cy="100" r="72" />
+              </clipPath>
+              <linearGradient id="scan-fade" x1="160" y1="100" x2="200" y2="40" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stopColor="#14151a" stopOpacity="0" />
+                <stop offset="100%" stopColor="#14151a" stopOpacity="0.18" />
+              </linearGradient>
+            </defs>
 
-        {nodes.map((node, index) => {
-          if (!node.visible) return null;
-          const midX = 200 + (node.x - 200) * 0.42;
-          const midY = 168 + (node.y - 168) * 0.42;
-          const d = `M 200 168 Q ${midX} ${midY} ${node.x} ${node.y}`;
-          return (
-            <g key={node.id}>
-              <motion.path
-                d={d}
-                fill="none"
-                stroke="url(#research-ribbon)"
-                strokeWidth="1.6"
-                strokeLinecap="round"
-                initial={reduced ? false : { pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 0.35 + progress * 0.35 }}
-                transition={{ duration: 0.55, delay: index * 0.05 }}
-              />
+            <motion.circle
+              cx="118"
+              cy="100"
+              r="72"
+              fill="#ff6b57"
+              fillOpacity={0.22}
+              animate={reduced ? undefined : { cx: [118, 114, 118] }}
+              transition={reduced ? undefined : { duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.circle
+              cx="202"
+              cy="100"
+              r="72"
+              fill="#4f5bff"
+              fillOpacity={0.2}
+              animate={reduced ? undefined : { cx: [202, 206, 202] }}
+              transition={reduced ? undefined : { duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+            />
+
+            <g clipPath="url(#you-clip)">
               <motion.circle
-                cx={node.x}
-                cy={node.y}
-                r={node.r}
-                fill={node.color}
-                stroke="#fff"
-                strokeWidth="2"
-                initial={reduced ? false : { scale: 0, opacity: 0 }}
-                animate={
-                  reduced
-                    ? { scale: 1, opacity: 1 }
-                    : { scale: [1, 1.08, 1], opacity: 1 }
-                }
-                transition={
-                  reduced
-                    ? { duration: 0 }
-                    : {
-                        scale: { duration: 2.4 + index * 0.15, repeat: Infinity, ease: "easeInOut" },
-                        opacity: { duration: 0.35, delay: index * 0.05 },
-                      }
-                }
-                style={{ transformOrigin: `${node.x}px ${node.y}px` }}
+                cx="202"
+                cy="100"
+                r="72"
+                fill="#6b3fa0"
+                initial={false}
+                animate={{ fillOpacity: 0.12 + progress * 0.38, scale: overlapScale }}
+                style={{ transformOrigin: "160px 100px" }}
+                transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 70, damping: 16 }}
               />
             </g>
-          );
-        })}
 
-        {/* Hub */}
-        <motion.circle
-          cx="200"
-          cy="168"
-          r="28"
-          fill="#ff6b57"
-          animate={reduced ? undefined : { scale: [1, 1.05, 1] }}
-          transition={reduced ? undefined : { duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
-          style={{ transformOrigin: "200px 168px" }}
-        />
-        <circle cx="200" cy="168" r="28" fill="none" stroke="#fff" strokeWidth="3" />
-        <text x="200" y="165" textAnchor="middle" fill="#fff" fontSize="11" fontWeight="700">
-          You
-        </text>
-        <text x="200" y="178" textAnchor="middle" fill="rgba(255,255,255,0.85)" fontSize="7" fontWeight="600">
-          {(input.businessName || input.businessType || "biz").slice(0, 12)}
-        </text>
+            {!settling && !reduced ? (
+              <motion.g
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                style={{ transformOrigin: "160px 100px" }}
+              >
+                <path d="M160 100 L160 28 A72 72 0 0 1 218 55 Z" fill="url(#scan-fade)" opacity="0.4" />
+              </motion.g>
+            ) : null}
 
-        <text x="200" y="28" textAnchor="middle" fill="#14151a" fontSize="12" fontWeight="700">
-          {Math.round(progress * 100)}% mapped
-        </text>
-        <text x="200" y="46" textAnchor="middle" fill="#5b6170" fontSize="10">
-          {status}
-        </text>
-      </svg>
+            <circle cx="118" cy="100" r="72" fill="none" stroke="#ff6b57" strokeOpacity="0.55" strokeWidth="2" />
+            <circle cx="202" cy="100" r="72" fill="none" stroke="#4f5bff" strokeOpacity="0.5" strokeWidth="2" />
+
+            <text x="88" y="104" textAnchor="middle" fill="#14151a" fontSize="12" fontWeight="700">
+              You
+            </text>
+            <text x="88" y="118" textAnchor="middle" fill="#5b6170" fontSize="9" fontWeight="600">
+              {youLabel.length > 14 ? `${youLabel.slice(0, 13)}…` : youLabel}
+            </text>
+            <text x="232" y="104" textAnchor="middle" fill="#14151a" fontSize="12" fontWeight="700">
+              Partners
+            </text>
+            <text x="232" y="118" textAnchor="middle" fill="#5b6170" fontSize="9" fontWeight="600">
+              {settling ? "Shortlist ready" : "Finding overlap"}
+            </text>
+          </svg>
+        </div>
+
+        {/* Partner kinds lighting up */}
+        <div>
+          <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.12em] text-ink-soft">Searching kinds</p>
+          <ul className="flex flex-col gap-1.5">
+            {KIND_ORDER.slice(0, 6).map((kind, index) => {
+              const active = activeKinds.includes(kind) || (settling && index < 6);
+              const label = KIND_SHORT[kind] ?? kind;
+              const fill = Math.min(1, Math.max(0, progress * 1.2 - index * 0.12));
+              return (
+                <li key={kind} className="flex items-center gap-3">
+                  <span
+                    className={`w-20 shrink-0 text-xs font-medium capitalize ${active ? "text-ink" : "text-ink-soft/50"}`}
+                  >
+                    {label}
+                  </span>
+                  <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-paper">
+                    <motion.div
+                      className="h-full rounded-full"
+                      style={{
+                        background: active
+                          ? "linear-gradient(90deg, #ff6b57 0%, #4f5bff 100%)"
+                          : "#e5e7eb",
+                      }}
+                      initial={false}
+                      animate={{ width: `${Math.round((active ? Math.max(fill, 0.2) : 0) * 100)}%` }}
+                      transition={reduced ? { duration: 0 } : { type: "spring", stiffness: 100, damping: 18 }}
+                    />
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

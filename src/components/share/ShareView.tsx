@@ -90,19 +90,17 @@ export function ShareView({ token }: { token: string }) {
                 const partner = result.partners.find((item) => item.id === pick.partnerId);
                 if (!partner) return null;
                 return (
-                  <div key={pick.role} className="flex min-w-[220px] items-center gap-3 rounded-[12px] border border-line bg-card p-4 shadow-soft">
-                    <MatchRing score={partner.matchScore} size={64} />
-                    <span>
-                      <span className="block text-xs tracking-wide text-ink-soft">{pick.headline}</span>
-                      <span className="block font-bold text-lg leading-tight">{partner.name}</span>
-                    </span>
+                  <div key={pick.role} className="flex min-w-[200px] flex-col gap-2 rounded-[12px] border border-ink bg-paper p-4">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-soft">{pick.headline}</span>
+                    <span className="font-mono text-3xl font-extrabold tabular-nums leading-none">{partner.matchScore}</span>
+                    <span className="truncate font-bold leading-tight">{partner.name}</span>
                   </div>
                 );
               })}
             </div>
           ) : null}
 
-          <ul className="divide-y divide-line overflow-hidden rounded-[12px] border border-line bg-card shadow-soft">
+          <ul className="divide-y divide-line overflow-hidden rounded-[12px] border border-line bg-paper">
             {[...result.partners]
               .sort((a, b) => b.matchScore - a.matchScore || a.name.localeCompare(b.name))
               .map((partner, index) => (

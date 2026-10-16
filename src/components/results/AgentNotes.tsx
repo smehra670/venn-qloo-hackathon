@@ -26,7 +26,7 @@ export function AgentNotes() {
   if (decisions.length === 0 && flagged.length === 0) return null;
 
   return (
-    <section className="mx-4 mb-2 rounded-[12px] border border-line bg-card md:mx-6">
+    <section className="mx-4 mb-2 rounded-[12px] border border-line bg-paper md:mx-6">
       <button
         type="button"
         className="flex min-h-12 w-full items-center justify-between px-5 py-3.5 text-left text-base"

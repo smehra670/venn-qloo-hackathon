@@ -22,8 +22,8 @@ export function Chip({
         aria-pressed={pressed}
         onClick={onClick}
         className={cn(
-          "min-h-11 rounded-[12px] border border-transparent bg-surface px-3.5 py-2 text-sm text-ink",
-          pressed && "bg-ink text-paper",
+          "min-h-11 rounded-[12px] border border-line bg-paper px-3.5 py-2 text-sm text-ink",
+          pressed && "border-ink bg-ink text-paper",
           className,
         )}
       >
@@ -32,7 +32,7 @@ export function Chip({
     );
   }
   return (
-    <span className={cn("inline-flex min-h-9 items-center gap-1.5 rounded-[12px] bg-surface px-3 py-1.5 text-sm text-ink", className)}>
+    <span className={cn("inline-flex min-h-9 items-center gap-1.5 rounded-[12px] border border-line bg-paper px-3 py-1.5 text-sm text-ink", className)}>
       {body}
       {onRemove ? (
         <button type="button" aria-label={`Remove ${children}`} onClick={onRemove} className="rounded p-1 text-ink-soft hover:text-ink">

@@ -81,6 +81,19 @@ export const BusinessInputSchema = z
       .refine((list) => list.length >= 1, "Add at least one thing your customers love.")
       .refine((list) => list.length <= 6, "Six is the maximum."),
     goals: GoalsSchema.optional(),
+    tasteAnchors: z
+      .array(
+        z.object({
+          name: z.string().min(1).max(60),
+          kind: z.enum(["entity", "tag"]),
+          id: z.string().min(1),
+          type: z.string().min(1),
+          origin: z.enum(["user", "qloo", "ai_suggested"]),
+        }),
+      )
+      .max(6)
+      .optional(),
+    anchorNotes: z.array(z.string().min(1).max(60)).max(6).optional(),
   })
   .superRefine((data, ctx) => {
     if (data.businessType !== "other") return;
@@ -128,6 +141,10 @@ export const AnchorResolveRequestSchema = z.object({
     .string()
     .optional()
     .transform((value) => (value === undefined ? undefined : cleaned(value))),
+  businessType: z.enum(BUSINESS_TYPES).optional(),
+  goal: z.string().max(80).optional(),
+  /** When true, skip the OpenAI suggestion step (tests / offline). */
+  skipAi: z.boolean().optional(),
 });
 
 export const CheckRequestSchema = z.object({
@@ -489,19 +506,46 @@ export const ComparePayloadSchema = z.object({
   signals: z.array(CompareSignalSchema),
   note: z.string(),
   source: z.enum(["qloo_tags", "computed_from_tags"]).optional(),
+  tagScores: z
+    .array(z.object({ label: z.string(), a: z.number(), b: z.number() }))
+    .optional(),
 });
 
-const AnchorCandidateSchema = z.object({
-  entityId: z.string(),
-  entityName: z.string(),
-  entityType: EntityTypeSchema,
+const TasteAnchorCandidateSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  kind: z.enum(["entity", "tag"]),
+  type: z.string(),
   score: z.number(),
+});
+
+const TasteAnchorSchema = z.object({
+  name: z.string(),
+  kind: z.enum(["entity", "tag"]),
+  id: z.string(),
+  type: z.string(),
+  origin: z.enum(["user", "qloo", "ai_suggested"]),
+});
+
+const AiAnchorSuggestionSchema = z.object({
+  query: z.string(),
+  kind: z.enum(["topic", "name"]),
+  entityType: z.string(),
+  why: z.string(),
+  verified: TasteAnchorSchema.optional(),
+  suggested: z.literal(true).optional(),
 });
 
 export const AnchorResolutionSchema = z.object({
   input: z.string(),
   status: z.enum(ANCHOR_STATUSES),
-  candidates: z.array(AnchorCandidateSchema),
+  entityCandidates: z.array(TasteAnchorCandidateSchema).default([]),
+  topicCandidates: z.array(TasteAnchorCandidateSchema).default([]),
+  candidates: z.array(TasteAnchorCandidateSchema).optional(),
+  aiSuggestions: z.array(AiAnchorSuggestionSchema).optional(),
+  note: z.string().optional(),
+  verdict: z.enum(["rewrite", "too_broad", "no_close_match", "not_a_taste_signal", "sensitive"]).optional(),
+  selected: TasteAnchorSchema.optional(),
 });
 
 export function parseBusinessInput(value: unknown): BusinessInput {

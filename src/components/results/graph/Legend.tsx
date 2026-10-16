@@ -1,5 +1,6 @@
 import { PARTNER_KINDS, type Partner, type PartnerKind } from "@shared/types";
-import { KIND_META } from "@/lib/kinds";
+import { KIND_META, kindTint } from "@/lib/kinds";
+import { cn } from "@/lib/cn";
 
 export function Legend({
   partners,
@@ -12,22 +13,27 @@ export function Legend({
 }) {
   const present = PARTNER_KINDS.filter((kind) => partners.some((partner) => partner.kind === kind));
   return (
-    <div aria-label="Types" className="min-w-0 flex-1 rounded-[20px] border border-line bg-card/95 px-3 py-2 shadow-soft">
-      <ul className="flex flex-wrap gap-1">
+    <div aria-label="Types" className="min-w-0 flex-1 rounded-[16px] border border-line bg-paper px-2.5 py-2">
+      <ul className="flex flex-wrap gap-1.5">
         {present.map((kind) => {
           const count = partners.filter((partner) => partner.kind === kind).length;
           const on = active.has(kind);
+          const color = KIND_META[kind].color;
           return (
             <li key={kind}>
               <button
                 type="button"
                 aria-pressed={on}
                 onClick={() => onToggle(kind)}
-                className="flex items-center gap-2 rounded-full px-2 py-1 text-left text-sm"
+                className={cn(
+                  "flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-left text-sm transition",
+                  on ? "border-transparent text-ink" : "border-line text-ink-soft opacity-55",
+                )}
+                style={on ? { background: kindTint(kind, 0.28), boxShadow: `inset 0 0 0 1px ${color}55` } : undefined}
               >
-                <span className="h-2.5 w-2.5 rounded-full" style={{ background: KIND_META[kind].color, opacity: on ? 1 : 0.3 }} />
-                <span className={on ? "text-ink" : "text-ink-soft"}>{KIND_META[kind].label}</span>
-                <span className="ml-auto font-mono text-xs text-ink-soft">{count}</span>
+                <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: color }} />
+                <span className="font-medium">{KIND_META[kind].label}</span>
+                <span className="font-mono text-xs tabular-nums opacity-70">{count}</span>
               </button>
             </li>
           );

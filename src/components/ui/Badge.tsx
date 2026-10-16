@@ -4,7 +4,7 @@ import { cn } from "@/lib/cn";
 export type BadgeTone = "neutral" | "sky" | "coral" | "blue" | "plum" | "mint" | "sand";
 
 const TONE: Record<BadgeTone, string> = {
-  neutral: "bg-surface text-ink-soft",
+  neutral: "border border-line bg-paper text-ink-soft",
   sky: "bg-[#d7eef7] text-ink",
   coral: "bg-coral-soft text-ink",
   blue: "bg-blue-soft text-ink",

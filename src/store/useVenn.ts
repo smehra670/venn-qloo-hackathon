@@ -7,7 +7,7 @@ import { openRunStream } from "@/lib/sse";
 import { clearRunId, readInput, readRunId, saveInput, saveRunId } from "@/lib/storage";
 
 export type Stage = "setup" | "researching" | "results";
-export type ResultsView = "graph" | "map" | "shortlist" | "proof" | "plan";
+export type ResultsView = "overview" | "shortlist" | "plan";
 export type StepState = "waiting" | "running" | "done" | "retry";
 
 export interface StepView {
@@ -144,7 +144,7 @@ function applyEvent(event: AgentEvent, id: number, get: () => VennState, set: (p
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.setTimeout(() => {
       if (get().result?.runId === event.result.runId) set({ stage: "results", settling: false });
-    }, reduced ? 0 : 600);
+    }, reduced ? 0 : 2800);
     return;
   }
   if (event.type === "error") {
@@ -174,7 +174,7 @@ export const useVenn = create<VennState>((set, get) => ({
   pinnedIds: new Set(),
   surprise: 0.35,
   kindFilter: new Set(PARTNER_KINDS),
-  view: "graph",
+  view: "overview",
   briefOpen: false,
   briefPartnerId: null,
   briefVariant: 0,
@@ -321,7 +321,6 @@ export const useVenn = create<VennState>((set, get) => ({
   },
   setView: (view) => {
     set({ view });
-    if (view === "proof") void get().loadProof();
   },
 
   openBrief: async (partnerId) => {

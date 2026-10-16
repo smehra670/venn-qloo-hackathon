@@ -12,10 +12,10 @@ function SignalBar({ label, value, median }: { label: string; value: number; med
         <span>{label}</span>
         <span className="font-mono">{valuePct}% vs {medianPct}% median</span>
       </div>
-      <div className="relative mt-1 h-2 rounded-full bg-paper-2">
-        <div className="absolute inset-y-0 left-0 rounded-full bg-blue/70" style={{ width: `${valuePct}%` }} />
+      <div className="relative mt-1 h-2 rounded-full bg-[#eef0f4]">
+        <div className="absolute inset-y-0 left-0 rounded-full bg-ink" style={{ width: `${valuePct}%` }} />
         <div
-          className="absolute top-1/2 h-3 w-0.5 -translate-y-1/2 bg-ink/60"
+          className="absolute top-1/2 h-3 w-0.5 -translate-y-1/2 bg-ink/40"
           style={{ left: `${medianPct}%` }}
           aria-hidden="true"
         />
@@ -45,7 +45,7 @@ export function AudienceCompare({ payload, loading }: { payload?: ComparePayload
     <div className="mt-3 rounded-[16px] border border-line bg-paper p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h4 className="text-sm font-medium">Your audience vs {payload.partnerName}</h4>
-        <span className="rounded-full bg-paper-2 px-2 py-0.5 text-[11px] text-ink-soft">{sourceLabel(payload.source)}</span>
+        <span className="rounded-full border border-line px-2 py-0.5 text-[11px] text-ink-soft">{sourceLabel(payload.source)}</span>
       </div>
       <div className="mt-2 flex flex-wrap gap-2">
         {payload.sharedTags.length === 0 ? (
@@ -64,6 +64,9 @@ export function AudienceCompare({ payload, loading }: { payload?: ComparePayload
         {Math.abs(Math.round(payload.popularityDelta * 100))} points.
       </p>
       <p className="mt-2 text-[11px] text-ink-soft">{payload.note}</p>
+      <p className="mt-1 text-[11px] text-ink-soft">
+        Compare uses matched brand and place anchors only. Topic tags shape discover ranking, not this chart.
+      </p>
     </div>
   );
 }

@@ -44,6 +44,8 @@ The home screen is a sentence form, not a multi-step wizard:
 2. Gym or studio in Manchester — Patagonia, craft beer, bouldering  
 3. Second Spin Records — shop in New York — Bandcamp, Polaroid, natural wine  
 
+**Per-chip resolve** — each anchor is matched to a Name (entity) or Topic (tag) as you type; pick under the chip when ambiguous or too broad. AI suggestions (when enabled) are verified on Qloo and labelled **Suggested**. See `docs/ANCHORS.md`.
+
 **Validation** — the submit button stays disabled until the form is valid (at least one anchor; custom type required when type is “other”). Helper copy explains that no customer data is needed.
 
 **Provider badge** — “Demo data” when `TASTE_PROVIDER=mock`, or “Powered by Qloo” when live Qloo is active.
@@ -91,7 +93,7 @@ The runner always walks these steps. Titles shown in the UI:
 
 | Step | Title | What happens |
 | --- | --- | --- |
-| resolve | Understanding your customers' taste | Map each anchor to an entity, tags, or a stand-in |
+| resolve | Understanding your customers' taste | Map each anchor to an entity or topic tag |
 | plan | Choosing where to look | Choose up to six partner kinds for this business type |
 | discover | Searching for candidate partners | Pull candidates per kind (brands, artists, places, …) |
 | score | Scoring how well each one fits | Bidirectional affinity, tags, relative match scores |

@@ -102,6 +102,10 @@ export interface BusinessInput {
   businessTypeCustom?: string;
   city: string;
   anchors: string[];
+  /** Confirmed entity/tag anchors for Qloo signals (optional; runs fall back to resolving `anchors`). */
+  tasteAnchors?: TasteAnchor[];
+  /** Typed anchors kept as notes only (not sent to Qloo ranking). */
+  anchorNotes?: string[];
   goals?: Goals;
 }
 
@@ -115,28 +119,64 @@ export interface ResolvedAnchor {
   note: string;
 }
 
-/** Confidence bucket for one free-text anchor against the taste dataset, used by the "Check
- * your anchors" confirm step (`POST /api/anchors/resolve`): "auto" needs no confirmation,
- * "ambiguous" has two or more plausible readings (e.g. "Aesop" the skincare brand vs "Aesop"
- * the ancient storyteller), "unresolved" has nothing close enough to suggest. */
-export const ANCHOR_STATUSES = ["auto", "ambiguous", "unresolved"] as const;
+/** Confirmed taste signal ready for `signal.interests.entities` or `signal.interests.tags`. */
+export interface TasteAnchor {
+  name: string;
+  kind: "entity" | "tag";
+  id: string;
+  type: string;
+  origin: "user" | "qloo" | "ai_suggested";
+}
+
+/**
+ * Per-chip resolve status (`POST /api/anchors/resolve`):
+ * - entity / topic: clear match (user may still confirm topic)
+ * - ambiguous: several close Names and/or Topics
+ * - too_broad: generic word that won't change ranking
+ * - unresolved: nothing plausible above the similarity floor
+ */
+export const ANCHOR_STATUSES = ["entity", "topic", "ambiguous", "too_broad", "unresolved"] as const;
 export type AnchorStatus = (typeof ANCHOR_STATUSES)[number];
 
-export interface AnchorCandidate {
-  entityId: string;
-  entityName: string;
-  entityType: EntityType;
-  /** 0-1 similarity to the raw input text; 1 is an exact match. */
+/** @deprecated Use ANCHOR_STATUSES — kept as alias for gradual migration. */
+export type TasteAnchorStatus = AnchorStatus;
+
+export interface TasteAnchorCandidate {
+  id: string;
+  name: string;
+  kind: "entity" | "tag";
+  type: string;
+  /** 0-1 name similarity; never surface below 0.6. */
   score: number;
 }
 
-/** One anchor's resolution result: the candidates it could mean, and the status that follows
- * from their similarity scores (see `classifyAnchorStatus` in `server/anchors/resolve.ts`). */
+export interface AiAnchorSuggestion {
+  query: string;
+  kind: "topic" | "name";
+  entityType: string;
+  why: string;
+  /** Present only after server Qloo verification. */
+  verified?: TasteAnchor;
+  suggested?: true;
+}
+
+/** One typed chip's resolution: Qloo candidates + optional AI suggestions (verified only). */
 export interface AnchorResolution {
   input: string;
   status: AnchorStatus;
-  candidates: AnchorCandidate[];
+  entityCandidates: TasteAnchorCandidate[];
+  topicCandidates: TasteAnchorCandidate[];
+  /** @deprecated Prefer entityCandidates + topicCandidates. */
+  candidates?: TasteAnchorCandidate[];
+  aiSuggestions?: AiAnchorSuggestion[];
+  note?: string;
+  verdict?: "rewrite" | "too_broad" | "no_close_match" | "not_a_taste_signal" | "sensitive";
+  /** When status is entity/topic and auto-picked. */
+  selected?: TasteAnchor;
 }
+
+/** @deprecated Use TasteAnchorCandidate. */
+export type AnchorCandidate = TasteAnchorCandidate;
 
 export interface SignalBreakdown {
   affinityToPartner: number;
@@ -488,6 +528,13 @@ export type CompareSource = "qloo_tags" | "computed_from_tags";
  * network-free for every provider, including mock. May additionally try a live
  * `/v2/analysis/compare` call (budget-limited, Qloo only) and fall back to the computed
  * tag intersection when that call's tags come back empty — see `source`. */
+/** Per-tag scores from a live `/v2/analysis/compare` call (A = your anchors, B = partner). */
+export interface CompareTagScore {
+  label: string;
+  a: number;
+  b: number;
+}
+
 export interface ComparePayload {
   runId: string;
   partnerId: string;
@@ -501,6 +548,8 @@ export interface ComparePayload {
   note: string;
   /** Defaults to `"computed_from_tags"` for payloads built before this field existed. */
   source?: CompareSource;
+  /** Present only when `source === "qloo_tags"` and Qloo returned a/b scores. Used by Overview Venn bars. */
+  tagScores?: CompareTagScore[];
 }
 
 /** Fields extracted from a Qloo `place` entity (point+radius discover), kept narrow and

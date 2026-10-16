@@ -149,7 +149,7 @@ export function FineTune({
           </Field>
 
           <Field title="Avoid" hint="Partner types or names" tone="sand">
-            <div className="rounded-2xl border border-line bg-surface/60 px-3 py-2.5">
+            <div className="rounded-2xl border border-line bg-paper px-3 py-2.5">
               <div className="flex flex-wrap items-center gap-2">
                 {goals.avoid.map((item) => (
                   <span

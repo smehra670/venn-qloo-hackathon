@@ -20,6 +20,7 @@
     "snapshot": "tsx --tsconfig tsconfig.server.json scripts/snapshot.ts",
     "og": "node scripts/make-og.mjs",
     "shots": "node scripts/capture-shots.mjs",
+    "shots:research": "node scripts/capture-research.mjs",
     "format": "prettier --write ."
   },
   "repository": {

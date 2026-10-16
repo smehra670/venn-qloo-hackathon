@@ -33,16 +33,16 @@ Venn helps a small business find partners whose **audiences share taste** (brand
   - How local (near me / local + brands / anywhere)
   - How ambitious (light / balanced / ambitious)
   - Names or categories to avoid
-- If an anchor name is unclear (e.g. “Aesop” could be a brand or an author), a **Check your anchors** step asks you to pick
+- Each chip resolves as you type into **Names** and **Topics**; ambiguous / too-broad chips open a popover. Optional AI **Suggested** picks are verified on Qloo first (see `docs/ANCHORS.md`)
+- Submit sends confirmed `tasteAnchors` (entities + tags) for ranking
 - Provider badge: Demo data, Powered by Qloo, or Saved Qloo results
 - **About** (footer / `#about`): what Venn is, Qloo surfaces used, MIT licence, safe-use notes
 
 ```mermaid
 flowchart TD
-  Form[Fill the sentence] --> Ambiguous{Anchor unclear?}
-  Ambiguous -->|yes| Confirm[Pick the right meaning]
-  Ambiguous -->|no| Start[Find my partners]
-  Confirm --> Start
+  Form[Fill the sentence] --> Chip[Resolve per chip]
+  Chip --> Pick[Pick name or topic if needed]
+  Pick --> Start[Find my partners]
   FineTune[Fine-tune optional] -.-> Form
 ```
 

@@ -310,10 +310,15 @@ export async function insights(
 export async function searchTags(
   query: string,
   signal?: AbortSignal,
+  opts?: { semantic?: boolean; take?: number },
 ): Promise<Array<{ id: string; name: string }>> {
   const parsed = await qlooGet(
     "/v2/tags",
-    { "filter.query": query, take: 8 },
+    {
+      "filter.query": query,
+      take: opts?.take ?? 8,
+      ...(opts?.semantic === false ? {} : { "feature.semantic_search": true }),
+    },
     signal,
     (json) => TagsResponseSchema.parse(json),
   );
