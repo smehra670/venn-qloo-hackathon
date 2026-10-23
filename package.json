@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/smehra670/venn-inhouse.git"
+    "url": "git+https://github.com/smehra670/venn-qloo-hackathon.git"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",

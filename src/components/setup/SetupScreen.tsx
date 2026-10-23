@@ -108,7 +108,7 @@ export function SetupScreen() {
           </button>
           <a
             className="min-h-11 inline-flex items-center hover:text-ink"
-            href="https://github.com/smehra670/venn-inhouse"
+            href="https://github.com/smehra670/venn-qloo-hackathon"
             target="_blank"
             rel="noreferrer"
           >
@@ -181,7 +181,7 @@ export function SetupScreen() {
             <button type="button" className="link-underline" onClick={() => setAboutOpen(true)}>
               About
             </button>
-            <a className="link-underline inline-flex items-center" href="https://github.com/smehra670/venn-inhouse" target="_blank" rel="noreferrer">
+            <a className="link-underline inline-flex items-center" href="https://github.com/smehra670/venn-qloo-hackathon" target="_blank" rel="noreferrer">
               Source code
             </a>
           </div>

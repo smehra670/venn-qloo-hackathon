@@ -91,7 +91,7 @@ export function AboutDialog({ open, onClose, version }: AboutDialogProps) {
           <MetaCell
             label="Source"
             value={
-              <a className="link-underline font-bold" href="https://github.com/smehra670/venn-inhouse" target="_blank" rel="noreferrer">
+              <a className="link-underline font-bold" href="https://github.com/smehra670/venn-qloo-hackathon" target="_blank" rel="noreferrer">
                 GitHub
               </a>
             }
