@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { AlertTriangle, CalendarRange, CheckCircle2, Compass, Mail, Sparkles, Target } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { Logo } from "@/components/brand/Logo";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Segmented } from "@/components/ui/Segmented";
@@ -10,6 +11,34 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { briefAsText } from "@/lib/format";
 import { kindLabel } from "@/lib/overviewModel";
 import { useVenn } from "@/store/useVenn";
+
+/** Shown while the brief is being written — a branded, content-shaped placeholder instead of
+ * one flat box, so a several-second LLM call reads as "working on it", not a blank/broken
+ * screen. */
+function BriefLoading() {
+  return (
+    <div className="page-shell overflow-hidden rounded-[20px] border border-line bg-paper shadow-[0_24px_60px_rgba(20,21,26,0.1)]">
+      <div className="flex items-center gap-3 border-b border-line bg-[#F8F8FA] px-6 py-8 sm:px-10">
+        <span className="animate-pulse">
+          <Logo wordmark={false} size="lg" />
+        </span>
+        <div>
+          <p className="font-bold text-lg text-ink">Drafting your pitch…</p>
+          <p className="text-sm text-ink-soft">Writing from this search's real evidence — a few seconds.</p>
+        </div>
+      </div>
+      <div className="space-y-5 px-6 py-8 sm:px-10">
+        <Skeleton className="h-28 w-full" />
+        <Skeleton className="h-40 w-full" />
+        <Skeleton className="h-24 w-full" />
+        <div className="grid gap-5 sm:grid-cols-2">
+          <Skeleton className="h-28 w-full" />
+          <Skeleton className="h-28 w-full" />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 const TONE_OPTIONS = [
   { value: "warm", label: "Warm" },
@@ -86,7 +115,7 @@ export function BriefSheet() {
           <BriefBody brief={brief} dataLabel={dataLabel} youLabel={youLabel} matchScore={partner?.matchScore} kind={partner?.kind} />
         </motion.article>
       ) : (
-        <Skeleton className="page-shell h-[70dvh]" />
+        <BriefLoading />
       )}
     </div>
   );
