@@ -1,4 +1,4 @@
-# Venn
+# Venn - Qloo Hackathon Submission
 
 Venn finds the businesses whose audiences overlap with yours, draws that overlap on a map and a chart, and writes the collab pitch. Built for the Qloo Agentic Hackathon 2026.
 
