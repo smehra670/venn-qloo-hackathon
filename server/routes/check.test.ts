@@ -22,7 +22,11 @@ afterAll(async () => {
 async function createDoneRun(): Promise<{ runId: string; result: RunResult }> {
   const example = EXAMPLES[0];
   if (!example) throw new Error("No example configured.");
-  const created = await app.inject({ method: "POST", url: "/api/runs", payload: example });
+  // One extra anchor keeps this close to the real example input but off its exact hash, so it
+  // runs through the normal mock pipeline rather than `EXAMPLES_MODE=snapshot`'s example replay
+  // (see `getProvider()`) — this test is about frozen-normalization behavior, not examples.
+  const input = { ...example, anchors: [...example.anchors, "vinyl"] };
+  const created = await app.inject({ method: "POST", url: "/api/runs", payload: input });
   const { runId } = created.json() as { runId: string };
   for (let attempt = 0; attempt < 60; attempt += 1) {
     const current = await app.inject({ method: "GET", url: `/api/runs/${runId}` });

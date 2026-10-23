@@ -1,11 +1,12 @@
 import { BUSINESS_TYPE_LABELS } from "@shared/constants";
-import { Info, RotateCcw, Share2 } from "lucide-react";
+import { Info, MessageCircle, RotateCcw, Share2 } from "lucide-react";
 import { useVenn, type ResultsView } from "@/store/useVenn";
 import { cn } from "@/lib/cn";
 
 const VIEWS: { value: ResultsView; label: string }[] = [
   { value: "overview", label: "Overview" },
   { value: "shortlist", label: "Shortlist" },
+  { value: "proof", label: "Proof" },
 ];
 
 /** The sticky results bar shared by Overview and Shortlist (dashboard styling, `ov-*`). */
@@ -17,6 +18,7 @@ export function ResultsHeader() {
   const shareRun = useVenn((s) => s.shareRun);
   const sharing = useVenn((s) => s.sharing);
   const openCallLog = useVenn((s) => s.openCallLog);
+  const openChat = useVenn((s) => s.openChat);
   const pinnedCount = useVenn((s) => s.pinnedIds.size);
   if (!result) return null;
 
@@ -70,6 +72,10 @@ export function ResultsHeader() {
           ))}
         </nav>
         <div className="ov-bar-r">
+          <button type="button" className="ov-link" aria-label="Ask Venn" onClick={openChat}>
+            <MessageCircle size={16} aria-hidden="true" />
+            <span className="ov-link-label">Ask Venn</span>
+          </button>
           <button type="button" className="ov-link" aria-label="How Venn used Qloo" onClick={() => void openCallLog()}>
             <Info size={16} aria-hidden="true" />
             <span className="ov-link-label">How Venn used Qloo</span>

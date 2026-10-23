@@ -40,7 +40,8 @@ See `.env.example` for the full list and defaults. The ones that matter for a de
 | `MAX_CONCURRENT_RUNS`, `QUEUE_MAX` | `RunScheduler` concurrency and queue depth. |
 | `DAILY_RUN_CAP_PER_IP` | Per-IP daily cap on new searches (hashed IP, not stored in plain text). |
 | `TRUST_PROXY` | Set `true` behind a reverse proxy so rate limiting and the IP cap see the real client IP. |
-| `LLM_PROVIDER`, `OPENAI_API_KEY` / `LLM_API_KEY`, `LLM_MODEL`, `LLM_MODEL_FAST`, `LLM_BRIEF_BUDGET_PER_RUN` | Reserved for the AI brief writer (Phase 2). Safe to leave unset; briefs fall back to the template writer. |
+| `LLM_PROVIDER`, `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / `LLM_API_KEY`, `LLM_MODEL`, `LLM_MODEL_FAST` | Powers the collaboration brief writer and the "Ask Venn" chat. Safe to leave unset (`LLM_PROVIDER=none`): briefs fall back to the template writer, and the chat panel shows a calm "needs an AI key" note instead of an input. |
+| `LLM_BRIEF_BUDGET_PER_RUN`, `LLM_CHAT_BUDGET_PER_RUN` | Per-run caps on brief regenerations and chat replies, so an open-ended session can't blow the Qloo/LLM budget. |
 
 Set `TRUST_PROXY=true` whenever the app sits behind a load balancer, otherwise every request appears to
 come from the proxy's IP and the daily cap becomes shared across all users.

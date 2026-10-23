@@ -76,7 +76,7 @@ describe("Qloo rankTogether request building", () => {
     expect(calls[1]!.searchParams.get("filter.results.entities")?.split(",")).toHaveLength(5);
   });
 
-  it("returns one RankEntry per id Qloo could place, reading affinity and popularity from that call only", async () => {
+  it("returns one RankEntry per id Qloo could place, reading affinity, popularity and name from that call only", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn(async () =>
@@ -99,8 +99,8 @@ describe("Qloo rankTogether request building", () => {
     expect(ranked).toHaveLength(2); // id-3 wasn't in the response, so it's simply omitted.
     expect(ranked).toEqual(
       expect.arrayContaining([
-        { entityId: "id-1", affinity: 0.7, popularity: 0.4 },
-        { entityId: "id-2", affinity: 0.3, popularity: 0.9 },
+        { entityId: "id-1", affinity: 0.7, popularity: 0.4, name: "One" },
+        { entityId: "id-2", affinity: 0.3, popularity: 0.9, name: "Two" },
       ]),
     );
   });

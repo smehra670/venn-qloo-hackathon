@@ -1,6 +1,8 @@
 import { BriefSheet } from "@/components/results/BriefSheet";
+import { ChatPanel } from "@/components/results/ChatPanel";
 import { OverviewPage } from "@/components/results/overview/OverviewPage";
 import { PartnerDrawer } from "@/components/results/PartnerDrawer";
+import { ProofView } from "@/components/results/ProofView";
 import { QlooCallLog } from "@/components/results/QlooCallLog";
 import { ResultsHeader } from "@/components/results/ResultsHeader";
 import { ShortlistView } from "@/components/results/ShortlistView";
@@ -50,20 +52,23 @@ export function ResultsScreen() {
         <OverviewPage />
         <QlooCallLog />
         <BriefSheet />
+        <ChatPanel />
       </>
     );
   }
 
-  // Shortlist shares the dashboard's page, bar and card styling (`ov-*`).
+  // Shortlist and Proof share the dashboard's page, bar and card styling (`ov-*`).
   return (
     <div className="ov-page">
       <ResultsHeader />
       <main className="ov-wrap">
         {view === "shortlist" ? <ShortlistView /> : null}
+        {view === "proof" ? <ProofView /> : null}
       </main>
       <PartnerDrawer />
       <QlooCallLog />
       <BriefSheet />
+      <ChatPanel />
     </div>
   );
 }

@@ -5,7 +5,14 @@ import { LIMITS_TEXT } from "./template.js";
 
 const LlmBriefPayloadSchema = z.object({
   title: z.string().min(1).max(160),
-  format: z.string().min(1).max(100),
+  format: z
+    .string()
+    .min(1)
+    .max(100)
+    .refine(
+      (value) => !/venn_brief|\bjson\b|\bschema\b/i.test(value),
+      "format must be a human label for the collaboration (e.g. 'Pop-up event'), not a technical term",
+    ),
   concept: z.string().min(1).max(1600),
   whyItFits: z
     .array(

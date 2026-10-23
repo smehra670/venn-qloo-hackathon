@@ -1,13 +1,13 @@
 import { MAX_USER_ADDED_PARTNERS, STEP_TITLES } from "@shared/constants";
-import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BriefLength, type BriefTone, type BusinessInput, type ComparePayload, type Heatmap, type PartnerKind, type ProofResult, type QlooCallRecord, type RunResult, type StepId, type StoredEvent } from "@shared/types";
+import { PARTNER_KINDS, STEP_ORDER, type AgentEvent, type Brief, type BriefLength, type BriefTone, type BusinessInput, type ChatTurn, type ComparePayload, type Heatmap, type PartnerKind, type ProofResult, type QlooCallRecord, type RunResult, type StepId, type StoredEvent } from "@shared/types";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { ApiError, cancelRun, createBrief, createRun, createShare, expandRun, getCallLog, getHealth, getHeatmap, getMeta, getRun, postCheck, postCompare, postProof, type Health, type Meta } from "@/lib/api";
+import { ApiError, cancelRun, createBrief, createRun, createShare, expandRun, getCallLog, getHealth, getHeatmap, getMeta, getRun, postCheck, postChat, postCompare, postProof, type Health, type Meta } from "@/lib/api";
 import { openRunStream } from "@/lib/sse";
 import { clearRunId, readInput, readRunId, saveInput, saveRunId } from "@/lib/storage";
 
 export type Stage = "setup" | "researching" | "results";
-export type ResultsView = "overview" | "shortlist";
+export type ResultsView = "overview" | "shortlist" | "proof";
 export type StepState = "waiting" | "running" | "done" | "retry";
 
 export interface StepView {
@@ -92,6 +92,12 @@ interface VennState {
   callsLoading: boolean;
   sharing: boolean;
   error: string | null;
+  chatOpen: boolean;
+  chatMessages: ChatTurn[];
+  chatLoading: boolean;
+  /** "ok" once a reply has come back at least once; "disabled"/"budget" latch the calm note
+   * shown instead of the input once the server has said so. */
+  chatStatus: "ok" | "disabled" | "budget";
   boot: () => Promise<void>;
   startRun: (input: BusinessInput) => Promise<void>;
   cancelRun: () => Promise<void>;
@@ -120,6 +126,9 @@ interface VennState {
   closeCallLog: () => void;
   shareRun: () => Promise<void>;
   setInput: (input: BusinessInput) => void;
+  openChat: () => void;
+  closeChat: () => void;
+  sendChat: (message: string) => Promise<void>;
 }
 
 function listen(runId: string, lastId: number, get: () => VennState, set: (partial: Partial<VennState>) => void): void {
@@ -200,6 +209,10 @@ export const useVenn = create<VennState>((set, get) => ({
   callsLoading: false,
   sharing: false,
   error: null,
+  chatOpen: false,
+  chatMessages: [],
+  chatLoading: false,
+  chatStatus: "ok",
 
   setInput: (input) => {
     saveInput(input);
@@ -264,6 +277,9 @@ export const useVenn = create<VennState>((set, get) => ({
       compareOpenId: null,
       callLogOpen: false,
       calls: [],
+      chatOpen: false,
+      chatMessages: [],
+      chatStatus: "ok",
     });
     try {
       const { runId } = await createRun(input);
@@ -309,6 +325,9 @@ export const useVenn = create<VennState>((set, get) => ({
       compareOpenId: null,
       callLogOpen: false,
       calls: [],
+      chatOpen: false,
+      chatMessages: [],
+      chatStatus: "ok",
     });
   },
 
@@ -485,6 +504,30 @@ export const useVenn = create<VennState>((set, get) => ({
       toast(error instanceof ApiError ? error.message : "Could not create a share link.");
     } finally {
       set({ sharing: false });
+    }
+  },
+
+  openChat: () => set({ chatOpen: true }),
+  closeChat: () => set({ chatOpen: false }),
+
+  sendChat: async (message) => {
+    const { runId, chatLoading, chatMessages } = get();
+    const trimmed = message.trim();
+    if (!runId || chatLoading || !trimmed) return;
+    set({ chatLoading: true, chatMessages: [...chatMessages, { role: "user", content: trimmed }] });
+    try {
+      const response = await postChat(runId, trimmed);
+      if (response.status === "ok") {
+        set({ chatMessages: [...get().chatMessages, response.reply], chatStatus: "ok" });
+      } else {
+        // The question the user just asked still shows in the transcript; only the reply
+        // is replaced by a calm note, so nothing looks like it vanished.
+        set({ chatStatus: response.status });
+      }
+    } catch (error) {
+      toast(error instanceof ApiError ? error.message : "Venn could not answer that.");
+    } finally {
+      set({ chatLoading: false });
     }
   },
 }));

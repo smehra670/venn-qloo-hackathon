@@ -1,5 +1,5 @@
-import { AnchorResolutionSchema, CardsRequest, CardsResponse, RefillRequest, RefillResponse, BriefSchema, ComparePayloadSchema, HeatmapSchema, PartnerSchema, ProofResultSchema, QlooCallRecordSchema, RunResultSchema } from "@shared/schemas";
-import type { AnchorResolution, Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ComparePayload, ExampleInput, Heatmap, Partner, ProofResult, ProviderName, QlooCallRecord, RunResult, RunStatus } from "@shared/types";
+import { AnchorResolutionSchema, CardsRequest, CardsResponse, RefillRequest, RefillResponse, BriefSchema, ChatResponseSchema, ComparePayloadSchema, HeatmapSchema, PartnerSchema, ProofResultSchema, QlooCallRecordSchema, RunResultSchema } from "@shared/schemas";
+import type { AnchorResolution, Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ChatResponse, ComparePayload, ExampleInput, Heatmap, Partner, ProofResult, ProviderName, QlooCallRecord, RunResult, RunStatus } from "@shared/types";
 import { z } from "zod";
 
 export class ApiError extends Error {
@@ -47,6 +47,7 @@ const HealthSchema = z
     providerLabel: z.string(),
     demo: z.boolean(),
     version: z.string(),
+    llm: z.object({ enabled: z.boolean() }).passthrough().optional(),
   })
   .passthrough();
 
@@ -69,6 +70,7 @@ export interface Health {
   providerLabel: string;
   demo: boolean;
   version: string;
+  llm?: { enabled: boolean };
 }
 
 export interface Meta {
@@ -192,6 +194,12 @@ export function createBrief(id: string, partnerId: string, options: CreateBriefO
 
 export function postProof(id: string): Promise<ProofResult> {
   return request(`/api/runs/${id}/proof`, { method: "POST" }, (value) => ProofResultSchema.parse(value));
+}
+
+export function postChat(id: string, message: string): Promise<ChatResponse> {
+  return request(`/api/runs/${id}/chat`, { method: "POST", body: JSON.stringify({ message }) }, (value) =>
+    ChatResponseSchema.parse(value),
+  );
 }
 
 export interface CheckPartnerOptions {

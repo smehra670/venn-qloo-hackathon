@@ -1,4 +1,4 @@
-import type { AgentEvent, Brief, BusinessInput, Heatmap, ProofResult, QlooCallRecord, RunResult, StoredEvent } from "@shared/types";
+import type { AgentEvent, Brief, BusinessInput, ChatTurn, Heatmap, ProofResult, QlooCallRecord, RunResult, StoredEvent } from "@shared/types";
 import Database from "better-sqlite3";
 import { createHash } from "node:crypto";
 import { mkdirSync } from "node:fs";
@@ -34,6 +34,10 @@ export interface Run {
   /** How many live `/v2/analysis/compare` calls this run has spent, capped at
    * `config.compareMaxCallsPerRun` (see `server/compare.ts`). */
   compareCallsUsed: number;
+  /** "Ask Venn" chat transcript for this run, server-side so follow-up questions have context.
+   * Not persisted to sqlite — a restart losing it just starts the conversation over, same as
+   * `briefs`/`calls`. */
+  chat: ChatTurn[];
 }
 
 interface RunRow {
@@ -130,6 +134,7 @@ export function createRun(input: BusinessInput, opts?: { live?: boolean }): Run 
     live: opts?.live,
     calls: [],
     compareCallsUsed: 0,
+    chat: [],
   };
   runs.set(run.id, run);
   insertRunStmt.run({
@@ -162,6 +167,7 @@ function fromRow(row: RunRow): Run {
     toolCalls: events.filter((event) => event.type === "tool_call").length,
     calls: result?.calls ? [...result.calls] : [],
     compareCallsUsed: 0,
+    chat: [],
   };
   if (run.status !== "running") run.abort.abort();
   return run;

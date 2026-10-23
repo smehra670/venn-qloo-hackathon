@@ -1035,6 +1035,7 @@ export class QlooTasteProvider implements TasteProvider {
             entityId: id,
             affinity: affinityOf(entity),
             popularity: typeof entity.popularity === "number" ? Math.max(0, Math.min(1, entity.popularity)) : 0,
+            name: entity.name,
           });
         }
       } catch {

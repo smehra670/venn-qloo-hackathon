@@ -88,6 +88,7 @@ export function buildUserPrompt(factPack: FactPack, opts: BriefPromptOptions): s
     JSON.stringify(factPack),
     "",
     "Write a single collaboration brief for this business and partner. Use formatHint only as loose inspiration — you may rename or reshape it.",
+    "format is a short, human label for the kind of collaboration (2-5 words, e.g. 'Pop-up event' or 'Co-branded bundle') — never a technical term, and never the literal words 'venn_brief', 'json', or 'schema'.",
     "whyItFits should have 2-4 entries, each citing real evidenceIds from the fact pack's evidence list.",
     `Tone: ${opts.tone}. Length: ${opts.length}.`,
   ].join("\n");

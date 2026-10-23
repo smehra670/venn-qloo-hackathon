@@ -335,6 +335,9 @@ export interface RankEntry {
   popularity: number;
   /** 0 (same industry) to 1 (very different industry); omitted when not meaningful. */
   distance?: number;
+  /** The provider's own name for this entity, when it has one — lets a caller (Proof) show a
+   * readable label for an id that isn't one of the run's own partners, instead of the raw id. */
+  name?: string;
 }
 
 export type PickRole = "best_overall" | "best_local" | "wildcard";
@@ -444,6 +447,20 @@ export interface Brief {
   /** Evidence a reader can trace whyItFits citations back to. Present on LLM-written briefs. */
   sources?: BriefSource[];
 }
+
+/** One turn in the "ask Venn" chat about a finished run. Grounded in the run's own evidence —
+ * see `server/chat/`. `partnerIds` is present on assistant turns that point at specific
+ * partners, so the UI can offer to select/highlight them. */
+export interface ChatTurn {
+  role: "user" | "assistant";
+  content: string;
+  partnerIds?: string[];
+}
+
+export type ChatResponse =
+  | { status: "ok"; reply: ChatTurn; remaining: number }
+  | { status: "disabled" }
+  | { status: "budget" };
 
 /** One entry in the agent's "how Venn decided" log, surfaced live via the `decision` SSE
  * event and persisted on `RunResult.decisions` so it survives a page reload. */

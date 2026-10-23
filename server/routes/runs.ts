@@ -2,14 +2,16 @@ import { MAX_PARTNERS, MAX_USER_ADDED_PARTNERS } from "@shared/constants";
 import {
   BriefRequestSchema,
   BusinessInputSchema,
+  ChatRequestSchema,
   CheckRequestSchema,
   CompareRequestSchema,
   ExpandRequestSchema,
   HeatmapQuerySchema,
 } from "@shared/schemas";
-import type { AgentEvent, Partner, StoredEvent } from "@shared/types";
+import type { AgentEvent, ChatResponse, Partner, StoredEvent } from "@shared/types";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { writeAiBrief } from "../brief/ai.js";
+import { askVenn } from "../chat/ai.js";
 import { buildCompare } from "../compare.js";
 import { config } from "../config.js";
 import { getProvider, isLiveQlooProvider } from "../providers/index.js";
@@ -383,5 +385,21 @@ export function registerRuns(app: FastifyInstance): void {
       };
     }
     return buildCompare(result, partner, tryLive);
+  });
+
+  app.post("/api/runs/:id/chat", async (request: FastifyRequest<{ Params: { id: string } }>, reply) => {
+    const parsed = ChatRequestSchema.safeParse(request.body);
+    if (!parsed.success) return reply.code(400).send({ error: "Ask Venn something first." });
+    const run = requireRun(request.params.id);
+    const result = requireResult(run);
+
+    const outcome = await askVenn(result, run.chat, parsed.data.message);
+    if (!outcome.ok) {
+      if (outcome.reason === "disabled") return { status: "disabled" } satisfies ChatResponse;
+      if (outcome.reason === "budget") return { status: "budget" } satisfies ChatResponse;
+      return reply.code(502).send({ error: "Venn could not answer that. Try again." });
+    }
+    run.chat.push({ role: "user", content: parsed.data.message }, outcome.turn);
+    return { status: "ok", reply: outcome.turn, remaining: outcome.remaining } satisfies ChatResponse;
   });
 }

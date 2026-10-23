@@ -628,7 +628,7 @@ export function rankTogetherMock(spec: DiscoverSpec, extraEntityIds: string[]): 
     }
     const tagMap = recordToMap(entry.tags);
     const affinity = audience.size > 0 ? cosine(audience, tagMap) : entry.popularity;
-    return { entityId: id, affinity, popularity: entry.popularity };
+    return { entityId: id, affinity, popularity: entry.popularity, name: entry.name };
   });
 }
 

@@ -146,7 +146,10 @@ async function buildKindGroup(
     const affinity = Math.max(0, Math.min(1, entry.affinity));
     return {
       entityId: id,
-      name: nameById.get(id) ?? id,
+      // Prefer a name Venn already knows for this id, then the provider's own name for it
+      // (covers a baseline pick that isn't one of Venn's own partners) — the raw id is a last
+      // resort, not something to show as a label.
+      name: nameById.get(id) ?? entry.name ?? id,
       score: Math.round(affinity * 100),
       rawAffinity: entry.affinity,
       popularity: entry.popularity,

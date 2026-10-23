@@ -390,6 +390,29 @@ export const BriefSchema = z.object({
   sources: z.array(BriefSourceSchema).optional(),
 });
 
+export const ChatTurnSchema = z.object({
+  role: z.enum(["user", "assistant"]),
+  content: z.string(),
+  partnerIds: z.array(z.string()).optional(),
+});
+
+export const ChatRequestSchema = z.object({
+  message: z.string().min(1).max(600),
+});
+
+export const ChatResponseSchema = z.discriminatedUnion("status", [
+  z.object({
+    status: z.literal("ok"),
+    reply: ChatTurnSchema,
+    /** How many more chat turns this run can still spend; lets the UI warn before the cap. */
+    remaining: z.number().int().nonnegative(),
+  }),
+  // No LLM is configured — the client shows a calm "needs an AI key" note, not an error toast.
+  z.object({ status: z.literal("disabled") }),
+  // This run has spent its LLM_CHAT_BUDGET_PER_RUN replies.
+  z.object({ status: z.literal("budget") }),
+]);
+
 export const AgentEventSchema: z.ZodType<AgentEvent> = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("run_started"),

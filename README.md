@@ -1,15 +1,28 @@
 # Venn
 
-Venn finds the businesses whose audiences overlap with yours, draws that overlap as a graph, and writes a collab brief.
+Venn finds the businesses whose audiences overlap with yours, draws that overlap on a map and a chart, and writes the collab pitch. Built for the Qloo Agentic Hackathon 2026.
+
+## Run it
+
+```bash
+cp .env.example .env
+npm install
+npm run dev
+```
+
+(Windows: `copy .env.example .env` instead of `cp`.)
+
+Open http://localhost:5173 — the API listens on http://localhost:8787, and Vite proxies `/api` including the live event stream. No API keys needed: `TASTE_PROVIDER` defaults to `mock`, and the three built-in examples replay saved real Qloo results either way (`EXAMPLES_MODE=snapshot`). Set `TASTE_PROVIDER=qloo` and `QLOO_API_KEY` for live data; see "Environment" below.
 
 ## What it does
 
-- You describe a business in one sentence: type, city, and a few taste anchors.
-- An agent resolves those anchors, plans partner kinds, discovers candidates, scores the overlap, and assembles a shortlist.
-- Results show a Venn graph, a neighbourhood map for the demo cities, a sortable shortlist, and a one-page brief you can copy or print.
-- Swipe your crowd: Setup can build the anchors from a deck of Qloo-checked taste cards (`POST /api/anchors/cards`, `/cards/refill`); see `docs/ANCHORS.md`.
-- Taste magnets: press or drag a shared taste on the Overview to light it up in every chart and pull the partners who share it.
-- Every taste number in this build comes from the mock provider and is labelled **Demo data**.
+- You describe a business in one sentence: type, city, and a few things customers love — or build that list by swiping a deck of Qloo-checked taste cards instead of typing.
+- An agent resolves those anchors against Qloo's taste graph, plans which kinds of partner to look for, discovers candidates, scores the overlap, and assembles a shortlist. Every step streams live, and the actual Qloo calls are shown as they happen (`docs/ANCHORS.md`).
+- Results open on an Overview dashboard — a taste-overlap chart, a neighbourhood map, audience-compare bars — plus a sortable Shortlist. Press or drag a shared taste to light it up across every chart at once.
+- A Proof tab ranks Venn's picks against an obvious baseline, in the same Qloo call, so the comparison is fair — plus a "check a partner" box for one of your own.
+- Each partner has a one-page collaboration brief: a concept, a two-week plan, and an editable outreach email. Briefs are written by an LLM from the run's own evidence when one is configured, and fall back to a deterministic template otherwise — nothing in a brief is invented either way.
+- "Ask Venn" is a chat panel for free-form questions about the finished search, grounded the same way the brief is — it says "I don't know" rather than guess when something isn't in the data.
+- Results can be shared as a read-only link. `TASTE_PROVIDER` switches between live Qloo, saved Qloo snapshots (for the built-in examples), and an offline demo catalog, so the app runs with no keys at all.
 
 ## Architecture
 
@@ -18,23 +31,13 @@ Setup  ->  POST /api/runs  ->  SSE /events  ->  runner
                                               |
                                               v
                                         TasteProvider
-                                         (mock today)
+                                   (mock | qloo | snapshot)
                                               |
                                               v
-                         Results: graph, map, shortlist, brief
+                   Results: overview, map, shortlist, proof, brief
 ```
 
 The browser only talks to `/api`. Shared types in `shared/` are the contract for both the Fastify server and the Vite client.
-
-## Setup (Windows)
-
-```powershell
-copy .env.example .env
-npm install
-npm run dev
-```
-
-Open http://localhost:5173. The API listens on http://localhost:8787. Vite proxies `/api`, including the live event stream.
 
 ## Scripts
 
@@ -44,30 +47,34 @@ Open http://localhost:5173. The API listens on http://localhost:8787. Vite proxi
 | `npm run typecheck` | App and server, no emit |
 | `npm test` | Vitest |
 | `npm run build` | Client bundle and server bundle |
-| `npm start` | Production server on port 8787 |
-| `npm run smoke` | Hits a running server with the London cafe example |
-| `npm run og` | Regenerates `public/og.png` |
+| `npm start` | Production server |
+| `npm run smoke` | Hits a running server end to end: swipe cards, a run, heatmap, brief |
+| `npm run e2e:swipe` | Swipe-to-build-your-crowd flow at 1440px and 390px against a running mock app |
 | `npm run cards:seed` | Resolves swipe-card seeds to exact Qloo ids (`server/anchors/seed-ids.json`) |
-| `npm run e2e:swipe` | Swipe flow smoke at 1440px and 390px against a running mock app |
+| `npm run snapshot` | Captures saved Qloo results for the built-in examples |
+| `npm run og` | Regenerates `public/og.png` |
 
 ## Environment
 
-See `.env.example`.
+See `.env.example` for the full list and defaults.
 
 - `PORT`, `HOST` — API bind address. Production reads `PORT` from the host.
-- `TASTE_PROVIDER` — `mock` in this build. `qloo` fails until that provider is implemented.
+- `TASTE_PROVIDER` — `mock` (default, no keys needed), `qloo` (live, needs `QLOO_API_KEY`), or `snapshot` (replays saved Qloo results).
 - `MOCK_LATENCY` — `normal`, `fast`, or `off`.
-- `TRUST_PROXY`, `RATE_LIMIT_MAX`, `RATE_LIMIT_RUNS_PER_MIN` — request limits.
-- `QLOO_API_KEY`, `LLM_PROVIDER`, `LLM_API_KEY` — reserved. Unused.
+- `TRUST_PROXY`, `RATE_LIMIT_MAX`, `RATE_LIMIT_RUNS_PER_MIN`, `DAILY_RUN_CAP_PER_IP` — request limits.
+- `QLOO_API_KEY`, `QLOO_BASE_URL` — required for `TASTE_PROVIDER=qloo`. Hackathon keys only work against `https://hackathon.api.qloo.com`.
+- `LLM_PROVIDER` — `openai`, `anthropic`, or `none` (default). Needs a matching `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`. Briefs fall back to the template writer when this is unset.
 
 ## Deployment
 
-The production server serves `dist/client` and the API from one process. Set `PORT`. Do not buffer `text/event-stream`; the Vite proxy already sets `timeout` and `proxyTimeout` to 0, and a reverse proxy needs the same. A host that sleeps will drop an in-flight search because runs live in memory for 60 minutes.
+The production server serves `dist/client` and the API from one process. Set `PORT`. Do not buffer `text/event-stream`; the Vite proxy already sets `timeout` and `proxyTimeout` to 0, and a reverse proxy needs the same. Finished runs are kept in SQLite (`DATA_DIR`, default `RUN_TTL_HOURS=24`) so a restart doesn't lose them, but a host that sleeps mid-search will still drop that one in-flight request.
 
-```powershell
+```bash
 docker build -t venn .
 docker run --rm -p 8787:8787 -e TASTE_PROVIDER=mock venn
 ```
+
+Platform notes (Railway, Fly.io, required volumes) are in [docs/DEPLOY.md](docs/DEPLOY.md).
 
 ## Decisions
 
@@ -97,8 +104,12 @@ docker run --rm -p 8787:8787 -e TASTE_PROVIDER=mock venn
 
 ## Responsible use
 
-Match scores compare groups of taste for this search. They are relative to the other partners in the same run. They are not a claim about any person, and this demo does not use customer data. Briefs are templates. Check them before you send one.
+Match scores compare groups of taste for this search. They are relative to the other partners in the same run. They are not a claim about any person, and this demo does not use customer data. Briefs are written from the run's own evidence — or a deterministic template when no LLM is configured — never invented either way, but they're a starting point to edit, not something to send unread.
 
 ## Taste data
 
 Set `TASTE_PROVIDER=qloo` and `QLOO_API_KEY` to use live Insights. Details are in [docs/QLOO_INTEGRATION.md](docs/QLOO_INTEGRATION.md).
+
+## License
+
+MIT — see [LICENSE](LICENSE).

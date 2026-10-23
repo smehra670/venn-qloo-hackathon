@@ -10,6 +10,8 @@ Tick before Devpost / judging. Do not invent measured numbers — quote from `do
 - [ ] `/api/health` is green: `store` usable, `qloo` not permanently degraded, `qlooQuotaRemaining` (if present) above `QLOO_MONTHLY_FLOOR`
 - [ ] Restart keeps finished runs (`GET /api/runs/:id`)
 - [ ] Share link works in a private window (`#share/<token>`)
+- [ ] Proof tab opens from the results header and shows real per-kind scores (not stuck on "Loading")
+- [ ] Ask Venn answers a question grounded in the run, and the budget/no-key notes show correctly when forced
 
 ## Repo eligibility
 
@@ -24,7 +26,7 @@ Tick before Devpost / judging. Do not invent measured numbers — quote from `do
 
 - [ ] Limitations text in About and README
 - [ ] Proof / Check only when ranking is available; otherwise calm disabled note
-- [ ] Briefs labelled Template vs AI · model
+- [ ] Nothing in the product says "AI" or names a model — briefs and chat are attributed to Venn only
 - [ ] No customer data claimed; scores described as relative / group-level
 
 ## Secrets (operator)

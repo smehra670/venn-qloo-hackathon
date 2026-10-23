@@ -70,6 +70,9 @@ const EnvSchema = z.object({
   LLM_MODEL: z.preprocess(blankToUndefined, z.string().min(1).default("gpt-6-luna")),
   LLM_MODEL_FAST: z.preprocess(blankToUndefined, z.string().min(1).default("gpt-6-luna")),
   LLM_BRIEF_BUDGET_PER_RUN: z.preprocess(blankToUndefined, z.coerce.number().int().positive().default(6)),
+  /** Max "ask Venn" chat replies a single run can spend, so an open-ended conversation can't
+   * blow the Qloo/LLM budget the way a fixed number of brief regenerations can't either. */
+  LLM_CHAT_BUDGET_PER_RUN: z.preprocess(blankToUndefined, z.coerce.number().int().positive().default(20)),
   /** Max `rankTogether` calls (one per kind, plus any baseline-name resolutions) a single
    * Proof build may make, so a search with many kinds can't blow the Qloo call budget. */
   PROOF_MAX_CALLS: z.preprocess(blankToUndefined, z.coerce.number().int().positive().default(6)),
@@ -144,6 +147,7 @@ export const config = {
   llmModel: parsed.data.LLM_MODEL,
   llmModelFast: parsed.data.LLM_MODEL_FAST,
   llmBriefBudgetPerRun: parsed.data.LLM_BRIEF_BUDGET_PER_RUN,
+  llmChatBudgetPerRun: parsed.data.LLM_CHAT_BUDGET_PER_RUN,
   proofMaxCalls: parsed.data.PROOF_MAX_CALLS,
 };
 

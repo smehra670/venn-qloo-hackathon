@@ -42,6 +42,9 @@ function defaultResponse(request: LlmCompletionRequest): unknown {
   if (request.schema.name === "anchor_suggestions") {
     return fakeAnchorSuggestions(request.user);
   }
+  if (request.schema.name === "venn_chat_reply") {
+    return fakeChatReply(request.user);
+  }
   const factPack = extractFactPack(request.user);
   const partnerName = factPack?.partner.name ?? "the partner";
   const businessName = factPack?.business.name ?? "the business";
@@ -62,6 +65,18 @@ function defaultResponse(request: LlmCompletionRequest): unknown {
       body: `Hello,\n\nWe would like to try one small collaboration together. Let us know if a short call works this week.\n\n${businessName}`,
     },
   };
+}
+
+interface FakeChatFactPack {
+  business?: { name?: string };
+  partners?: { id?: string; name?: string }[];
+}
+
+function fakeChatReply(user: string): unknown {
+  const factPack = extractFactPack(user) as unknown as FakeChatFactPack | null;
+  const top = factPack?.partners?.[0];
+  if (!top?.id) return { reply: "This search doesn't have a partner to point to yet.", partnerIds: [] };
+  return { reply: `${top.name} looks like a solid place to start.`, partnerIds: [top.id] };
 }
 
 function fakeAnchorSuggestions(user: string): unknown {
