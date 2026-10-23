@@ -19,8 +19,8 @@ describe("LLM provider boot checks (config.ts)", () => {
     vi.resetModules();
     process.env.NODE_ENV = "development";
     process.env.LLM_PROVIDER = "openai";
-    delete process.env.OPENAI_API_KEY;
-    delete process.env.LLM_API_KEY;
+    process.env.OPENAI_API_KEY = "";
+    process.env.LLM_API_KEY = "";
     await expect(import("./config.js")).rejects.toThrow(/LLM_PROVIDER=openai requires OPENAI_API_KEY/);
   });
 
@@ -28,8 +28,8 @@ describe("LLM provider boot checks (config.ts)", () => {
     vi.resetModules();
     process.env.NODE_ENV = "development";
     process.env.LLM_PROVIDER = "anthropic";
-    delete process.env.ANTHROPIC_API_KEY;
-    delete process.env.LLM_API_KEY;
+    process.env.ANTHROPIC_API_KEY = "";
+    process.env.LLM_API_KEY = "";
     await expect(import("./config.js")).rejects.toThrow(/LLM_PROVIDER=anthropic requires ANTHROPIC_API_KEY/);
   });
 
@@ -37,8 +37,8 @@ describe("LLM provider boot checks (config.ts)", () => {
     vi.resetModules();
     process.env.NODE_ENV = "test";
     process.env.LLM_PROVIDER = "openai";
-    delete process.env.OPENAI_API_KEY;
-    delete process.env.LLM_API_KEY;
+    process.env.OPENAI_API_KEY = "";
+    process.env.LLM_API_KEY = "";
     const { config } = await import("./config.js");
     expect(config.llmProvider).toBe("openai");
     expect(config.llmApiKey).toBeUndefined();
@@ -49,7 +49,7 @@ describe("LLM provider boot checks (config.ts)", () => {
     process.env.NODE_ENV = "development";
     process.env.LLM_PROVIDER = "openai";
     process.env.OPENAI_API_KEY = "sk-test-key";
-    delete process.env.LLM_API_KEY;
+    process.env.LLM_API_KEY = "";
     const { config } = await import("./config.js");
     expect(config.llmApiKey).toBe("sk-test-key");
   });
@@ -60,7 +60,7 @@ describe("LLM provider boot checks (config.ts)", () => {
     process.env.LLM_PROVIDER = "anthropic";
     process.env.ANTHROPIC_API_KEY = "anthropic-test-key";
     process.env.OPENAI_API_KEY = "sk-should-be-ignored";
-    delete process.env.LLM_API_KEY;
+    process.env.LLM_API_KEY = "";
     const { config } = await import("./config.js");
     expect(config.llmApiKey).toBe("anthropic-test-key");
   });
@@ -69,9 +69,9 @@ describe("LLM provider boot checks (config.ts)", () => {
     vi.resetModules();
     process.env.NODE_ENV = "development";
     process.env.LLM_PROVIDER = "none";
-    delete process.env.OPENAI_API_KEY;
-    delete process.env.ANTHROPIC_API_KEY;
-    delete process.env.LLM_API_KEY;
+    process.env.OPENAI_API_KEY = "";
+    process.env.ANTHROPIC_API_KEY = "";
+    process.env.LLM_API_KEY = "";
     const { config } = await import("./config.js");
     expect(config.llmProvider).toBe("none");
   });

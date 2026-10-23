@@ -1,5 +1,5 @@
 import { BusinessInputSchema } from "@shared/schemas";
-import type { AppetiteOption, BusinessInput, GoalId, Goals, ReachOption } from "@shared/types";
+import type { AppetiteOption, BusinessInput, GoalId, Goals, ReachOption, TasteAnchor } from "@shared/types";
 
 const INPUT_KEY = "venn:input";
 const RUN_KEY = "venn:runId";
@@ -36,7 +36,14 @@ export function readInput(): BusinessInput | null {
       (json as Record<string, unknown>).goals = migrateGoals((json as Record<string, unknown>).goals);
     }
     const parsed = BusinessInputSchema.safeParse(json);
-    return parsed.success ? parsed.data : null;
+    if (!parsed.success) return null;
+    // The run schema strips `via`; keep it so swiped chips restore looking the same.
+    const rawAnchors = (json as { tasteAnchors?: Array<{ id?: unknown; via?: unknown }> }).tasteAnchors ?? [];
+    const tasteAnchors = parsed.data.tasteAnchors?.map((anchor): TasteAnchor => {
+      const via = rawAnchors.find((raw) => raw?.id === anchor.id)?.via;
+      return via === "swipe" || via === "typed" || via === "ai" ? { ...anchor, via } : anchor;
+    });
+    return tasteAnchors ? { ...parsed.data, tasteAnchors } : parsed.data;
   } catch {
     return null;
   }

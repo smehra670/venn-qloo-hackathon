@@ -6,6 +6,8 @@ import "@/lib/maplibre";
 import { App } from "./App";
 import "./index.css";
 import "./overview.css";
+import "./results-pages.css";
+import "./setup-swipe.css";
 
 const root = document.getElementById("root");
 if (!root) throw new Error("Missing root element");

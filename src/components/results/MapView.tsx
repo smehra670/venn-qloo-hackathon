@@ -91,7 +91,7 @@ export function MapView() {
   const options = [...result.partners].sort((a, b) => b.matchScore - a.matchScore).slice(0, 8);
 
   return (
-    <div className="grid h-full grid-rows-[auto_minmax(0,1fr)] gap-3 p-4 pb-24 md:grid-cols-[minmax(0,1fr)_280px] md:grid-rows-1 md:pb-4">
+    <div className="page-shell grid h-full grid-rows-[auto_minmax(0,1fr)] gap-3 py-4 pb-24 md:grid-cols-[minmax(0,1fr)_280px] md:grid-rows-1 md:pb-4">
       <div className="flex min-h-0 flex-col gap-3">
         <div className="flex flex-wrap items-center gap-3">
           <label className="text-sm text-ink-soft">

@@ -1,4 +1,5 @@
 import type { Partner, PartnerKind } from "@shared/types";
+import { useTasteFocus } from "@/components/results/overview/tasteFocus";
 import {
   kindCounts,
   kindLabel,
@@ -23,6 +24,7 @@ export function OverviewFilters({
   onSurprise: (v: number) => void;
   onRealistic: (v: boolean) => void;
 }) {
+  const focus = useTasteFocus();
   const counts = kindCounts(partners);
   const w = Math.round(surprise * 100);
 
@@ -74,6 +76,16 @@ export function OverviewFilters({
         <i aria-hidden="true" />
         Realistic for me
       </label>
+      {focus.taste ? (
+        <span className="ov-taste-chip">
+          <span>Taste: {focus.taste.name}</span>
+          <button type="button" aria-label="Clear the taste focus" onClick={focus.clear}>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </button>
+        </span>
+      ) : null}
     </section>
   );
 }

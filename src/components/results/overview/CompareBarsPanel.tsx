@@ -28,6 +28,11 @@ function rowsFromCompare(payload: ComparePayload): Row[] {
     .slice(0, 8);
 }
 
+/** True when the compare panel will actually render bars (so the page can pick a fallback otherwise). */
+export function compareHasRows(payload: ComparePayload | null | undefined): boolean {
+  return Boolean(payload && rowsFromCompare(payload).length > 0);
+}
+
 export function CompareBarsPanel({
   partner,
   payload,
@@ -50,16 +55,15 @@ export function CompareBarsPanel({
   const maxSide = Math.max(...rows.map((r) => r.you + r.both / 2), ...rows.map((r) => r.them + r.both / 2), 0.2);
   const kx = (W / 2 - 8) / maxSide;
 
-  const youTop = rows.filter((r) => r.you + r.both >= 0.5).length;
-  const bothCount = rows.filter((r) => r.both >= 0.5).length;
-  const newCount = rows.filter((r) => r.you < 0.15 && r.them + r.both >= 0.55).length;
+  // Rows are your crowd's top tastes, so the question is how many the partner's crowd also
+  // rates highly (same 0.8 floor the run uses for shared tastes).
+  const bothCount = rows.filter((r) => r.them + r.both >= 0.8).length;
 
   const title = loading
     ? `Comparing your crowd with ${partner.name}…`
-    : `${partner.name}'s crowd shares ${bothCount} of your ${youTop || rows.length} top tastes${
-        newCount ? ` and adds ${newCount} new one${newCount === 1 ? "" : "s"}` : " and adds none that are new"
-      }`;
-  const subtitle = "Each bar splits the tastes of the two crowds: only yours, both, or only theirs. From Qloo compare.";
+    : `${partner.name}'s crowd also rates ${bothCount} of your crowd's top ${rows.length} tastes highly`;
+  const subtitle =
+    "Your crowd's top tastes, scored for both crowds by Qloo (out of 100). Each bar splits a taste into only yours, both, or only theirs.";
 
   const H = topPad + rows.length * rowH + 8;
 

@@ -118,6 +118,12 @@ export function AboutDialog({ open, onClose, version }: AboutDialogProps) {
         <p className="mt-6 text-sm leading-relaxed text-ink-soft">
           Match scores are relative to each search and describe group-level patterns — not individual customers.
         </p>
+        <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+          Swipe cards come from Qloo, a taste database. Only the tastes you keep are used.
+        </p>
+        <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+          Taste magnets pull the partners that share a taste toward it. Positions while you hold one show that taste, not overlap.
+        </p>
 
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
           <Badge tone="sky">Qloo Agentic Hackathon 2026 Entry</Badge>

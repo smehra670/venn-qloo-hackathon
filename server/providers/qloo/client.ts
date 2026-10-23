@@ -201,10 +201,21 @@ async function withCallLog<T>(path: string, params: Record<string, QueryValue>, 
     return result;
   } catch (error) {
     if (!isAbortError(error)) {
-      recordQlooCall({ path, params, status: "error", ms: Date.now() - began });
+      recordQlooCall({ path, params, status: "error", ms: Date.now() - began, ...describeFailure(error) });
     }
     throw error;
   }
+}
+
+/** Why a call failed, for the call log: Qloo's HTTP status, or our own parse failure. */
+function describeFailure(error: unknown): { httpStatus?: number; error: string } {
+  if (error instanceof QlooHttpError) {
+    const reason =
+      error.status === 0 ? "network error" : error.status === 429 ? "rate limited" : error.status >= 500 ? "Qloo server error" : "rejected by Qloo";
+    return { httpStatus: error.status, error: reason };
+  }
+  if (error instanceof Error && error.name === "ZodError") return { error: "unexpected response shape" };
+  return { error: error instanceof Error ? error.message.slice(0, 80) : "unknown error" };
 }
 
 export async function qlooGet<T>(
@@ -307,6 +318,34 @@ export async function insights(
   };
 }
 
+/** One tag from tag insights (`filter.type=urn:tag`), with the signal crowd's affinity to it. */
+export interface TagAffinity {
+  id: string;
+  name: string;
+  affinity: number;
+}
+
+/**
+ * `GET /v2/insights` with `filter.type=urn:tag`: which taste tags the crowd behind `signal`
+ * entities rates highest. Pass `filter.tag.types` to keep one vocabulary (e.g. lifestyle) and
+ * `filter.results.tags` to score a fixed list of tags for a second crowd, which is how two
+ * audiences are compared on the same tags.
+ */
+export async function tagInsights(params: Record<string, QueryValue>, signal?: AbortSignal): Promise<TagAffinity[]> {
+  const parsed = await qlooGet("/v2/insights", { ...params, "filter.type": "urn:tag" }, signal, (json) =>
+    InsightsResponseSchema.parse(json),
+  );
+  const tags = (parsed.results?.tags ?? []) as Array<Record<string, unknown>>;
+  return tags
+    .map((tag) => {
+      const id = String(tag.tag_id ?? tag.id ?? "");
+      const query = (tag.query ?? {}) as { affinity?: unknown };
+      const affinity = typeof query.affinity === "number" && Number.isFinite(query.affinity) ? query.affinity : 0;
+      return { id, name: String(tag.name ?? id).trim(), affinity: Math.max(0, Math.min(1, affinity)) };
+    })
+    .filter((tag) => tag.id.length > 0);
+}
+
 export async function searchTags(
   query: string,
   signal?: AbortSignal,
@@ -374,7 +413,9 @@ export function affinityOf(entity: QlooEntity): number {
 
 export function typesOf(entity: QlooEntity): string[] {
   if (Array.isArray(entity.types)) return entity.types;
-  if (Array.isArray(entity.type)) return entity.type;
-  if (typeof entity.type === "string") return [entity.type];
-  return [];
+  // Insights entities carry the generic `type: "urn:entity"` plus the specific `subtype`
+  // (e.g. "urn:entity:place"); without the subtype every place was mislabelled as a brand.
+  const out = Array.isArray(entity.type) ? [...entity.type] : typeof entity.type === "string" ? [entity.type] : [];
+  if (typeof entity.subtype === "string") out.unshift(entity.subtype);
+  return out;
 }

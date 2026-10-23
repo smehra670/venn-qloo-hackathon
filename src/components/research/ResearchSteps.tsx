@@ -143,7 +143,7 @@ export function ResearchSteps({
   return (
     <ol
       className={cn(
-        "list-none rounded-3xl border border-[#E3E6EB] bg-white p-2.5",
+        "list-none rounded-3xl border border-[#E3E6EB] bg-white p-2 lg:p-1.5",
         className,
       )}
       aria-label="Research steps"
@@ -152,7 +152,7 @@ export function ResearchSteps({
         <li
           key={row.id}
           className={cn(
-            "relative grid grid-cols-[34px_1fr] gap-x-3.5 rounded-2xl px-3.5 py-2.5 transition-colors duration-300",
+            "relative grid grid-cols-[2.125rem_1fr] gap-x-3.5 rounded-2xl px-3.5 py-2.5 transition-colors duration-300 lg:py-[0.3rem]",
             row.active && "bg-[#F4F5F7]",
           )}
           style={
@@ -166,7 +166,7 @@ export function ResearchSteps({
           {i < rows.length - 1 ? (
             <span
               aria-hidden
-              className="pointer-events-none absolute left-[30px] top-[46px] bottom-[-12px] z-[1] w-0.5 rounded-sm"
+              className="pointer-events-none absolute left-[1.875rem] top-[2.6rem] bottom-[-0.5rem] z-[1] w-0.5 rounded-sm lg:top-[2.35rem] lg:bottom-[-0.45rem]"
               style={{
                 background: `linear-gradient(#14151A calc(var(--fill, 0) * 100%), #E3E6EB 0)`,
               }}
@@ -174,7 +174,7 @@ export function ResearchSteps({
           ) : null}
           <span
             className={cn(
-              "relative z-[2] grid size-[34px] place-items-center rounded-full border-[1.5px] bg-white text-[0.85rem] font-bold transition-[background-color,color,border-color] duration-300",
+              "relative z-[2] grid size-[2.125rem] place-items-center rounded-full border-[1.5px] bg-white text-[0.85rem] font-bold transition-[background-color,color,border-color] duration-300",
               row.done
                 ? "border-[#14151A] bg-[#14151A] text-white"
                 : row.active
@@ -183,7 +183,7 @@ export function ResearchSteps({
             )}
           >
             {row.done ? (
-              <svg width="34" height="34" viewBox="0 0 34 34" aria-hidden>
+              <svg className="size-[2.125rem]" viewBox="0 0 34 34" aria-hidden>
                 <path
                   d="M10.5 17.5l4.3 4.3 8.7-9.2"
                   fill="none"
@@ -218,17 +218,17 @@ export function ResearchSteps({
               <span>{i + 1}</span>
             )}
           </span>
-          <span className="min-w-0 pt-1.5">
+          <span className="min-w-0 pt-1 lg:pt-0.5">
             <b
               className={cn(
-                "block text-[1.02rem] font-semibold tracking-[-0.01em] transition-colors duration-300",
+                "block text-[1.02rem] font-semibold leading-snug tracking-[-0.01em] transition-colors duration-300",
                 row.active || row.done ? "text-[#14151A]" : "text-[#8A91A0]",
               )}
             >
               {row.title}
             </b>
             {(row.active || row.done) && row.sub ? (
-              <span className="mt-0.5 block text-[0.92rem] text-[#596070]">{row.sub}</span>
+              <span className="block text-[0.92rem] leading-snug text-[#596070]">{row.sub}</span>
             ) : null}
           </span>
         </li>

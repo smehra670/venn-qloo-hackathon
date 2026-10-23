@@ -50,7 +50,7 @@ export function BriefSheet() {
 
   return (
     <div className="fixed inset-0 z-40 overflow-auto bg-ink/30 p-4 md:p-10" role="dialog" aria-modal="true" aria-labelledby="brief-title">
-      <div className="mx-auto mb-4 flex max-w-[760px] flex-wrap items-center gap-2 print:hidden">
+      <div className="page-shell mb-4 flex flex-wrap items-center gap-2 print:hidden">
         <Segmented value={tone} onChange={(value) => void setTone(value)} options={[...TONE_OPTIONS]} label="Tone" />
         <Segmented value={length} onChange={(value) => void setLength(value)} options={[...LENGTH_OPTIONS]} label="Length" />
         <Button type="button" variant="secondary" disabled={loading} onClick={() => void regenerate()}>Regenerate</Button>
@@ -65,12 +65,12 @@ export function BriefSheet() {
           key={`${brief.generatedBy}-${brief.variant}-${brief.tone ?? "warm"}-${brief.length ?? "standard"}`}
           initial={reduced ? false : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="mx-auto max-w-[760px] rounded-[12px] border border-line bg-paper px-8 py-10 md:px-14"
+          className="page-shell rounded-[12px] border border-line bg-paper py-10"
         >
           <BriefBody brief={brief} dataLabel={dataLabel} />
         </motion.article>
       ) : (
-        <Skeleton className="mx-auto h-[70dvh] max-w-[760px]" />
+        <Skeleton className="page-shell h-[70dvh]" />
       )}
     </div>
   );

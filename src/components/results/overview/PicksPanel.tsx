@@ -1,7 +1,8 @@
 import type { Partner } from "@shared/types";
 import { bindPartnerPointer, type TipLine } from "@/components/results/overview/OverviewTip";
+import { useTasteFocus } from "@/components/results/overview/tasteFocus";
 import { useReveal } from "@/components/results/overview/useReveal";
-import { kindLabel, REACH_LABEL, reachLevel } from "@/lib/overviewModel";
+import { PARTNER_BLUE, kindLabel, REACH_LABEL, reachLevel } from "@/lib/overviewModel";
 import { cn } from "@/lib/cn";
 
 function tipLines(p: Partner): TipLine[] {
@@ -27,8 +28,10 @@ export function PicksPanel({
   setHover: (id: string | null) => void;
   select: (id: string | null) => void;
 }) {
+  const focus = useTasteFocus();
+  // A pinned taste dims (never moves or hides) the rows that do not share it.
+  const off = (id: string) => Boolean(focus.taste) && !focus.members.has(id) && hoverId !== id;
   const top = ranked.slice(0, 3);
-  const pitch = 92;
   const sub =
     surprise < 0.34
       ? "Safest fits first: strong overlap and an easy way in."
@@ -38,6 +41,7 @@ export function PicksPanel({
 
   // Keep a stable list of up to 8 so rows can slide between ranks
   const pool = ranked.slice(0, 8);
+  const more = ranked.slice(3, 8);
   const revealRef = useReveal<HTMLElement>();
 
   return (
@@ -48,7 +52,7 @@ export function PicksPanel({
           <p className="ov-sub">{sub}</p>
         </div>
       </header>
-      <div className="ov-picks" style={{ height: 3 * pitch }}>
+      <div className="ov-picks">
         {pool.map((p) => {
           const i = top.findIndex((t) => t.id === p.id);
           const visible = i >= 0;
@@ -65,9 +69,10 @@ export function PicksPanel({
                 "ov-pick",
                 hoverId === p.id && "hl",
                 selectedId === p.id && "sel",
+                off(p.id) && "ov-tm-off",
               )}
               style={{
-                transform: `translateY(${visible ? i * pitch : 3 * pitch}px)`,
+                transform: `translateY(calc(${visible ? i : 3} * var(--ov-pitch)))`,
                 opacity: visible ? 1 : 0,
                 pointerEvents: visible ? "auto" : "none",
               }}
@@ -95,6 +100,34 @@ export function PicksPanel({
           );
         })}
       </div>
+      {more.length > 0 ? (
+        <div className="ov-more">
+          <h3>Also worth a look</h3>
+          <ul>
+            {more.map((p) => {
+              const bind = bindPartnerPointer(p.id, {
+                setHover,
+                select,
+                lines: () => tipLines(p),
+              });
+              return (
+                <li key={p.id}>
+                <div
+                  className={cn("ov-more-row", hoverId === p.id && "hl", selectedId === p.id && "sel", off(p.id) && "ov-tm-off")}
+                  aria-label={p.name}
+                  {...bind}
+                >
+                  <i style={{ background: PARTNER_BLUE }} aria-hidden="true" />
+                  <span className="nm">{p.name}</span>
+                  <span className="kd">{kindLabel(p.kind)}</span>
+                  <b>{Math.round(p.matchScore)}</b>
+                </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ) : null}
     </article>
   );
 }

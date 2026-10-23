@@ -49,7 +49,7 @@ export function SampleGraph() {
 
   return (
     <div
-      className="flex flex-col gap-3"
+      className="flex h-full min-h-0 flex-col gap-3"
       onPointerEnter={() => setPaused(true)}
       onPointerLeave={() => setPaused(false)}
     >
@@ -64,7 +64,7 @@ export function SampleGraph() {
         <p className="text-xs text-ink-soft">Saved Qloo · {preview.captureDate}</p>
       </div>
 
-      <div className="overflow-hidden rounded-[20px] border border-line bg-paper">
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-[1.25rem] border border-line bg-paper">
         <div className="flex items-center justify-between gap-2 border-b border-line px-3 py-2.5 sm:px-4">
           <div className="flex flex-wrap gap-1" role="tablist" aria-label="Graph slides">
             {SLIDES.map((item, index) => (
@@ -103,7 +103,7 @@ export function SampleGraph() {
           </div>
         </div>
 
-        <div className="relative aspect-[5/4] w-full bg-paper sm:aspect-[4/3]">
+        <div className="relative aspect-[5/4] min-h-0 w-full flex-1 bg-paper sm:aspect-[4/3] lg:aspect-auto">
           <AnimatePresence mode="wait">
             <motion.div
               key={active.id}
@@ -141,7 +141,7 @@ export function SampleGraph() {
           </AnimatePresence>
         </div>
 
-        <p className="border-t border-line px-4 py-2.5 text-xs text-ink-soft">{active.blurb}</p>
+        <p className="shrink-0 border-t border-line px-4 py-2.5 text-xs text-ink-soft">{active.blurb}</p>
       </div>
     </div>
   );
@@ -163,12 +163,12 @@ function SignalSlide({
   const ranked = useMemo(() => [...partners].sort((a, b) => b.matchScore - a.matchScore).slice(0, 6), [partners]);
   const selected = ranked.find((item) => item.id === selectedId) ?? ranked[0];
 
-  const hub = { x: 56, y: 184 };
+  const hub = { x: 62, y: 196 };
   const nodes = useMemo(
     () =>
       ranked.map((partner, index) => {
-        const y = 68 + index * 42;
-        const x = 250 + (index % 2) * 18;
+        const y = 84 + index * 46;
+        const x = 262 + (index % 2) * 18;
         return {
           ...partner,
           x,
@@ -180,7 +180,7 @@ function SignalSlide({
   );
 
   return (
-    <svg viewBox="0 0 400 336" className="h-full w-full" role="img" aria-label="Match signal map">
+    <svg viewBox="0 0 440 380" className="h-full w-full" role="img" aria-label="Match signal map">
       <defs>
         <pattern id="signal-grid" width="16" height="16" patternUnits="userSpaceOnUse">
           <circle cx="1" cy="1" r="1" fill="#e8eaef" />
@@ -193,14 +193,14 @@ function SignalSlide({
         ))}
       </defs>
 
-      <rect width="400" height="336" fill="#ffffff" />
-      <rect width="400" height="336" fill="url(#signal-grid)" />
+      <rect width="440" height="380" fill="#ffffff" />
+      <rect width="440" height="380" fill="url(#signal-grid)" />
 
       <text x="20" y="44" fill="#5b6170" fontSize="10" fontWeight="700" letterSpacing="0.08em">
         SIGNAL MAP
       </text>
       {selected ? (
-        <text x="380" y="44" textAnchor="end" fill="#14151a" fontSize="12" fontWeight="800">
+        <text x="420" y="44" textAnchor="end" fill="#14151a" fontSize="12" fontWeight="800">
           {selected.matchScore}
           <tspan fill="#5b6170" fontSize="10" fontWeight="600">
             {" "}
@@ -334,7 +334,7 @@ function ScoresSlide({
     <div className="flex h-full flex-col gap-3 overflow-hidden bg-paper p-4">
       <div className="flex items-end justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-ink-soft">Selected match</p>
+          <p className="text-[0.7rem] font-bold uppercase tracking-[0.08em] text-ink-soft">Selected match</p>
           <motion.p
             key={selected?.id}
             className="tabular text-5xl font-extrabold leading-none text-ink"
@@ -362,28 +362,28 @@ function ScoresSlide({
         </div>
       </div>
 
-      <ul className="min-h-0 flex-1 space-y-1.5 overflow-auto pr-0.5">
+      <ul className="flex min-h-0 flex-1 flex-col justify-evenly gap-1 overflow-auto pr-0.5">
         {ranked.map((partner, index) => {
           const active = partner.id === selectedId;
           const barColor = partnerColor(partners.findIndex((item) => item.id === partner.id));
           const pct = Math.round((partner.matchScore / maxScore) * 100);
           return (
-            <li key={partner.id}>
+            <li key={partner.id} className="flex min-h-0 flex-1 basis-0 items-center">
               <button
                 type="button"
                 onClick={() => onSelect(partner.id)}
                 className={cn(
-                  "flex w-full items-center gap-2 rounded-xl px-2 py-1.5 text-left transition",
+                  "flex w-full items-center gap-2 rounded-xl px-2 py-1 text-left transition",
                   active ? "bg-surface" : "hover:bg-surface/70",
                 )}
               >
                 <span className="tabular w-4 shrink-0 text-xs font-bold text-ink-soft">{index + 1}</span>
                 <span className="min-w-0 flex-1">
                   <span className="flex items-center justify-between gap-2">
-                    <span className="truncate text-xs font-bold text-ink">{partner.name}</span>
-                    <span className="tabular shrink-0 text-xs font-bold text-ink">{partner.matchScore}</span>
+                    <span className="truncate text-[0.8rem] font-bold text-ink">{partner.name}</span>
+                    <span className="tabular shrink-0 text-[0.8rem] font-bold text-ink">{partner.matchScore}</span>
                   </span>
-                  <span className="mt-1 block h-2 overflow-hidden rounded-full bg-[#eef0f4]">
+                  <span className="mt-1.5 block h-2.5 overflow-hidden rounded-full bg-[#eef0f4]">
                     <motion.span
                       className="block h-full rounded-full"
                       style={{ background: barColor }}
@@ -426,17 +426,17 @@ function HeatSlide({
   };
 
   return (
-    <div className="flex h-full flex-col gap-3 overflow-hidden bg-paper px-4 pb-4 pt-6">
+    <div className="flex h-full flex-col gap-3 overflow-hidden bg-paper px-4 pb-4 pt-5">
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-ink-soft">Taste heat</p>
+          <p className="text-[0.7rem] font-bold uppercase tracking-[0.08em] text-ink-soft">Taste heat</p>
           <p className="text-sm font-bold text-ink">Anchors vs partners</p>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {anchors.map((anchor, index) => (
             <span
               key={anchor}
-              className="rounded-full px-2.5 py-1 text-[10px] font-bold text-ink"
+              className="rounded-full px-2.5 py-1 text-[0.7rem] font-bold text-ink"
               style={{ background: HEAT_PALETTE[index % HEAT_PALETTE.length] }}
             >
               {anchor}
@@ -445,80 +445,80 @@ function HeatSlide({
         </div>
       </div>
 
-      <div className="min-h-0 flex-1 overflow-auto">
-        <table className="w-full border-separate border-spacing-x-1.5 border-spacing-y-1.5">
-          <thead>
-            <tr>
-              <th className="w-[30%] min-w-[7rem]" />
-              {anchors.map((anchor, col) => (
-                <th
-                  key={anchor}
-                  onPointerEnter={() => setFocusCol(col)}
-                  onPointerLeave={() => setFocusCol(null)}
-                  className="px-1 pb-1 text-center text-[10px] font-bold text-ink-soft"
-                >
-                  {anchor}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {ranked.map((partner, row) => {
-              const active = partner.id === selectedId;
-              const color = partnerColor(partners.findIndex((item) => item.id === partner.id));
-              return (
-                <tr
-                  key={partner.id}
-                  className={cn(active ? "bg-surface" : "hover:bg-surface/60")}
+      {/* Grid rows stretch with the card (capped), so the matrix fills the space instead of hugging the top */}
+      <div
+        role="table"
+        aria-label="Taste heat: anchors versus partners"
+        className="grid min-h-0 flex-1 gap-1.5"
+        style={{
+          gridTemplateColumns: `minmax(6.5rem, 1.2fr) repeat(${anchors.length}, minmax(0, 1fr))`,
+          gridTemplateRows: `auto repeat(${ranked.length}, minmax(2.25rem, 1fr))`,
+        }}
+      >
+        <div role="row" className="contents">
+          <div role="columnheader" aria-label="Partner" />
+          {anchors.map((anchor, col) => (
+            <div
+              key={anchor}
+              role="columnheader"
+              onPointerEnter={() => setFocusCol(col)}
+              onPointerLeave={() => setFocusCol(null)}
+              className="px-1 pb-1 text-center text-[0.7rem] font-bold text-ink-soft"
+            >
+              {anchor}
+            </div>
+          ))}
+        </div>
+        {ranked.map((partner, row) => {
+          const active = partner.id === selectedId;
+          const color = partnerColor(partners.findIndex((item) => item.id === partner.id));
+          return (
+            <div key={partner.id} role="row" className="contents">
+              <div role="rowheader" className="min-h-0">
+                <button
+                  type="button"
                   onClick={() => onSelect(partner.id)}
+                  className={cn(
+                    "flex h-full w-full items-center gap-2 rounded-lg px-2 text-left transition",
+                    active ? "bg-ink text-paper" : "hover:bg-surface",
+                  )}
                 >
-                  <th scope="row" className="rounded-lg p-0 text-left">
-                    <button
+                  <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: color }} />
+                  <span className="min-w-0 truncate text-[0.75rem] font-bold" title={partner.name}>
+                    {shortName(partner.name, 14)}
+                  </span>
+                </button>
+              </div>
+              {anchors.map((anchor, col) => {
+                const strength = cellStrength(row, col, partner.matchScore);
+                const lit = active || focusCol === col;
+                const alpha = lit ? 0.28 + strength * 0.65 : 0.12 + strength * 0.32;
+                const value = Math.round(strength * partner.matchScore);
+                return (
+                  <div key={`${partner.id}-${anchor}`} role="cell" className="min-h-0">
+                    <motion.button
                       type="button"
                       onClick={() => onSelect(partner.id)}
-                      className={cn(
-                        "flex h-10 w-full items-center gap-2 rounded-lg px-2 text-left transition",
-                        active ? "bg-ink text-paper" : "",
-                      )}
+                      onPointerEnter={() => setFocusCol(col)}
+                      onPointerLeave={() => setFocusCol(null)}
+                      className="grid h-full w-full place-items-center rounded-lg text-[0.75rem] font-extrabold tabular"
+                      style={{
+                        backgroundColor: `color-mix(in srgb, ${color} ${Math.round(alpha * 100)}%, white)`,
+                        color: alpha > 0.55 ? "#fff" : "#14151a",
+                      }}
+                      initial={reduced ? false : { scale: 0.92, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      transition={{ delay: (row * anchors.length + col) * 0.03, duration: 0.3 }}
+                      aria-label={`${partner.name} × ${anchor}: ${value}`}
                     >
-                      <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: color }} />
-                      <span className="min-w-0 truncate text-[11px] font-bold" title={partner.name}>
-                        {shortName(partner.name, 14)}
-                      </span>
-                    </button>
-                  </th>
-                  {anchors.map((anchor, col) => {
-                    const strength = cellStrength(row, col, partner.matchScore);
-                    const lit = active || focusCol === col;
-                    const alpha = lit ? 0.28 + strength * 0.65 : 0.12 + strength * 0.32;
-                    const value = Math.round(strength * partner.matchScore);
-                    return (
-                      <td key={`${partner.id}-${anchor}`} className="p-0">
-                        <motion.button
-                          type="button"
-                          onClick={() => onSelect(partner.id)}
-                          onPointerEnter={() => setFocusCol(col)}
-                          onPointerLeave={() => setFocusCol(null)}
-                          className="grid h-10 w-full place-items-center rounded-lg text-[10px] font-extrabold tabular"
-                          style={{
-                            backgroundColor: `color-mix(in srgb, ${color} ${Math.round(alpha * 100)}%, white)`,
-                            color: alpha > 0.55 ? "#fff" : "#14151a",
-                          }}
-                          initial={reduced ? false : { scale: 0.92, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          transition={{ delay: (row * anchors.length + col) * 0.03, duration: 0.3 }}
-                          aria-label={`${partner.name} × ${anchor}: ${value}`}
-                        >
-                          {value}
-                        </motion.button>
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                      {value}
+                    </motion.button>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

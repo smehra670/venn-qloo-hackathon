@@ -9,6 +9,7 @@ import { config } from "../config.js";
 import { CATALOG } from "../providers/mock/catalog.js";
 import { searchEntities, searchTags } from "../providers/qloo/client.js";
 import { searchTypesForAnchor } from "../providers/qloo/mapping.js";
+import { isGeneralInterestTag } from "../providers/qloo/taxonomy.js";
 import { TAG_FIXTURES } from "./tags.js";
 import { suggestAnchorsWithAi } from "./suggest.js";
 import {
@@ -124,11 +125,17 @@ async function liveEntityCandidates(input: string, signal?: AbortSignal): Promis
     const type =
       types
         .map(String)
-        .find((t) => t.includes("brand") || t.includes("artist") || t.includes("place") || t.includes("person"))
+        .find((t) => /urn:entity:(brand|artist|place|person|book|movie|tv_show|podcast)/.test(t))
         ?.replace("urn:entity:", "") ?? "brand";
-    out.push({ id, name, kind: "entity", type, score });
+    const popularity = typeof item.popularity === "number" ? Math.max(0, Math.min(1, item.popularity)) : undefined;
+    out.push({ id, name, kind: "entity", type, score, ...(popularity !== undefined ? { popularity } : {}) });
   }
-  return filterFloor(out).slice(0, 6);
+  // Ties on the name are common ("Lululemon" the brand and six stores called "lululemon"), so
+  // break them by what people usually mean: brands and artists first, then the more popular.
+  const typeRank = (type: string) => (type === "brand" || type === "artist" ? 0 : type === "person" ? 1 : type === "place" ? 2 : 3);
+  return filterFloor(out)
+    .sort((a, b) => b.score - a.score || typeRank(a.type) - typeRank(b.type) || (b.popularity ?? 0) - (a.popularity ?? 0))
+    .slice(0, 6);
 }
 
 async function liveTopicCandidates(input: string, signal?: AbortSignal): Promise<TasteAnchorCandidate[]> {
@@ -153,12 +160,24 @@ function toSelected(candidate: TasteAnchorCandidate, origin: TasteAnchor["origin
   };
 }
 
+/** A well-known brand or artist whose name is exactly what was typed ("Aesop", "Radiohead"). */
+function strongNamedEntity(candidates: TasteAnchorCandidate[]): TasteAnchorCandidate | undefined {
+  return candidates.find(
+    (c) => c.score >= 0.99 && (c.type === "brand" || c.type === "artist") && (c.popularity ?? 0) >= 0.85,
+  );
+}
+
+/** A general-interest topic that matches the text ("yoga", "natural wine", "jazz"). */
+function generalTopic(candidates: TasteAnchorCandidate[]): TasteAnchorCandidate | undefined {
+  return candidates.find((c) => c.score >= 0.85 && isGeneralInterestTag(c.id));
+}
+
 function buildResolution(
   input: string,
   entityCandidates: TasteAnchorCandidate[],
   topicCandidates: TasteAnchorCandidate[],
 ): AnchorResolution {
-  const status = classifyTasteAnchorStatus({
+  let status = classifyTasteAnchorStatus({
     normalisedInput: normaliseAnchorText(input),
     entityScores: entityCandidates.map((c) => c.score),
     topicScores: topicCandidates.map((c) => c.score),
@@ -169,6 +188,23 @@ function buildResolution(
     selected = toSelected(entityCandidates[0]);
   } else if (status === "topic" && topicCandidates[0]) {
     selected = toSelected(topicCandidates[0]);
+  }
+
+  // Name similarity alone ties "Aesop" the brand with an "aesop" keyword tag, and "natural
+  // wine" with an obscure shop of that name. Break those ties with what the text most likely
+  // means: a famous brand/artist when one matches exactly, otherwise the general interest —
+  // unless both exist and the text is capitalised like a name.
+  if (status !== "too_broad") {
+    const named = strongNamedEntity(entityCandidates);
+    const interest = generalTopic(topicCandidates);
+    const looksLikeName = input.trim() !== input.trim().toLowerCase();
+    if (named && (!interest || looksLikeName)) {
+      status = "entity";
+      selected = toSelected(named);
+    } else if (interest) {
+      status = "topic";
+      selected = toSelected(interest);
+    }
   }
 
   const candidates = [...entityCandidates, ...topicCandidates]
@@ -189,12 +225,12 @@ async function resolveOne(input: string, mode: "mock" | "qloo", signal?: AbortSi
   if (mode === "qloo" && config.qlooApiKey) {
     // At most 2 Qloo calls per anchor.
     const entityCandidates = await liveEntityCandidates(input, signal);
-    const topEntity = entityCandidates[0];
-    if (topEntity && topEntity.score >= ENTITY_AUTO_FLOOR) {
-      const second = entityCandidates[1];
-      if (!second || topEntity.score - second.score >= 0.12) {
-        return buildResolution(input, entityCandidates, []);
-      }
+    // Skip the topic search only for an unmistakable famous name typed like a name. A clear
+    // winner that's just an obscure place or a book ("Sourdough") still gets the topic check.
+    const named = strongNamedEntity(entityCandidates);
+    const second = entityCandidates.find((c) => c !== named);
+    if (named && input.trim() !== input.trim().toLowerCase() && (!second || named.score - second.score >= 0.12 || (named.popularity ?? 0) >= 0.95)) {
+      return buildResolution(input, entityCandidates, []);
     }
     const topicCandidates = await liveTopicCandidates(input, signal);
     return buildResolution(input, entityCandidates, topicCandidates);

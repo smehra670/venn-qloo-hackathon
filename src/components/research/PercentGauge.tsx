@@ -21,7 +21,7 @@ export function PercentGauge({
       )}
       aria-label={`${p}% mapped`}
     >
-      <svg width="62" height="34" viewBox="0 0 62 34" aria-hidden="true">
+      <svg className="h-[2.125rem] w-[3.875rem] shrink-0" viewBox="0 0 62 34" aria-hidden="true">
         <defs>
           <clipPath id="research-gauge-clip">
             <circle cx={cxA} cy="17" r="15" />

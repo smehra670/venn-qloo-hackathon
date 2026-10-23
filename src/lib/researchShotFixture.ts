@@ -35,8 +35,8 @@ function basePartner(
     sharedTags: ["jazz"],
     tags: ["jazz"],
     signals: {
-      affinityToPartner: rest.matchScore,
-      affinityFromPartner: rest.matchScore * 0.9,
+      affinityToPartner: rest.matchScore / 100,
+      affinityFromPartner: (rest.matchScore / 100) * 0.9,
       tagOverlap: 0.4,
       localPopularity: 0.5,
       trend: 0.3,
@@ -53,18 +53,18 @@ function basePartner(
 
 /** Sample London partners near the city centre (real-ish offsets, not invented brands-as-places). */
 export const SHOT_PARTNERS: Partner[] = [
-  basePartner({ id: "spin", name: "Spin Cycle Records", kind: "music", matchScore: 0.91, lat: 51.513, lon: -0.135, popularityLift: 0.22 }),
-  basePartner({ id: "quiet", name: "Quiet Hours Yoga", kind: "wellness", matchScore: 0.86, lat: 51.52, lon: -0.11, popularityLift: 0.18 }),
-  basePartner({ id: "folio", name: "Folio Books", kind: "culture", matchScore: 0.82, lat: 51.515, lon: -0.122, popularityLift: 0.12 }),
-  basePartner({ id: "owl", name: "Night Owl Records", kind: "music", matchScore: 0.79, lat: 51.505, lon: -0.12, popularityLift: 0.08 }),
-  basePartner({ id: "marlow", name: "Marlow & Pine", kind: "retail", matchScore: 0.74, lat: 51.508, lon: -0.14 }),
-  basePartner({ id: "hearth", name: "Hearth Bakery", kind: "food", matchScore: 0.71, lat: 51.498, lon: -0.128 }),
-  basePartner({ id: "field", name: "Field Notes Studio", kind: "culture", matchScore: 0.68, lat: 51.522, lon: -0.125 }),
-  basePartner({ id: "common", name: "Common Room Fitness", kind: "fitness", matchScore: 0.63, lat: 51.518, lon: -0.145 }),
-  basePartner({ id: "paper", name: "Paper Tiger Print", kind: "retail", matchScore: 0.55, lat: 51.511, lon: -0.138, closed: true }),
-  basePartner({ id: "ember", name: "Ember Ceramics", kind: "culture", matchScore: 0.5, lat: 51.525, lon: -0.118, closed: true }),
-  basePartner({ id: "brand-a", name: "Blue Note UK", kind: "music", matchScore: 0.72 }),
-  basePartner({ id: "brand-b", name: "Resident Advisor", kind: "music", matchScore: 0.64 }),
+  basePartner({ id: "spin", name: "Spin Cycle Records", kind: "music", matchScore: 91, lat: 51.513, lon: -0.135, popularityLift: 0.22 }),
+  basePartner({ id: "quiet", name: "Quiet Hours Yoga", kind: "wellness", matchScore: 86, lat: 51.52, lon: -0.11, popularityLift: 0.18 }),
+  basePartner({ id: "folio", name: "Folio Books", kind: "culture", matchScore: 82, lat: 51.515, lon: -0.122, popularityLift: 0.12 }),
+  basePartner({ id: "owl", name: "Night Owl Records", kind: "music", matchScore: 79, lat: 51.505, lon: -0.12, popularityLift: 0.08 }),
+  basePartner({ id: "marlow", name: "Marlow & Pine", kind: "retail", matchScore: 74, lat: 51.508, lon: -0.14 }),
+  basePartner({ id: "hearth", name: "Hearth Bakery", kind: "food", matchScore: 71, lat: 51.498, lon: -0.128 }),
+  basePartner({ id: "field", name: "Field Notes Studio", kind: "culture", matchScore: 68, lat: 51.522, lon: -0.125 }),
+  basePartner({ id: "common", name: "Common Room Fitness", kind: "fitness", matchScore: 63, lat: 51.518, lon: -0.145 }),
+  basePartner({ id: "paper", name: "Paper Tiger Print", kind: "retail", matchScore: 55, lat: 51.511, lon: -0.138, closed: true }),
+  basePartner({ id: "ember", name: "Ember Ceramics", kind: "culture", matchScore: 50, lat: 51.525, lon: -0.118, closed: true }),
+  basePartner({ id: "brand-a", name: "Blue Note UK", kind: "music", matchScore: 72 }),
+  basePartner({ id: "brand-b", name: "Resident Advisor", kind: "music", matchScore: 64 }),
 ];
 
 export type ResearchShotScenario = "default" | "zero" | "unknown-city";

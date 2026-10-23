@@ -23,8 +23,24 @@ export function computeNormalization(raw: number[]): Normalization {
  * Passing the same `raw` value and the same `normalization` always returns the same score.
  */
 export function stretchWithNormalization(raw: number, normalization: Normalization): number {
+  if (normalization.absolute) return Math.round(clamp(raw, 0, 1) * 100);
   const { minRaw, maxRaw } = normalization;
   if (maxRaw - minRaw < 1e-9) return SCORE_FLAT;
   const score = SCORE_MIN + ((raw - minRaw) / (maxRaw - minRaw)) * (SCORE_MAX - SCORE_MIN);
   return Math.round(clamp(score, SCORE_MIN, SCORE_MAX));
+}
+
+/** Normalization for live Qloo runs: scores are absolute affinity x 100, not a per-search band. */
+export const ABSOLUTE_NORMALIZATION: Normalization = { minRaw: 0, maxRaw: 1, absolute: true };
+
+/**
+ * Mutual affinity: the harmonic mean of "your crowd -> partner" and "partner's crowd -> your
+ * anchors" (both 0-1 Qloo affinities), so a partner only scores high when the liking runs both
+ * ways. Falls back to the forward affinity when the reverse couldn't be measured.
+ */
+export function mutualAffinity(forward: number, reverse: number | undefined): number {
+  const to = clamp(forward, 0, 1);
+  if (reverse === undefined || !Number.isFinite(reverse)) return to;
+  const from = clamp(reverse, 0, 1);
+  return to + from > 0 ? (2 * to * from) / (to + from) : 0;
 }

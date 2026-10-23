@@ -33,24 +33,61 @@
   --shadow-soft: none;
 }
 
+:root {
+  /* Tight gutters on laptop+ so content sits edge-to-edge, not in a centered column */
+  --page-gutter: clamp(1rem, 2.2vw, 2rem);
+  /* Height the cover reserves for header + footer + section padding (rem, tracks the fluid root) */
+  --cover-chrome: 10.25rem;
+}
+
 html {
   color-scheme: light;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * Fluid UI scale. Every rem-based size (Tailwind spacing, type, radii) tracks the
+ * viewport on laptop and desktop screens, so a stage designed at ~96rem x 54rem
+ * looks the same on a 1280x720 laptop, a 1920x1080 monitor and a 2560x1440 display.
+ * Bound by the smaller of width and height so it never overflows either axis.
+ * Opt in per stage by adding the class to <html> (the cover does this).
+ */
+@media (min-width: 1024px) {
+  html.fluid-ui {
+    font-size: clamp(12.5px, min(1.05vw, 1.85vh), 28px);
+  }
 }
 
 body {
   margin: 0;
+  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
   min-height: 100dvh;
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
   overflow-x: hidden;
 }
 
 #root {
+  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
   min-height: 100dvh;
+}
+
+/* Full-bleed page shell — every stage fills the laptop viewport */
+.page-shell {
+  width: 100%;
+  max-width: none !important;
+  margin-inline: 0 !important;
+  padding-inline: var(--page-gutter);
+  box-sizing: border-box;
 }
 
 ::selection {

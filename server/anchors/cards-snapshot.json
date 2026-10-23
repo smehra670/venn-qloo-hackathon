@@ -1,0 +1,1543 @@
+{
+  "recordedAt": "2026-10-17T17:32:54.543Z",
+  "decks": {
+    "cafe|london": [
+      {
+        "id": "32F867B9-E6DF-44C3-BCE4-40160C7ED5E4",
+        "name": "Aesop",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "32F867B9-E6DF-44C3-BCE4-40160C7ED5E4",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "B8FE4F27-5AC7-46C8-81BC-28313D225FDA",
+        "name": "Joy Division",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "B8FE4F27-5AC7-46C8-81BC-28313D225FDA",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "CC51B695-943C-4451-9724-3BF40858BF01",
+        "name": "Barbican Centre",
+        "kind": "place",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "CC51B695-943C-4451-9724-3BF40858BF01",
+          "type": "place"
+        }
+      },
+      {
+        "id": "012081EE-E2BA-420E-9904-417CAF65214B",
+        "name": "Oatly",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "012081EE-E2BA-420E-9904-417CAF65214B",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "4F87DE42-3B65-4ED1-B1C8-D015920E8E10",
+        "name": "Floating Points",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "4F87DE42-3B65-4ED1-B1C8-D015920E8E10",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+        "name": "Patagonia",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "823E245F-17E1-49B2-95F8-255130700E2B",
+        "name": "Little Simz",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "823E245F-17E1-49B2-95F8-255130700E2B",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "E12201A5-CC50-40AF-97AE-C54A2CA303F7",
+        "name": "Muji",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "E12201A5-CC50-40AF-97AE-C54A2CA303F7",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "urn:tag:interests:qloo:vinyl_records",
+        "name": "Vinyl records",
+        "kind": "topic",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "tag",
+          "id": "urn:tag:interests:qloo:vinyl_records",
+          "type": "topic"
+        }
+      },
+      {
+        "id": "0044C2D6-C96D-4571-8EFE-E81E8CF722D4",
+        "name": "Kinfolk",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "0044C2D6-C96D-4571-8EFE-E81E8CF722D4",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "E51DB8F2-7A93-4746-A283-E55B5216FDE1",
+        "name": "Bon Iver",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "E51DB8F2-7A93-4746-A283-E55B5216FDE1",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "638DF38A-5A0E-4D90-AE5C-4C669B0F2B18",
+        "name": "Penguin Books",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "638DF38A-5A0E-4D90-AE5C-4C669B0F2B18",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "658AAD4F-0A3A-4046-A325-8007638D78CF",
+        "name": "Columbia Road Flower Market",
+        "kind": "place",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "658AAD4F-0A3A-4046-A325-8007638D78CF",
+          "type": "place"
+        }
+      },
+      {
+        "id": "urn:tag:interests:qloo:sourdough_baking",
+        "name": "Sourdough baking",
+        "kind": "topic",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "tag",
+          "id": "urn:tag:interests:qloo:sourdough_baking",
+          "type": "topic"
+        }
+      }
+    ],
+    "gym_studio|manchester": [
+      {
+        "id": "C70CE2B8-0AD1-4150-BF18-5A6347F2E860",
+        "name": "Nike",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "C70CE2B8-0AD1-4150-BF18-5A6347F2E860",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "8C215FA9-DD4E-4A87-BC72-578887686325",
+        "name": "Calvin Harris",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "8C215FA9-DD4E-4A87-BC72-578887686325",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "E45F4596-70B4-4910-9D69-67FF2FAD3284",
+        "name": "Band on the Wall",
+        "kind": "place",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "E45F4596-70B4-4910-9D69-67FF2FAD3284",
+          "type": "place"
+        }
+      },
+      {
+        "id": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+        "name": "Lululemon",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "1D792A35-7D72-4D57-88D0-C3A4F3E73EF6",
+        "name": "Dua Lipa",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "1D792A35-7D72-4D57-88D0-C3A4F3E73EF6",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "E8AE27B9-1528-4A58-97BD-30AF0BFE8859",
+        "name": "Peloton",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "E8AE27B9-1528-4A58-97BD-30AF0BFE8859",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "78AA0492-B692-47A8-8BC6-78CB0721AF2F",
+        "name": "Bicep",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "78AA0492-B692-47A8-8BC6-78CB0721AF2F",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "36A715FC-7000-4977-A6CB-965B5856E193",
+        "name": "Strava",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "36A715FC-7000-4977-A6CB-965B5856E193",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "069C2257-E652-4AF4-A441-4A5749D10E7B",
+        "name": "Manchester Art Gallery",
+        "kind": "place",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "069C2257-E652-4AF4-A441-4A5749D10E7B",
+          "type": "place"
+        }
+      },
+      {
+        "id": "urn:tag:interests:qloo:trail_running",
+        "name": "Trail running",
+        "kind": "topic",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "tag",
+          "id": "urn:tag:interests:qloo:trail_running",
+          "type": "topic"
+        }
+      },
+      {
+        "id": "C0B8080F-C989-4301-ACC1-7255619A5BDA",
+        "name": "Gymshark",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "C0B8080F-C989-4301-ACC1-7255619A5BDA",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "9FB7395E-11E3-46A0-8322-B5A7BEB5E927",
+        "name": "Disclosure",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "9FB7395E-11E3-46A0-8322-B5A7BEB5E927",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "77E6C4E7-49EC-48DB-A7EE-E36AA98A7E95",
+        "name": "Albert Hall",
+        "kind": "place",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "77E6C4E7-49EC-48DB-A7EE-E36AA98A7E95",
+          "type": "place"
+        }
+      },
+      {
+        "id": "urn:tag:interests:qloo:cold_water_swimming",
+        "name": "Cold water swimming",
+        "kind": "topic",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "tag",
+          "id": "urn:tag:interests:qloo:cold_water_swimming",
+          "type": "topic"
+        }
+      }
+    ],
+    "retail_shop|new york": [
+      {
+        "id": "E12201A5-CC50-40AF-97AE-C54A2CA303F7",
+        "name": "Muji",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "E12201A5-CC50-40AF-97AE-C54A2CA303F7",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+        "name": "Khruangbin",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "urn:tag:interests:qloo:vintage_fashion",
+        "name": "Vintage fashion",
+        "kind": "topic",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "tag",
+          "id": "urn:tag:interests:qloo:vintage_fashion",
+          "type": "topic"
+        }
+      },
+      {
+        "id": "62926E8D-2D7E-4428-819E-BF2477D3233F",
+        "name": "Polaroid",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "62926E8D-2D7E-4428-819E-BF2477D3233F",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+        "name": "Phoebe Bridgers",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "99E05093-D17A-4AB5-B480-AE0DFBC819B4",
+        "name": "Bandcamp",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "99E05093-D17A-4AB5-B480-AE0DFBC819B4",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "70CAE5BF-2F4C-445C-A3E5-4EDACFC3591C",
+        "name": "Radiohead",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "70CAE5BF-2F4C-445C-A3E5-4EDACFC3591C",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "46C9F889-EC89-4715-A767-DEABACF52C41",
+        "name": "Uniqlo",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "46C9F889-EC89-4715-A767-DEABACF52C41",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "B58E846A-D1F1-4C6A-AFA7-9230F74CAEE0",
+        "name": "Mac DeMarco",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "B58E846A-D1F1-4C6A-AFA7-9230F74CAEE0",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "0044C2D6-C96D-4571-8EFE-E81E8CF722D4",
+        "name": "Kinfolk",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "0044C2D6-C96D-4571-8EFE-E81E8CF722D4",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "urn:tag:interests:qloo:interior_design",
+        "name": "Interior design",
+        "kind": "topic",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "tag",
+          "id": "urn:tag:interests:qloo:interior_design",
+          "type": "topic"
+        }
+      },
+      {
+        "id": "9847B888-65A3-404C-82DB-80F37DB5DF59",
+        "name": "Sonos",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "9847B888-65A3-404C-82DB-80F37DB5DF59",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "E51DB8F2-7A93-4746-A283-E55B5216FDE1",
+        "name": "Bon Iver",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "E51DB8F2-7A93-4746-A283-E55B5216FDE1",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "urn:tag:interests:qloo:houseplants",
+        "name": "Houseplants",
+        "kind": "topic",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "tag",
+          "id": "urn:tag:interests:qloo:houseplants",
+          "type": "topic"
+        }
+      }
+    ]
+  },
+  "refills": {
+    "32F867B9-E6DF-44C3-BCE4-40160C7ED5E4": [
+      {
+        "id": "EE6E5064-E9B8-4EB2-AD63-2E082EBF7726",
+        "name": "Diptyque",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "EE6E5064-E9B8-4EB2-AD63-2E082EBF7726",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "902D8AE1-F74E-4D8F-8E52-FEABC35DBFC9",
+        "name": "Mansur Gavriel",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "902D8AE1-F74E-4D8F-8E52-FEABC35DBFC9",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "25C88914-2BC2-4E6B-A787-A8DD2DD4F45E",
+        "name": "Le Labo Fragrances",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "25C88914-2BC2-4E6B-A787-A8DD2DD4F45E",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "9082F37F-5FFC-44A5-84C3-5C1CFD68F47A",
+        "name": "Rains",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "9082F37F-5FFC-44A5-84C3-5C1CFD68F47A",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "2CA2569D-223D-42D6-BB2F-F8B5D36B9AEC",
+        "name": "COS",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "2CA2569D-223D-42D6-BB2F-F8B5D36B9AEC",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "334199C3-D599-492F-B8E9-76911A42F0C1",
+        "name": "Marimekko",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "334199C3-D599-492F-B8E9-76911A42F0C1",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "A34CBCFD-9FC2-4D93-A251-263D03B2D2D5",
+        "name": "Être Cécile",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "A34CBCFD-9FC2-4D93-A251-263D03B2D2D5",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "C90E3920-BF05-4537-903F-085BFE2E41AC",
+        "name": "Acne Studios",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "C90E3920-BF05-4537-903F-085BFE2E41AC",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "F8590CA5-EC64-45C0-9D46-09DE936D2B3D",
+        "name": "Chet Faker",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "F8590CA5-EC64-45C0-9D46-09DE936D2B3D",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "E3BAE46A-709B-49A5-BCD5-578BFF8B55AD",
+        "name": "Ásgeir",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "E3BAE46A-709B-49A5-BCD5-578BFF8B55AD",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "BB391C19-B5FA-4F79-8724-1074630721E9",
+        "name": "Rhye",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "BB391C19-B5FA-4F79-8724-1074630721E9",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "CF3CFD71-0320-47D1-82C5-9D5A28944FA7",
+        "name": "RY X",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "CF3CFD71-0320-47D1-82C5-9D5A28944FA7",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "35EBC38C-7F53-45CE-A236-24F768016755",
+        "name": "Matt Corby",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "35EBC38C-7F53-45CE-A236-24F768016755",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "D1ED5ED1-4BC1-4483-9897-AE553887B944",
+        "name": "Junip",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "D1ED5ED1-4BC1-4483-9897-AE553887B944",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "DED745F6-E273-4931-900F-1D912597881E",
+        "name": "Angus & Julia Stone",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "DED745F6-E273-4931-900F-1D912597881E",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "1B5BE2B4-41CA-46D3-9697-8FF314D5D2F4",
+        "name": "Ben Howard",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "1B5BE2B4-41CA-46D3-9697-8FF314D5D2F4",
+          "type": "artist"
+        }
+      }
+    ],
+    "B8FE4F27-5AC7-46C8-81BC-28313D225FDA": [
+      {
+        "id": "F59D6DB5-5A85-48C6-A2EC-CAAE334D4348",
+        "name": "Dr. Martens",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "F59D6DB5-5A85-48C6-A2EC-CAAE334D4348",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "4F94C666-5FFA-4A42-8453-24C2F779EC36",
+        "name": "Urban Outfitters",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "4F94C666-5FFA-4A42-8453-24C2F779EC36",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02",
+        "name": "Vans",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "D04983DC-4285-4FC2-9DBE-834163CCA337",
+        "name": "OBEY",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "D04983DC-4285-4FC2-9DBE-834163CCA337",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "33A31B51-CE46-40BB-B2BD-B446231247C0",
+        "name": "Fred Perry",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "33A31B51-CE46-40BB-B2BD-B446231247C0",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "92384FD1-363D-4423-926C-EAF478CE079B",
+        "name": "Stüssy",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "92384FD1-363D-4423-926C-EAF478CE079B",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "51844CEA-DECE-4071-ABF4-1A6834639F2B",
+        "name": "UNIF",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "51844CEA-DECE-4071-ABF4-1A6834639F2B",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "7FFF01CF-7B0E-405A-A232-14176B165E60",
+        "name": "Converse",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "7FFF01CF-7B0E-405A-A232-14176B165E60",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "9FCB92D1-9B48-4ADF-A6DC-350DAA7E91AF",
+        "name": "The Smiths",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "9FCB92D1-9B48-4ADF-A6DC-350DAA7E91AF",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "CB36C13A-CC81-4081-98B6-D1EEA8DACC55",
+        "name": "The Cure",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "CB36C13A-CC81-4081-98B6-D1EEA8DACC55",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "B078BEF5-3988-4CC2-BEFF-598263AA96D0",
+        "name": "Gang of Four",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "B078BEF5-3988-4CC2-BEFF-598263AA96D0",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "0DB74BEB-8191-4E7D-A519-42941EDACA9A",
+        "name": "Echo & the Bunnymen",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "0DB74BEB-8191-4E7D-A519-42941EDACA9A",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "8683C096-88DF-4C65-AF64-D580BC36C7E9",
+        "name": "New Order",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "8683C096-88DF-4C65-AF64-D580BC36C7E9",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "2E2D2E5A-8CE2-4F10-A388-320349CEEEA9",
+        "name": "The Jesus and Mary Chain",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "2E2D2E5A-8CE2-4F10-A388-320349CEEEA9",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "62823CD4-EBF3-42B6-B7AF-D9B61F70D7DD",
+        "name": "Siouxsie and the Banshees",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "62823CD4-EBF3-42B6-B7AF-D9B61F70D7DD",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "CE859B17-DDB5-41B4-AEDC-B8DDA2F7CC1B",
+        "name": "Sonic Youth",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "CE859B17-DDB5-41B4-AEDC-B8DDA2F7CC1B",
+          "type": "artist"
+        }
+      }
+    ],
+    "C70CE2B8-0AD1-4150-BF18-5A6347F2E860": [
+      {
+        "id": "E26BC58D-18D2-405B-BC7B-7C556ADE3829",
+        "name": "Air Jordan Product Line",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "E26BC58D-18D2-405B-BC7B-7C556ADE3829",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "3AE1EAA9-1A61-4AEC-BBC5-47C5B8ABC720",
+        "name": "Real Madrid CF",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "3AE1EAA9-1A61-4AEC-BBC5-47C5B8ABC720",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "9EF3B4AA-C638-4930-B673-0A930A4063AD",
+        "name": "National Basketball Association",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "9EF3B4AA-C638-4930-B673-0A930A4063AD",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "FCEA7CA1-1D40-4680-B337-E74594D9BCF1",
+        "name": "Adidas",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "FCEA7CA1-1D40-4680-B337-E74594D9BCF1",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "AB274E13-8E14-4A39-BCB6-82977B9DB380",
+        "name": "FC Barcelona",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "AB274E13-8E14-4A39-BCB6-82977B9DB380",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "B038AF1A-FFE7-4214-ADA0-89289BF30D7C",
+        "name": "Beats Electronics",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "B038AF1A-FFE7-4214-ADA0-89289BF30D7C",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "4D1EA16A-F77B-4152-BA57-56BDC8627D96",
+        "name": "Instagram",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "4D1EA16A-F77B-4152-BA57-56BDC8627D96",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "4C160FEA-FDB6-4DEC-99FC-13899680A0F4",
+        "name": "Foot Locker",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "4C160FEA-FDB6-4DEC-99FC-13899680A0F4",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "BBAC622A-8236-4976-8E8C-4FE3E3C47803",
+        "name": "Wiz Khalifa",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "BBAC622A-8236-4976-8E8C-4FE3E3C47803",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "1894930C-9D08-485C-8F0F-0E0AC4DFB447",
+        "name": "Jay-Z",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "1894930C-9D08-485C-8F0F-0E0AC4DFB447",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "7FA4CB13-B7CB-49BA-8AA7-14964EDF2BD9",
+        "name": "DJ Khaled",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "7FA4CB13-B7CB-49BA-8AA7-14964EDF2BD9",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "03CDEDEC-AC05-44E7-8CFA-B3446F6F2363",
+        "name": "Tyga",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "03CDEDEC-AC05-44E7-8CFA-B3446F6F2363",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "3A93A0FF-E9CF-42BD-94E9-253A99C176C8",
+        "name": "Lil' Wayne",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "3A93A0FF-E9CF-42BD-94E9-253A99C176C8",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "D6CBF036-3F62-4395-8FBF-B428A4D5CDD4",
+        "name": "2 Chainz",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "D6CBF036-3F62-4395-8FBF-B428A4D5CDD4",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "5C59ADC4-2720-4381-8B17-E1F44F6C53FE",
+        "name": "50 Cent",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "5C59ADC4-2720-4381-8B17-E1F44F6C53FE",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "75422648-F55C-4620-91C8-C9CF153E28C0",
+        "name": "J. Cole",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "75422648-F55C-4620-91C8-C9CF153E28C0",
+          "type": "artist"
+        }
+      }
+    ],
+    "8C215FA9-DD4E-4A87-BC72-578887686325": [
+      {
+        "id": "B038AF1A-FFE7-4214-ADA0-89289BF30D7C",
+        "name": "Beats Electronics",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "B038AF1A-FFE7-4214-ADA0-89289BF30D7C",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "C70CE2B8-0AD1-4150-BF18-5A6347F2E860",
+        "name": "Nike",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "C70CE2B8-0AD1-4150-BF18-5A6347F2E860",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "E26BC58D-18D2-405B-BC7B-7C556ADE3829",
+        "name": "Air Jordan Product Line",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "E26BC58D-18D2-405B-BC7B-7C556ADE3829",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "4D1EA16A-F77B-4152-BA57-56BDC8627D96",
+        "name": "Instagram",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "4D1EA16A-F77B-4152-BA57-56BDC8627D96",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "B1673630-172B-4B51-8A21-A60D82DF3FBF",
+        "name": "Rolex",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "B1673630-172B-4B51-8A21-A60D82DF3FBF",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "FCEA7CA1-1D40-4680-B337-E74594D9BCF1",
+        "name": "Adidas",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "FCEA7CA1-1D40-4680-B337-E74594D9BCF1",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "82946F1C-AB10-4669-B9A1-640A01E2A407",
+        "name": "Tommy Hilfiger",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "82946F1C-AB10-4669-B9A1-640A01E2A407",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "E50919AC-B1FF-410A-9B0D-DFA914286C3C",
+        "name": "Puma",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "E50919AC-B1FF-410A-9B0D-DFA914286C3C",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "EB042810-1AAC-4170-B781-38FCB7F012A2",
+        "name": "David Guetta",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "EB042810-1AAC-4170-B781-38FCB7F012A2",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "2FED3EA5-8652-47B2-BD81-500D81790498",
+        "name": "Avicii",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "2FED3EA5-8652-47B2-BD81-500D81790498",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "77207D74-4C38-4139-9F51-B25586F12D60",
+        "name": "Swedish House Mafia",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "77207D74-4C38-4139-9F51-B25586F12D60",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "F9A3C7C9-B531-42F7-8982-55775060A2C2",
+        "name": "Zedd",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "F9A3C7C9-B531-42F7-8982-55775060A2C2",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "4D16DBFD-35CB-44E2-95E3-62EDD9932A0B",
+        "name": "Major Lazer",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "4D16DBFD-35CB-44E2-95E3-62EDD9932A0B",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "A2AF8025-95EB-4744-A56D-66DC65FF743D",
+        "name": "Alesso",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "A2AF8025-95EB-4744-A56D-66DC65FF743D",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "712CEB6E-1D90-4046-8008-367F3E71D766",
+        "name": "Galantis",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "712CEB6E-1D90-4046-8008-367F3E71D766",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "6C76D1C4-FDC1-446B-879B-BFAB29A57791",
+        "name": "Martin Solveig",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "6C76D1C4-FDC1-446B-879B-BFAB29A57791",
+          "type": "artist"
+        }
+      }
+    ],
+    "E12201A5-CC50-40AF-97AE-C54A2CA303F7": [
+      {
+        "id": "0C285ACD-1C48-484A-BE22-FAF6371DBF51",
+        "name": "Creema",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "0C285ACD-1C48-484A-BE22-FAF6371DBF51",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "FF8A8543-549D-42CB-96A8-2B2C9374B092",
+        "name": "Global Work",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "FF8A8543-549D-42CB-96A8-2B2C9374B092",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "87A42D8F-1140-47E3-8485-F3A9ED1CFE0C",
+        "name": "Soeasy",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "87A42D8F-1140-47E3-8485-F3A9ED1CFE0C",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "6A38D922-C481-491A-A27E-FA6FF76E238F",
+        "name": "GU",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "6A38D922-C481-491A-A27E-FA6FF76E238F",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "D7EB7749-221C-467D-8136-B535A3A73FE8",
+        "name": "studio CLIP",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "D7EB7749-221C-467D-8136-B535A3A73FE8",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "66D21282-64CA-4429-855C-757B94554EBE",
+        "name": "Niko And...",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "66D21282-64CA-4429-855C-757B94554EBE",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "322EE262-531E-4F7B-932E-CBFEBB6E1901",
+        "name": "Beams",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "322EE262-531E-4F7B-932E-CBFEBB6E1901",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "8AEA76FC-E80E-4BCA-AF68-56636FEFF0CB",
+        "name": "Lepsim",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "8AEA76FC-E80E-4BCA-AF68-56636FEFF0CB",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "BC45D500-AF08-48D8-B4CD-6DC35E523D97",
+        "name": "BUMP OF CHICKEN",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "BC45D500-AF08-48D8-B4CD-6DC35E523D97",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "10CF20BD-61A4-4BDA-94E5-24F5C777B714",
+        "name": "ASIAN KUNG-FU GENERATION",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "10CF20BD-61A4-4BDA-94E5-24F5C777B714",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "AD658D03-2068-4FDE-8A79-651F95A5FC84",
+        "name": "RADWIMPS",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "AD658D03-2068-4FDE-8A79-651F95A5FC84",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "0176C03B-6C29-4C26-91E6-495BDCC9AB15",
+        "name": "SEKAI NO OWARI",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "0176C03B-6C29-4C26-91E6-495BDCC9AB15",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "B36CDA02-94C9-480C-966E-99CA0BD0F185",
+        "name": "Mr.Children",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "B36CDA02-94C9-480C-966E-99CA0BD0F185",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "60409646-F7FF-43E0-AEE5-71ABC9335444",
+        "name": "Superfly",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "60409646-F7FF-43E0-AEE5-71ABC9335444",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "34D7024C-4797-4474-8DFB-662C225B1730",
+        "name": "flumpool",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "34D7024C-4797-4474-8DFB-662C225B1730",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "397555DE-C44E-4F9A-BAF7-66CF5159C989",
+        "name": "MONKEY MAJIK",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "397555DE-C44E-4F9A-BAF7-66CF5159C989",
+          "type": "artist"
+        }
+      }
+    ],
+    "BAF6317A-DF94-4C90-92AE-63F86560C21B": [
+      {
+        "id": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+        "name": "Patagonia",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "E9A70778-6E65-49A4-8C38-A24D20C05BDA",
+        "name": "Fjällräven",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "E9A70778-6E65-49A4-8C38-A24D20C05BDA",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "DB03F250-64F3-47AB-8756-BC1C4E13EBFD",
+        "name": "The North Face",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "DB03F250-64F3-47AB-8756-BC1C4E13EBFD",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "205AF33F-118E-4C49-9721-6BDBAF981DA0",
+        "name": "Recreational Equipment Inc",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "205AF33F-118E-4C49-9721-6BDBAF981DA0",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "1BFF764A-D06D-48CA-9075-1E0F2A3FCE3D",
+        "name": "Fjällräven",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "1BFF764A-D06D-48CA-9075-1E0F2A3FCE3D",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "D69A3BE9-3C01-4786-9EFD-8B70586A977E",
+        "name": "Pendleton Woolen Mills",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "D69A3BE9-3C01-4786-9EFD-8B70586A977E",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "82BC424A-68CF-4F14-A831-826F28143F54",
+        "name": "Huckberry",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "82BC424A-68CF-4F14-A831-826F28143F54",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "B88738CC-8415-4F18-9095-2955EC094B0C",
+        "name": "Icebreaker",
+        "kind": "brand",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "B88738CC-8415-4F18-9095-2955EC094B0C",
+          "type": "brand"
+        }
+      },
+      {
+        "id": "7C038006-7C6B-4F1B-A3F0-E6BED80C1098",
+        "name": "Arc De Soleil",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "7C038006-7C6B-4F1B-A3F0-E6BED80C1098",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "24BA18BE-62EF-4B7E-99C6-7AA20EB05F28",
+        "name": "Glass Beams",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "24BA18BE-62EF-4B7E-99C6-7AA20EB05F28",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "076ADA9F-DB3B-4BD3-AE61-DBBA89FC0D15",
+        "name": "Mildlife",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "076ADA9F-DB3B-4BD3-AE61-DBBA89FC0D15",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "77C7B492-4B8F-41F6-81A5-A6EC3932C307",
+        "name": "Common Saints",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "77C7B492-4B8F-41F6-81A5-A6EC3932C307",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "6C599E55-2FE5-49E4-8CA9-60773BE8F865",
+        "name": "Robohands",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "6C599E55-2FE5-49E4-8CA9-60773BE8F865",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "FC07BE09-ED83-46BD-AFB1-D5C58D84BDA7",
+        "name": "Thee Sacred Souls",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "FC07BE09-ED83-46BD-AFB1-D5C58D84BDA7",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "B8A29D31-35E3-4DB7-8BDA-92F505BD24C0",
+        "name": "SAULT",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "B8A29D31-35E3-4DB7-8BDA-92F505BD24C0",
+          "type": "artist"
+        }
+      },
+      {
+        "id": "97FCD59C-4F36-4605-B458-79167FBCED33",
+        "name": "KOKOROKO",
+        "kind": "artist",
+        "provenance": "snapshot",
+        "anchor": {
+          "kind": "entity",
+          "id": "97FCD59C-4F36-4605-B458-79167FBCED33",
+          "type": "artist"
+        }
+      }
+    ]
+  }
+}

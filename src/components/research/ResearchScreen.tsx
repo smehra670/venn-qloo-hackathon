@@ -99,40 +99,46 @@ export function ResearchScreen({ shotHash = null }: { shotHash?: string | null }
     return () => window.clearTimeout(t);
   }, [useMap, visualStep, visualDone, stepStartedAt]);
 
+  // Opt into the fluid root font size (see index.css) so the whole stage scales with the screen.
+  useEffect(() => {
+    document.documentElement.classList.add("fluid-ui");
+    return () => document.documentElement.classList.remove("fluid-ui");
+  }, []);
+
   return (
-    <div className="relative min-h-dvh overflow-x-hidden bg-white font-sans text-[#14151A]">
-      <header className="relative z-10 mx-auto flex h-[76px] max-w-[1240px] items-center px-5 md:px-10 max-[560px]:h-16">
+    <div className="relative flex min-h-dvh w-full min-w-full flex-col overflow-x-hidden bg-white font-sans text-[#14151A]">
+      <header className="page-shell relative z-10 flex h-14 shrink-0 items-center lg:h-[3.75rem]">
         <Logo />
       </header>
-      <main className="relative z-10 mx-auto max-w-[1240px] px-5 pb-[84px] md:px-10 max-[560px]:px-5">
-        <h1 className="mt-1.5 text-[clamp(2.1rem,3.6vw,3.3rem)] font-bold leading-[1.04] tracking-[-0.04em] text-[#14151A]">
+      <main className="page-shell relative z-10 flex w-full min-w-0 flex-1 flex-col pb-3 lg:pb-4">
+        <div className="flex flex-wrap items-end gap-x-6 gap-y-3">
+        <h1 className="text-[2.1rem] font-bold leading-[1.04] tracking-[-0.04em] text-[#14151A] lg:text-[2.75rem]">
           {error
             ? "The search paused."
             : settling || visualDone
               ? "Found your overlap."
               : "Looking for crowds like yours…"}
         </h1>
-        <ul className="mt-[18px] flex list-none flex-wrap gap-2 p-0" aria-label="What you asked for">
-          <li className="inline-flex h-[34px] items-center rounded-full bg-[#F4F5F7] px-3.5 text-[0.95rem] font-semibold tracking-[-0.005em]">
+        <ul className="flex list-none flex-wrap gap-2 p-0 lg:pb-1.5" aria-label="What you asked for">
+          <li className="inline-flex h-[2.125rem] items-center rounded-full bg-[#F4F5F7] px-3.5 text-[0.95rem] font-semibold tracking-[-0.005em]">
             {input.businessTypeCustom || input.businessType || "business"}
           </li>
-          <li className="inline-flex h-[34px] items-center rounded-full bg-[#F4F5F7] px-3.5 text-[0.95rem] font-semibold tracking-[-0.005em]">
+          <li className="inline-flex h-[2.125rem] items-center rounded-full bg-[#F4F5F7] px-3.5 text-[0.95rem] font-semibold tracking-[-0.005em]">
             {input.city || "city"}
           </li>
           {input.anchors.slice(0, 4).map((anchor) => (
             <li
               key={anchor}
               className={cn(
-                "inline-flex h-[34px] items-center rounded-full px-3.5 text-[0.95rem] font-semibold tracking-[-0.005em] transition-[color,background-color,box-shadow] duration-300",
-                useMap && anchorsFlown
-                  ? "bg-transparent text-transparent shadow-[inset_0_0_0_1.5px_#E3E6EB]"
-                  : "bg-[#FFE8E3] text-[#14151A]",
+                "inline-flex h-[2.125rem] items-center rounded-full px-3.5 text-[0.95rem] font-semibold tracking-[-0.005em] transition-colors duration-300",
+                useMap && anchorsFlown ? "bg-[#F4F5F7] text-[#14151A]" : "bg-[#FFE8E3] text-[#14151A]",
               )}
             >
               {anchor}
             </li>
           ))}
         </ul>
+        </div>
         <p className="sr-only">{summaryLine(input)}</p>
 
         {error ? (
@@ -153,10 +159,10 @@ export function ResearchScreen({ shotHash = null }: { shotHash?: string | null }
             />
           </div>
         ) : (
-          <div className="mt-[30px] grid grid-cols-1 items-start gap-8 max-[980px]:gap-5 lg:grid-cols-[400px_minmax(0,1fr)]">
-            <div className="contents lg:block lg:space-y-5">
+          <div className="mt-4 grid min-h-0 flex-1 grid-cols-1 items-stretch gap-5 lg:mt-5 lg:grid-cols-[minmax(0,26rem)_minmax(0,1fr)] lg:gap-6">
+            <div className="contents lg:flex lg:min-h-0 lg:flex-col lg:gap-4">
               <ResearchSteps
-                className="order-2 max-[980px]:order-2"
+                className="order-2 lg:order-none"
                 visualStep={visualStep}
                 visualDone={visualDone}
                 events={events}
@@ -166,10 +172,10 @@ export function ResearchScreen({ shotHash = null }: { shotHash?: string | null }
                 closedCount={closedCount}
                 radiusKm={radiusKm}
               />
-              <QlooFeed className="order-3 mt-5 max-[980px]:mt-0 lg:mt-5" events={events} />
+              <QlooFeed className="order-3 lg:order-none" events={events} />
             </div>
 
-            <div className="order-1 max-[980px]:order-1">
+            <div className="order-1 min-h-0 lg:order-none">
               {useMap ? (
                 <ResearchMap
                   center={center}
@@ -201,7 +207,7 @@ export function ResearchScreen({ shotHash = null }: { shotHash?: string | null }
         )}
 
         {!error ? (
-          <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
+          <div className="mt-4 flex shrink-0 flex-wrap items-center justify-between gap-3 lg:mt-3">
             <Button type="button" variant="ghost" onClick={() => void cancel()}>
               Cancel
             </Button>

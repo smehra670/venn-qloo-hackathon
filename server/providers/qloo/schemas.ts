@@ -27,6 +27,8 @@ export const QlooExplainabilitySchema = z
   })
   .passthrough();
 
+/** Qloo sends `null` (not just a missing key) for some optional entity fields — e.g. `tags: null`
+ * on a place — so those are `.nullish()`: one null used to fail the whole insights response. */
 export const QlooEntitySchema = z
   .object({
     entity_id: z.string().optional(),
@@ -52,9 +54,9 @@ export const QlooEntitySchema = z
       })
       .passthrough()
       .optional(),
-    properties: z.record(z.string(), z.unknown()).optional(),
-    tags: z.array(QlooTagSchema).optional(),
-    popularity: z.number().optional(),
+    properties: z.record(z.string(), z.unknown()).nullish(),
+    tags: z.array(QlooTagSchema).nullish(),
+    popularity: z.number().nullish(),
     location: z
       .object({
         lat: z.number().optional(),
@@ -63,10 +65,10 @@ export const QlooEntitySchema = z
         longitude: z.number().optional(),
       })
       .passthrough()
-      .optional(),
-    disambiguation: z.string().optional(),
-    short_description: z.string().optional(),
-    description: z.string().optional(),
+      .nullish(),
+    disambiguation: z.string().nullish(),
+    short_description: z.string().nullish(),
+    description: z.string().nullish(),
     external: z.record(z.string(), z.unknown()).optional(),
   })
   .passthrough();

@@ -10,6 +10,7 @@ import type {
   RankEntry,
   VenueFacts,
 } from "@shared/types";
+import type { CardsRequest, CardsResponse, RefillRequest, RefillResponse } from "@shared/schemas";
 
 /** Provider-agnostic entity used as a discover/score candidate. */
 export interface ProviderEntity {
@@ -34,6 +35,11 @@ export interface ProviderEntity {
   explainabilityAnchorName?: string;
   /** 0-1 score for `explainabilityAnchorName`, straight from Qloo's explainability payload. */
   explainabilityScore?: number;
+  /** Every anchor's explainability share for this candidate (topic proxies folded into their
+   * topic's name), largest first. */
+  drivers?: import("@shared/types").MatchDriver[];
+  /** Raw Qloo tag ids on the entity (all of them), used to find tastes shared with your crowd. */
+  tagIds?: string[];
 }
 
 export interface Candidate {
@@ -73,8 +79,9 @@ export interface TasteProvider {
     /** Set by the implementation to the `DiscoverSpec` it used (request shape + pool ids),
      * so the runner can attach it to `RunResult.discoverSpecs` for later `rankTogether` calls.
      * Left unset when the call doesn't correspond to a replayable spec (e.g. a text-search
-     * fallback instead of a real insights call). */
-    out?: { spec?: DiscoverSpec },
+     * fallback instead of a real insights call). `specs` is used when one kind made more than
+     * one call (e.g. local shops plus brands). */
+    out?: { spec?: DiscoverSpec; specs?: DiscoverSpec[] },
   ): Promise<Candidate[]>;
   score(
     input: BusinessInput,
@@ -127,4 +134,12 @@ export interface TasteProvider {
    *   expected to surface a "legacy" note) when nothing can be recomputed.
    */
   rankTogether(spec: DiscoverSpec, extraEntityIds: string[], ctx: ProviderContext): Promise<RankEntry[]>;
+  /**
+   * Setup's "Swipe your crowd" deck for a business type and city (`POST /api/anchors/cards`).
+   * Every implementation builds it with `buildDeck()` (server/anchors/deck.ts) and sets each
+   * card's provenance; see server/anchors/cards.ts and docs/ANCHORS.md.
+   */
+  getSwipeCards(req: CardsRequest, signal?: AbortSignal): Promise<CardsResponse>;
+  /** Up to 6 more cards chosen from the person's Yeses (`POST /api/anchors/cards/refill`). */
+  getRefillCards(req: RefillRequest, signal?: AbortSignal): Promise<RefillResponse>;
 }

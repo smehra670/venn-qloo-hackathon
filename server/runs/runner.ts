@@ -4,7 +4,7 @@ import { nanoid } from "nanoid";
 import { applyCritiques, applyFeasibility, critiqueFeasibility, flaggedPartners } from "../agent/feasibility.js";
 import { applyGoals, applyGoalsToKinds, filterByGoals, hasAnyGoal, rerankTopPicks, summarizeGoals } from "../agent/goals.js";
 import { filterActionablePartners } from "../agent/reachable.js";
-import { getProvider } from "../providers/index.js";
+import { getProvider, isLiveQlooProvider } from "../providers/index.js";
 import { arraySink, withQlooCallSink, withQlooStep } from "../providers/qloo/callLog.js";
 import { applyPopularityLift } from "../providers/taste-lift.js";
 import type { Candidate, ProviderContext } from "../providers/types.js";
@@ -54,6 +54,8 @@ export function executeRun(run: Run, log: (fields: Record<string, string | numbe
 async function pipeline(run: Run, log: (fields: Record<string, string | number>) => void): Promise<void> {
   const started = Date.now();
   const provider = getProvider({ live: run.live, input: run.input });
+  // Snapshot replays also report name "qloo" for display, so live-only rules check identity.
+  const liveQloo = isLiveQlooProvider(provider);
   let step: StepId = "resolve";
   const decisions: DecisionLogEntry[] = [];
   const ctx: ProviderContext = {
@@ -105,6 +107,17 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     if (keywords > 0) resolveBits.push(`${keywords} read as ${keywords === 1 ? "an interest" : "interests"}`);
     if (guessed > 0) resolveBits.push(`${guessed} kept as free-text interests`);
     append(run, { type: "step_completed", step, summary: resolveBits.join(" · ") });
+    // Live Qloo only ranks partners from named entities (topics are bridged to stand-ins in
+    // resolveAnchors). With none at all, results would just be the most popular places, so stop
+    // and say what's needed instead of showing a misleading map.
+    if (
+      liveQloo &&
+      !resolved.some((item) => (item.status === "matched" && item.entityId) || (item.proxies?.length ?? 0) > 0)
+    ) {
+      throw new Error(
+        "Qloo needs at least one brand, artist or place your customers love — these interests alone weren't specific enough to rank partners. Add a named favourite and try again.",
+      );
+    }
 
     step = "plan";
     append(run, { type: "step_started", step, title: STEP_TITLES.plan });
@@ -138,9 +151,10 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     const discoverSpecs: DiscoverSpec[] = [];
     let pool = (
       await mapPool(planned, provider.name === "qloo" ? 2 : 3, async (kind, index) => {
-        const specOut: { spec?: DiscoverSpec } = {};
+        const specOut: { spec?: DiscoverSpec; specs?: DiscoverSpec[] } = {};
         const found = await provider.discover(run.input, resolved, kind, ctx, specOut);
-        if (specOut.spec) discoverSpecs.push(specOut.spec);
+        if (specOut.specs) discoverSpecs.push(...specOut.specs);
+        else if (specOut.spec) discoverSpecs.push(specOut.spec);
         return keepForKind(found, index);
       })
     ).flat();
@@ -173,24 +187,31 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     append(run, {
       type: "step_completed",
       step,
-      summary: `Checked trends for ${Math.min(12, partners.length)} partners.`,
+      summary:
+        liveQloo
+          ? `Compared tastes for ${partners.filter((partner) => partner.crowdTags?.length).length} partners.`
+          : `Checked trends for ${Math.min(12, partners.length)} partners.`,
     });
 
     step = "adapt";
     append(run, { type: "step_started", step, title: STEP_TITLES.adapt });
     let retries = 0;
     const extra = widenKinds(run.input);
-    const strong = strongCount(partners);
-    if (strong < 12 && extra.length > 0) {
+    // Live Qloo: widen only when the shortlist is genuinely thin (the mock's "strong match"
+    // count is a demo heuristic that made every live run widen and spend extra calls).
+    const strong = liveQloo ? partners.length : strongCount(partners);
+    const enough = liveQloo ? 6 : 12;
+    if (strong < enough && extra.length > 0) {
       retries = 1;
       const retryReason = `Only ${strong} strong matches. Widening to ${extra.join(" and ")} and relaxing the match threshold.`;
       append(run, { type: "retry", step, reason: retryReason });
       ctx.decide("Widened the search", retryReason, { origin: "qloo" });
       const widened = (
         await mapPool(extra, 2, async (kind) => {
-          const specOut: { spec?: DiscoverSpec } = {};
+          const specOut: { spec?: DiscoverSpec; specs?: DiscoverSpec[] } = {};
           const found = await provider.discover(run.input, resolved, kind, ctx, specOut);
-          if (specOut.spec) discoverSpecs.push(specOut.spec);
+          if (specOut.specs) discoverSpecs.push(...specOut.specs);
+          else if (specOut.spec) discoverSpecs.push(specOut.spec);
           return found.filter((candidate) => candidate.provisional >= 0.12).slice(0, 3);
         })
       ).flat();
@@ -201,8 +222,9 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
         pool = [...pool].sort((a, b) => b.provisional - a.provisional).slice(0, 28);
       }
       partners = await provider.score(run.input, resolved, pool, ctx, scoreOut);
+      if (liveQloo) partners = await provider.enrich(run.input, partners, ctx);
       append(run, { type: "step_completed", step, summary: "Widened the search and scored again." });
-    } else if (strong < 12) {
+    } else if (strong < enough) {
       append(run, { type: "step_note", step, text: "No further partner types to try." });
       append(run, { type: "step_completed", step, summary: "Kept the shortlist as it stands." });
       ctx.decide(
@@ -218,6 +240,12 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       });
     }
     ensure(run);
+
+    if (liveQloo && partners.length === 0) {
+      throw new Error(
+        `Qloo couldn't find partners that match these favourites around ${run.input.city.trim()}. Try adding a well-known brand, artist or place your customers love.`,
+      );
+    }
 
     step = "assemble";
     append(run, { type: "step_started", step, title: STEP_TITLES.assemble });
@@ -242,7 +270,7 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
     for (const note of goalRerank.notes) ctx.decide("Adjusted a top pick for your preferences", note, { origin: "rule" });
 
     partners = partners.map((partner) => ({ ...partner, origin: partner.userAdded ? "user_added" : "discovered" }));
-    partners = applyFeasibility(partners, topPicks, run.input);
+    partners = applyFeasibility(partners, topPicks, run.input, { live: liveQloo });
     const flagged = flaggedPartners(partners, topPicks);
     if (flagged.length > 0) {
       ctx.decide(
@@ -271,7 +299,9 @@ async function pipeline(run: Run, log: (fields: Record<string, string | number>)
       provider.name === "mock"
         ? limitsFor(run.input)
         : [
-            "Match scores are relative to this search and describe group-level taste, not individuals.",
+            liveQloo
+              ? "Match scores are mutual Qloo affinity out of 100 (your crowd's liking for them and theirs for your favourites) and describe group-level taste, not individuals."
+              : "Match scores are relative to this search and describe group-level taste, not individuals.",
             "Partner ideas come from Qloo Insights. Briefs are templates — check them before you send one.",
             ...(city?.hasLocalData ? [] : [UNKNOWN_CITY_LIMIT]),
           ];

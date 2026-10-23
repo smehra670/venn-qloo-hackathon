@@ -63,7 +63,7 @@ describe("buildCompare", () => {
     expect(payload.affinityFromPartner).toBe(0.7);
     // median local popularity of the two peers is (0.2 + 0.4) / 2 = 0.3
     expect(payload.popularityDelta).toBeCloseTo(0.8 - 0.3, 5);
-    expect(payload.signals).toHaveLength(5);
+    expect(payload.signals).toHaveLength(4);
     const popularitySignal = payload.signals.find((signal) => signal.label.toLowerCase().includes("popularity"));
     expect(popularitySignal?.value).toBe(0.8);
     expect(popularitySignal?.median).toBeCloseTo(0.3, 5);

@@ -9,6 +9,12 @@ import path from "node:path";
 
 loadEnv();
 
+// `npm run qloo:probe -- cards` runs the swipe-cards probe instead (Step 0, ≤40 calls).
+if (process.argv[2] === "cards") {
+  await import("./qloo-probe-cards.mjs");
+  process.exit(0);
+}
+
 const base = (process.env.QLOO_BASE_URL ?? "https://hackathon.api.qloo.com").replace(/\/$/, "");
 const key = process.env.QLOO_API_KEY;
 if (!key) {

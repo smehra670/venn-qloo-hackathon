@@ -1,0 +1,1660 @@
+{
+  "probedAt": "2026-10-17T15:53:55.071Z",
+  "base": "https://hackathon.api.qloo.com",
+  "L": {
+    "urn:entity:brand": {
+      "byCity": {
+        "Manchester": {
+          "status": 200,
+          "ms": 1168,
+          "count": 12,
+          "results": [
+            {
+              "id": "A4A446DD-E438-4C21-A6DC-F8C5F47D9E6A",
+              "name": "Pretty Little Thing",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.998
+            },
+            {
+              "id": "FEF260A7-F4C4-442B-A576-F29EB59CD991",
+              "name": "Missguided",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.998
+            },
+            {
+              "id": "5FD1705D-6D34-4B8D-9D2C-7F31A00FF40F",
+              "name": "In The Style",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.989
+            },
+            {
+              "id": "11DFD977-E5AA-40FE-8D24-DF4C98750FDB",
+              "name": "ASOS",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.998
+            },
+            {
+              "id": "F0F3C532-AF49-480E-82B3-D7B443EDC1C7",
+              "name": "Topshop",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.999
+            },
+            {
+              "id": "04A88D98-931E-4D72-B005-064174ED6392",
+              "name": "Lad Bible",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.997
+            },
+            {
+              "id": "1BB008DC-7236-4290-B200-700CE97F5195",
+              "name": "Boohoo",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.997
+            },
+            {
+              "id": "6F2D602B-11DB-4FF7-84D5-29E1C8D5991E",
+              "name": "Nasty Gal",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.997
+            },
+            {
+              "id": "CDDDE81C-76BB-403E-9DA7-C29CA4B0DCA0",
+              "name": "Oh Polly",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.99
+            },
+            {
+              "id": "0DCD7765-5D0D-4904-9534-C623C31089EF",
+              "name": "Public Desire",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.99
+            },
+            {
+              "id": "DFEA7D3A-BD9F-45DC-907A-DC19AAC2D22E",
+              "name": "Made",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.985
+            },
+            {
+              "id": "D3BBE911-3D28-4273-847F-6026E1B3189A",
+              "name": "I Saw It First",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.97
+            }
+          ]
+        },
+        "London": {
+          "status": 200,
+          "ms": 371,
+          "count": 12,
+          "results": [
+            {
+              "id": "F20CA1FA-6A85-4D41-B4AF-919CA81786A3",
+              "name": "Time Out Media",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.996
+            },
+            {
+              "id": "74363B01-5A90-4FF0-A058-FE0FC055C258",
+              "name": "Liberty London",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.98
+            },
+            {
+              "id": "3F6705CE-D208-4810-B497-50E89B1A7C23",
+              "name": "Selfridges",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.984
+            },
+            {
+              "id": "CBC47403-1001-4B2D-B964-F8EABFF2B419",
+              "name": "National Portrait Gallery",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.986
+            },
+            {
+              "id": "540C7FCA-3391-41AD-A4F3-FE6282E612F7",
+              "name": "The Guardian",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 1
+            },
+            {
+              "id": "DE3FA929-BDA9-44B8-8187-EDD76AA53F05",
+              "name": "i-D",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.99
+            },
+            {
+              "id": "CF79BA2C-A846-4F56-AC38-5FBC2389BF29",
+              "name": "Ella Mills",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.989
+            },
+            {
+              "id": "28FDFABF-8695-4DE6-9115-BF19EFE7C8F7",
+              "name": "Net a porter",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.996
+            },
+            {
+              "id": "F1BFE719-80F0-4D6F-A800-3E893E3D1E83",
+              "name": "& Other Stories",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.993
+            },
+            {
+              "id": "EF2969BE-61DE-4DF4-8873-6043F8C436BE",
+              "name": "Serpentine Gallery",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.958
+            },
+            {
+              "id": "5B735A95-B790-492D-8E1B-DA25D0CC9B0C",
+              "name": "Harrods",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.991
+            },
+            {
+              "id": "1987ED89-C7E7-4871-895E-1F3F207EE11A",
+              "name": "Fortnum & Mason",
+              "types": [
+                "urn:entity:brand"
+              ],
+              "popularity": 0.915
+            }
+          ]
+        }
+      },
+      "top10Shared": 0,
+      "identical": false
+    },
+    "urn:entity:artist": {
+      "byCity": {
+        "Manchester": {
+          "status": 200,
+          "ms": 483,
+          "count": 12,
+          "results": [
+            {
+              "id": "0705A945-19E3-4A36-A15A-0AFDA4073339",
+              "name": "Liam Gallagher",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.976
+            },
+            {
+              "id": "C58E4877-B50B-44E6-B17E-88E090F73165",
+              "name": "Noel Gallagher's High Flying Birds",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.995
+            },
+            {
+              "id": "973E0802-BBEA-4095-BBD5-81D67FCDEF48",
+              "name": "Liam Fray",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.329
+            },
+            {
+              "id": "2A9A3084-6C17-48E6-91BA-01FC1B3AF246",
+              "name": "Lewis Capaldi",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.987
+            },
+            {
+              "id": "AB22C5C4-2ACE-4D9C-A542-B56E919C5993",
+              "name": "Lily Allen",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 1
+            },
+            {
+              "id": "EC6B4979-FAB2-4859-B999-AC96EC1D2B69",
+              "name": "Megan McKenna",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.329
+            },
+            {
+              "id": "95607938-C680-4F94-8912-2BBAD09DFF49",
+              "name": "Blossoms",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.976
+            },
+            {
+              "id": "4F947292-2EA2-48B1-BB11-43B4D87911AC",
+              "name": "Cheryl",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.989
+            },
+            {
+              "id": "D0F17B6B-28A1-4391-880E-93DBCB0CA591",
+              "name": "Bimini",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.491
+            },
+            {
+              "id": "411AA28D-99CB-4891-806C-B4E1B2C2FD0F",
+              "name": "Tom Fletcher",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.678
+            },
+            {
+              "id": "009BF64F-90D5-4D44-B2BB-715091506BAA",
+              "name": "Dougie Poynter",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.694
+            },
+            {
+              "id": "58AD10F7-1D94-4C14-9473-9D8F950D05C5",
+              "name": "Professor Green",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.989
+            }
+          ]
+        },
+        "London": {
+          "status": 200,
+          "ms": 534,
+          "count": 12,
+          "results": [
+            {
+              "id": "E94C6A53-6B53-4E08-AADF-13E32E0935C7",
+              "name": "Jessie Ware",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.997
+            },
+            {
+              "id": "AF31A120-BB5D-4AD3-9B60-E735805B38B3",
+              "name": "Naomi Campbell",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.519
+            },
+            {
+              "id": "AB22C5C4-2ACE-4D9C-A542-B56E919C5993",
+              "name": "Lily Allen",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 1
+            },
+            {
+              "id": "FD7E4822-C2DA-4F78-896E-D5F2E22CFFC8",
+              "name": "FKA twigs",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.997
+            },
+            {
+              "id": "4607C481-A992-456F-900E-46AB836351EF",
+              "name": "Suki Waterhouse",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.963
+            },
+            {
+              "id": "780422E7-28B3-4A4A-A6FB-5A29DF4B6EE6",
+              "name": "Florence Welch",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.781
+            },
+            {
+              "id": "CCCDAEFE-96FC-414B-9FBD-F07D3D929FB6",
+              "name": "Peggy Gou",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.965
+            },
+            {
+              "id": "9BC770A7-3369-4BB8-A79E-E3440D308489",
+              "name": "Solange",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.995
+            },
+            {
+              "id": "F82F55E2-7520-4328-9126-7AD80247FF3E",
+              "name": "Matt Haig",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.146
+            },
+            {
+              "id": "58AD10F7-1D94-4C14-9473-9D8F950D05C5",
+              "name": "Professor Green",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.989
+            },
+            {
+              "id": "EE63A5A9-294A-4687-8801-A98FE7308A86",
+              "name": "Nicole Richie",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.804
+            },
+            {
+              "id": "D23847E9-70B4-4D42-B793-4DD5F9B0B3D2",
+              "name": "Wolfgang Tillmans",
+              "types": [
+                "urn:entity:artist"
+              ],
+              "popularity": 0.22
+            }
+          ]
+        }
+      },
+      "top10Shared": 1,
+      "identical": false
+    },
+    "urn:entity:place": {
+      "byCity": {
+        "Manchester": {
+          "status": 200,
+          "ms": 16434,
+          "count": 12,
+          "results": [
+            {
+              "id": "0B8A7A57-9F98-40F4-969D-4E94EBDDDC72",
+              "name": "Northern Quarter Painter & Decorator",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0
+            },
+            {
+              "id": "B2BC593A-23C5-4137-B05A-A5D419528712",
+              "name": "O2 Ritz Manchester",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0.999
+            },
+            {
+              "id": "1C86D18E-A6C2-41C7-A642-D3922BDD5623",
+              "name": "The University of Manchester",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 1
+            },
+            {
+              "id": "495EAE79-9465-4C40-9C97-FA3C9A4217DC",
+              "name": "Bill's Spinningfields Restaurant",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0.998
+            },
+            {
+              "id": "8E5CD232-5819-4288-B38A-6F822D08B4B5",
+              "name": "Parklife Festival",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0
+            },
+            {
+              "id": "616EAD36-AFCF-4D75-A860-7A45847EF37B",
+              "name": "O2 Victoria Warehouse Manchester",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0.999
+            },
+            {
+              "id": "9A6C9388-714B-4F60-8D69-567BED5C7AC7",
+              "name": "The Oast House - Manchester",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0.998
+            },
+            {
+              "id": "CA4AEEF3-5971-4665-BFD4-1B81751CE55B",
+              "name": "Manchester Museum",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0.999
+            },
+            {
+              "id": "06D775E4-474E-4977-99C9-F86A54C31097",
+              "name": "Menagerie",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0.999
+            },
+            {
+              "id": "30FB735B-D402-4C06-8E59-E4738FB98FE2",
+              "name": "st anns square",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0.994
+            },
+            {
+              "id": "661B1E16-16E3-4B26-A942-06DA919D9FDE",
+              "name": "The Whitworth",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0.996
+            },
+            {
+              "id": "7757EA68-DF24-4824-BB54-7E6D471C6180",
+              "name": "The Piccadilly Gardens",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0.998
+            }
+          ]
+        },
+        "London": {
+          "status": 200,
+          "ms": 7144,
+          "count": 12,
+          "results": [
+            {
+              "id": "E89E3438-7B2E-4A17-9850-FC438DD3F018",
+              "name": "Aura x",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 1
+            },
+            {
+              "id": "2AD8C08F-7B3F-473D-B467-0B662DFB542B",
+              "name": "Liberty London",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 1
+            },
+            {
+              "id": "41E97DFF-A2D4-4BF8-BF0F-0F329B8D8036",
+              "name": "The Ned London",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 1
+            },
+            {
+              "id": "DB020956-58EC-4371-9F59-1DA40B00EA7A",
+              "name": "Santander Cycles: Podium, Queen Elizabeth Olympic Park",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0
+            },
+            {
+              "id": "4F5EC19C-40E1-4CB5-91FF-E5B08AEC6032",
+              "name": "The Truman Brewery",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0
+            },
+            {
+              "id": "A6152D6B-298D-458A-8675-FE703552C04B",
+              "name": "Hampton Court Palace",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 1
+            },
+            {
+              "id": "5813B900-F91B-4DFC-B8E8-4317B40DD461",
+              "name": "The National Gallery",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0
+            },
+            {
+              "id": "C1269089-6076-40B8-8448-7649F4A99F82",
+              "name": "Primrose Hill",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0
+            },
+            {
+              "id": "40C85150-EAFD-431D-A6E6-3E9A16E2EE73",
+              "name": "The Ritz London",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 1
+            },
+            {
+              "id": "2AFE5925-FFE1-40BD-A740-511373FABFA6",
+              "name": "Brighton Palace Pier",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0
+            },
+            {
+              "id": "509BA73D-C4E2-4D39-8707-5B35582C9944",
+              "name": "Kensington Palace",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 1
+            },
+            {
+              "id": "15713AB6-6AE4-43E7-B58E-48558B20B4B1",
+              "name": "Victoria Miro",
+              "types": [
+                "urn:entity:place"
+              ],
+              "popularity": 0.999
+            }
+          ]
+        }
+      },
+      "top10Shared": 0,
+      "identical": false
+    },
+    "place_filter_Manchester": {
+      "status": 200,
+      "ms": 306,
+      "count": 12,
+      "results": [
+        {
+          "id": "FF8F49C9-E933-46AB-9A00-4BF243036DC4",
+          "name": "Etihad Stadium",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "57A212B7-2F39-4DA8-92CB-49E64F985957",
+          "name": "AO Arena",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "F2EE96B2-BCBC-4B7F-A542-75BA29FCEE79",
+          "name": "Turtle Bay Manchester Northern Quarter",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "D6CC7486-D80D-456B-A43A-FFC40CE961BB",
+          "name": "Manchester Academy",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "3B98C8F0-973A-4A7A-BA24-62A973E2D24B",
+          "name": "20 Stories",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "1C86D18E-A6C2-41C7-A642-D3922BDD5623",
+          "name": "The University of Manchester",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "069C2257-E652-4AF4-A441-4A5749D10E7B",
+          "name": "Manchester Art Gallery",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.999
+        },
+        {
+          "id": "B2BC593A-23C5-4137-B05A-A5D419528712",
+          "name": "O2 Ritz Manchester",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.999
+        },
+        {
+          "id": "394AAC74-E738-41FF-B2EB-40D7FF8F5A98",
+          "name": "Albert's Schloss - Manchester",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.999
+        },
+        {
+          "id": "77E6C4E7-49EC-48DB-A7EE-E36AA98A7E95",
+          "name": "Albert Hall, Manchester",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.999
+        },
+        {
+          "id": "B629E4B4-8199-44CB-9B6F-97FE5E711C60",
+          "name": "Old Trafford Cricket Ground",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.999
+        },
+        {
+          "id": "54C4D15B-04BF-404F-A0EB-CB893221E7F6",
+          "name": "Australasia",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.999
+        }
+      ]
+    },
+    "place_filter_London": {
+      "status": 200,
+      "ms": 716,
+      "count": 12,
+      "results": [
+        {
+          "id": "189EDD44-1896-4E55-85BE-9C71C40DABE0",
+          "name": "Hyde Park",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "6E3B186F-B61F-46BD-BF19-B7FDD09270A4",
+          "name": "Tate Modern",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "8DB855FC-589E-4929-9D62-137165975619",
+          "name": "Natural History Museum",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "E89E3438-7B2E-4A17-9850-FC438DD3F018",
+          "name": "Aura x",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "9CBEF93C-1DA5-4158-A6E9-15CA12CA6078",
+          "name": "The Shard",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "B40772FC-7A23-4FC8-B347-E081EF191A0D",
+          "name": "Hyde Park Winter Wonderland Ice Rink",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "ECD92D76-B953-4580-8364-ABB982443C33",
+          "name": "The National Gallery",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "29BDD143-F19C-4EA4-BA36-A4535503EB49",
+          "name": "Borough Market",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "041A9383-4123-465E-9AB9-D6ACA560B4AA",
+          "name": "London Eye",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "DF709103-04F5-43B7-A8AB-53AC26228E47",
+          "name": "Big Ben",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "D45A29BB-AA85-47ED-927D-F3FE6D768375",
+          "name": "Borough Market Store",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "F3C869A4-0C3A-4EAD-97FE-57702725D274",
+          "name": "Sky Garden",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        }
+      ]
+    }
+  },
+  "tags": {
+    "cafe": {
+      "phrase": "specialty coffee",
+      "status": 200,
+      "ms": 130,
+      "count": 8,
+      "results": [
+        {
+          "id": "urn:tag:product_service:qloo:specialty_coffee",
+          "name": "Specialty Coffee",
+          "type": "urn:tag:product_service:qloo"
+        },
+        {
+          "id": "urn:tag:amenity:qloo:specialty_coffee",
+          "name": "Specialty Coffee",
+          "type": "urn:tag:amenity:qloo"
+        },
+        {
+          "id": "urn:tag:cuisine:qloo:specialty_coffee",
+          "name": "Specialty Coffee",
+          "type": "urn:tag:cuisine:qloo"
+        },
+        {
+          "id": "urn:tag:ingredient_focus:qloo:specialty_coffee",
+          "name": "Specialty Coffee",
+          "type": "urn:tag:ingredient_focus:qloo"
+        },
+        {
+          "id": "urn:tag:interests:qloo:specialty_coffee",
+          "name": "Specialty Coffee",
+          "type": "urn:tag:interests:qloo"
+        },
+        {
+          "id": "urn:tag:amenity:qloo:specialty_coffee_beans",
+          "name": "Specialty Coffee Beans",
+          "type": "urn:tag:amenity:qloo"
+        },
+        {
+          "id": "urn:tag:industry:qloo:specialty_coffee",
+          "name": "Specialty Coffee",
+          "type": "urn:tag:industry:qloo"
+        },
+        {
+          "id": "urn:tag:signature_product:qloo:specialty_coffee",
+          "name": "Specialty Coffee",
+          "type": "urn:tag:signature_product:qloo"
+        }
+      ]
+    },
+    "gym_studio": {
+      "phrase": "bouldering",
+      "status": 200,
+      "ms": 391,
+      "count": 8,
+      "results": [
+        {
+          "id": "urn:tag:activity_type:qloo:bouldering",
+          "name": "Bouldering",
+          "type": "urn:tag:activity_type:qloo"
+        },
+        {
+          "id": "urn:tag:interests:qloo:bouldering",
+          "name": "Bouldering",
+          "type": "urn:tag:interests:qloo"
+        },
+        {
+          "id": "urn:tag:keyword:qloo:bouldering",
+          "name": "Bouldering",
+          "type": "urn:tag:keyword:qloo"
+        },
+        {
+          "id": "urn:tag:setting:qloo:bouldering_gym",
+          "name": "Bouldering Gym",
+          "type": "urn:tag:setting:qloo"
+        },
+        {
+          "id": "urn:tag:subgenre:qloo:bouldering",
+          "name": "Bouldering",
+          "type": "urn:tag:subgenre:qloo"
+        },
+        {
+          "id": "urn:tag:activity_type:qloo:indoor_bouldering",
+          "name": "Indoor Bouldering",
+          "type": "urn:tag:activity_type:qloo"
+        },
+        {
+          "id": "urn:tag:genre:qloo:bouldering",
+          "name": "Bouldering",
+          "type": "urn:tag:genre:qloo"
+        },
+        {
+          "id": "urn:tag:amenity:qloo:bouldering_gym",
+          "name": "Bouldering Gym",
+          "type": "urn:tag:amenity:qloo"
+        }
+      ]
+    },
+    "bookshop": {
+      "phrase": "independent bookstores",
+      "status": 200,
+      "ms": 154,
+      "count": 8,
+      "results": [
+        {
+          "id": "urn:tag:interests:qloo:independent_bookstores",
+          "name": "Independent Bookstores",
+          "type": "urn:tag:interests:qloo"
+        },
+        {
+          "id": "urn:tag:setting:qloo:independent_bookstore",
+          "name": "Independent Bookstore",
+          "type": "urn:tag:setting:qloo"
+        },
+        {
+          "id": "urn:tag:setting:qloo:independent_bookshop",
+          "name": "Independent Bookshop",
+          "type": "urn:tag:setting:qloo"
+        },
+        {
+          "id": "urn:tag:keyword:qloo:independent_bookstores",
+          "name": "Independent Bookstores",
+          "type": "urn:tag:keyword:qloo"
+        },
+        {
+          "id": "urn:tag:interests:qloo:independent_bookselling",
+          "name": "Independent Bookselling",
+          "type": "urn:tag:interests:qloo"
+        },
+        {
+          "id": "urn:tag:interests:qloo:independent_bookshops",
+          "name": "Independent Bookshops",
+          "type": "urn:tag:interests:qloo"
+        },
+        {
+          "id": "urn:tag:lifestyle:qloo:independent_bookstores",
+          "name": "Independent Bookstores",
+          "type": "urn:tag:lifestyle:qloo"
+        },
+        {
+          "id": "urn:tag:interests:qloo:independent_booksellers",
+          "name": "Independent Booksellers",
+          "type": "urn:tag:interests:qloo"
+        }
+      ]
+    },
+    "bar": {
+      "phrase": "craft beer",
+      "status": 200,
+      "ms": 148,
+      "count": 8,
+      "results": [
+        {
+          "id": "urn:tag:cuisine:qloo:craft_beer",
+          "name": "Craft Beer",
+          "type": "urn:tag:cuisine:qloo"
+        },
+        {
+          "id": "urn:tag:interests:qloo:craft_beer",
+          "name": "Craft Beer",
+          "type": "urn:tag:interests:qloo"
+        },
+        {
+          "id": "urn:tag:subgenre:qloo:craft_beer",
+          "name": "Craft Beer",
+          "type": "urn:tag:subgenre:qloo"
+        },
+        {
+          "id": "urn:tag:cuisine:qloo:craft_brewery",
+          "name": "Craft Brewery",
+          "type": "urn:tag:cuisine:qloo"
+        },
+        {
+          "id": "urn:tag:cuisine:qloo:artisanal_beer",
+          "name": "Artisanal Beer",
+          "type": "urn:tag:cuisine:qloo"
+        },
+        {
+          "id": "urn:tag:keyword:qloo:craft_beer",
+          "name": "Craft Beer",
+          "type": "urn:tag:keyword:qloo"
+        },
+        {
+          "id": "urn:tag:cuisine:qloo:craft_beers",
+          "name": "Craft Beers",
+          "type": "urn:tag:cuisine:qloo"
+        },
+        {
+          "id": "urn:tag:interests:qloo:artisanal_craft_beer",
+          "name": "Artisanal Craft Beer",
+          "type": "urn:tag:interests:qloo"
+        }
+      ]
+    },
+    "asSignal": {
+      "tagId": "urn:tag:product_service:qloo:specialty_coffee",
+      "status": 200,
+      "ms": 863,
+      "count": 8,
+      "results": [
+        {
+          "id": "2DC0D48A-9B67-4104-A328-738B210C3BB0",
+          "name": "Hyatt Place",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.364
+        },
+        {
+          "id": "058FAB1D-A3FE-43B2-B82D-7BCC67D549E8",
+          "name": "Edward Waters College",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.146
+        },
+        {
+          "id": "ABADBBC5-1CA3-4E74-A7DD-B38A5E7E8EA0",
+          "name": "Tucson Roadrunners",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.435
+        },
+        {
+          "id": "3611AAF9-5D7E-4C5B-9056-3CEEE086702C",
+          "name": "Deakin & Francis",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.394
+        },
+        {
+          "id": "821F07FD-92D5-4E63-BE0F-A7C29AFE76B3",
+          "name": "Komerční banka",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.282
+        },
+        {
+          "id": "4B5A2907-433A-47FB-9551-1B451D5DDE08",
+          "name": "L'or Espresso",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.31
+        },
+        {
+          "id": "923295B1-25FB-4F31-84A2-C1F7A126340E",
+          "name": "Orangina",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.619
+        },
+        {
+          "id": "14D168CF-DB76-46C4-93C1-BD7CD4A33AC8",
+          "name": "Akron Zips Men's Basketball",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.265
+        }
+      ]
+    }
+  },
+  "S": {
+    "rows": [
+      {
+        "biz": "cafe",
+        "name": "Aesop",
+        "type": "urn:entity:brand",
+        "status": 200,
+        "ms": 124,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "32F867B9-E6DF-44C3-BCE4-40160C7ED5E4",
+            "name": "Aesop",
+            "types": [
+              "urn:entity:brand"
+            ],
+            "popularity": 0.971
+          }
+        ]
+      },
+      {
+        "biz": "cafe",
+        "name": "Muji",
+        "type": "urn:entity:brand",
+        "status": 200,
+        "ms": 157,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "E12201A5-CC50-40AF-97AE-C54A2CA303F7",
+            "name": "Muji",
+            "types": [
+              "urn:entity:brand"
+            ],
+            "popularity": 0.984
+          }
+        ]
+      },
+      {
+        "biz": "cafe",
+        "name": "Patagonia",
+        "type": "urn:entity:brand",
+        "status": 200,
+        "ms": 126,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+            "name": "Patagonia",
+            "types": [
+              "urn:entity:brand"
+            ],
+            "popularity": 0.996
+          },
+          {
+            "id": "0AADEF2D-657C-4442-923D-3914F35AA6C4",
+            "name": "Cerveza Patagonia",
+            "types": [
+              "urn:entity:brand"
+            ],
+            "popularity": 0.905
+          }
+        ]
+      },
+      {
+        "biz": "cafe",
+        "name": "Oatly",
+        "type": "urn:entity:brand",
+        "status": 200,
+        "ms": 127,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "012081EE-E2BA-420E-9904-417CAF65214B",
+            "name": "Oatly",
+            "types": [
+              "urn:entity:brand"
+            ],
+            "popularity": 0.94
+          }
+        ]
+      },
+      {
+        "biz": "cafe",
+        "name": "Radiohead",
+        "type": "urn:entity:artist",
+        "status": 200,
+        "ms": 111,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "70CAE5BF-2F4C-445C-A3E5-4EDACFC3591C",
+            "name": "Radiohead",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 1
+          },
+          {
+            "id": "99ECEFED-B982-40C2-A2ED-EB042E9545FA",
+            "name": "Radiohead Tribute",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 0.469
+          },
+          {
+            "id": "BF711411-5659-4CEF-BC46-ADEAACEB52EA",
+            "name": "Dub Tribute To Radiohead",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 0.73
+          }
+        ]
+      },
+      {
+        "biz": "cafe",
+        "name": "Bon Iver",
+        "type": "urn:entity:artist",
+        "status": 200,
+        "ms": 136,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "E51DB8F2-7A93-4746-A283-E55B5216FDE1",
+            "name": "Bon Iver",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 1
+          },
+          {
+            "id": "CAC1524F-F0C7-40A3-B20E-63453AB9054A",
+            "name": "Bon Iver & Sarah Siskind",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 0.132
+          },
+          {
+            "id": "42F29D24-DE96-4311-A069-273DCB1C1285",
+            "name": "Taylor Swift, Bon Iver",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 0.632
+          }
+        ]
+      },
+      {
+        "biz": "gym_studio",
+        "name": "Lululemon",
+        "type": "urn:entity:brand",
+        "status": 200,
+        "ms": 169,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+            "name": "Lululemon",
+            "types": [
+              "urn:entity:brand"
+            ],
+            "popularity": 0.996
+          }
+        ]
+      },
+      {
+        "biz": "gym_studio",
+        "name": "Gymshark",
+        "type": "urn:entity:brand",
+        "status": 200,
+        "ms": 149,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "C0B8080F-C989-4301-ACC1-7255619A5BDA",
+            "name": "Gymshark",
+            "types": [
+              "urn:entity:brand"
+            ],
+            "popularity": 0.997
+          }
+        ]
+      },
+      {
+        "biz": "gym_studio",
+        "name": "Nike",
+        "type": "urn:entity:brand",
+        "status": 200,
+        "ms": 153,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "C70CE2B8-0AD1-4150-BF18-5A6347F2E860",
+            "name": "Nike",
+            "types": [
+              "urn:entity:brand"
+            ],
+            "popularity": 1
+          },
+          {
+            "id": "43A36E73-9BC7-4B09-A116-78E51554C3E3",
+            "name": "Nike Training Club",
+            "types": [
+              "urn:entity:brand"
+            ],
+            "popularity": 0.997
+          },
+          {
+            "id": "E26BC58D-18D2-405B-BC7B-7C556ADE3829",
+            "name": "Air Jordan Product Line",
+            "types": [
+              "urn:entity:brand"
+            ],
+            "popularity": 0.999
+          }
+        ]
+      },
+      {
+        "biz": "gym_studio",
+        "name": "Peloton",
+        "type": "urn:entity:brand",
+        "status": 200,
+        "ms": 178,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "E8AE27B9-1528-4A58-97BD-30AF0BFE8859",
+            "name": "Peloton",
+            "types": [
+              "urn:entity:brand"
+            ],
+            "popularity": 0.987
+          }
+        ]
+      },
+      {
+        "biz": "gym_studio",
+        "name": "Dua Lipa",
+        "type": "urn:entity:artist",
+        "status": 200,
+        "ms": 127,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "1D792A35-7D72-4D57-88D0-C3A4F3E73EF6",
+            "name": "Dua Lipa",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 0.998
+          },
+          {
+            "id": "845735F9-5512-47EF-9810-3F813AF689D8",
+            "name": "Dua Lipa, BLACKPINK",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 0.737
+          },
+          {
+            "id": "7C46A487-805C-4412-A00A-956D6F5F2D6E",
+            "name": "Dua Lipa & The Blessed Madonna",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 0.662
+          }
+        ]
+      },
+      {
+        "biz": "gym_studio",
+        "name": "Calvin Harris",
+        "type": "urn:entity:artist",
+        "status": 200,
+        "ms": 211,
+        "verdict": "clean",
+        "top": [
+          {
+            "id": "8C215FA9-DD4E-4A87-BC72-578887686325",
+            "name": "Calvin Harris",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 1
+          },
+          {
+            "id": "9CCB40D7-D814-4A75-9CAE-4375057102C9",
+            "name": "Calvin Harris, Dua Lipa",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 0.915
+          },
+          {
+            "id": "BCE9ADE7-FF24-4DC5-BB9E-6C8B98D0C7BE",
+            "name": "Calvin Harris, Rag'n'Bone Man",
+            "types": [
+              "urn:entity:artist"
+            ],
+            "popularity": 0.716
+          }
+        ]
+      }
+    ],
+    "clean": 12,
+    "ambiguous": 0,
+    "unresolved": 0,
+    "total": 12
+  },
+  "R": {
+    "urn:entity:brand": {
+      "liked": [
+        "Aesop",
+        "Muji",
+        "Patagonia"
+      ],
+      "status": 200,
+      "ms": 243,
+      "count": 8,
+      "seedEchoes": [],
+      "results": [
+        {
+          "id": "25C88914-2BC2-4E6B-A787-A8DD2DD4F45E",
+          "name": "Le Labo Fragrances",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.976
+        },
+        {
+          "id": "334199C3-D599-492F-B8E9-76911A42F0C1",
+          "name": "Marimekko",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.932
+        },
+        {
+          "id": "5A37EDDE-05E4-4FCC-B811-426CF677D6E7",
+          "name": "A.P.C.",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.982
+        },
+        {
+          "id": "9082F37F-5FFC-44A5-84C3-5C1CFD68F47A",
+          "name": "Rains",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.854
+        },
+        {
+          "id": "322EE262-531E-4F7B-932E-CBFEBB6E1901",
+          "name": "Beams",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.941
+        },
+        {
+          "id": "DE26217C-75AC-4619-A181-CE38D3050DE7",
+          "name": "Maison Kitsuné",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.951
+        },
+        {
+          "id": "D69A3BE9-3C01-4786-9EFD-8B70586A977E",
+          "name": "Pendleton Woolen Mills",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.916
+        },
+        {
+          "id": "E4AF085B-221E-4B88-8396-EEF714CEB84A",
+          "name": "Margaret Howell",
+          "types": [
+            "urn:entity:brand"
+          ],
+          "popularity": 0.871
+        }
+      ]
+    },
+    "urn:entity:artist": {
+      "liked": [
+        "Aesop",
+        "Muji",
+        "Patagonia"
+      ],
+      "status": 200,
+      "ms": 3246,
+      "count": 8,
+      "seedEchoes": [],
+      "results": [
+        {
+          "id": "E3BAE46A-709B-49A5-BCD5-578BFF8B55AD",
+          "name": "Ásgeir",
+          "types": [
+            "urn:entity:artist"
+          ],
+          "popularity": 0.986
+        },
+        {
+          "id": "FAA58EEA-9CE9-430E-9CDE-3135C4881059",
+          "name": "Vance Joy",
+          "types": [
+            "urn:entity:artist"
+          ],
+          "popularity": 0.997
+        },
+        {
+          "id": "1B5BE2B4-41CA-46D3-9697-8FF314D5D2F4",
+          "name": "Ben Howard",
+          "types": [
+            "urn:entity:artist"
+          ],
+          "popularity": 0.998
+        },
+        {
+          "id": "CF3CFD71-0320-47D1-82C5-9D5A28944FA7",
+          "name": "RY X",
+          "types": [
+            "urn:entity:artist"
+          ],
+          "popularity": 0.983
+        },
+        {
+          "id": "35EBC38C-7F53-45CE-A236-24F768016755",
+          "name": "Matt Corby",
+          "types": [
+            "urn:entity:artist"
+          ],
+          "popularity": 0.987
+        },
+        {
+          "id": "4A9E2A72-C26C-48E6-B8F5-73730803B993",
+          "name": "The Paper Kites",
+          "types": [
+            "urn:entity:artist"
+          ],
+          "popularity": 0.991
+        },
+        {
+          "id": "C8543090-A342-4C40-80F9-1577454B9FF4",
+          "name": "Bahamas",
+          "types": [
+            "urn:entity:artist"
+          ],
+          "popularity": 0.988
+        },
+        {
+          "id": "8FAE3B8D-176C-4766-8C40-787977F28841",
+          "name": "Nick Mulvey",
+          "types": [
+            "urn:entity:artist"
+          ],
+          "popularity": 0.982
+        }
+      ]
+    },
+    "urn:entity:place": {
+      "liked": [
+        "Aesop",
+        "Muji",
+        "Patagonia"
+      ],
+      "status": 200,
+      "ms": 483,
+      "count": 8,
+      "seedEchoes": [],
+      "results": [
+        {
+          "id": "DFDC043A-6A72-422B-B5A8-0DC354C05074",
+          "name": "Mount Street Dining Room & Bar",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.934
+        },
+        {
+          "id": "F2EE96B2-BCBC-4B7F-A542-75BA29FCEE79",
+          "name": "Turtle Bay Manchester Northern Quarter",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 1
+        },
+        {
+          "id": "7A547F30-A9EE-4E4F-AE9F-20E7AA6B1D73",
+          "name": "Bisous Bisous",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.436
+        },
+        {
+          "id": "44443BB3-B2EE-4749-A3C0-35BE1A31D7AF",
+          "name": "Canto",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.943
+        },
+        {
+          "id": "3EC440E8-F9B6-4AB2-AA0C-0B3904924F34",
+          "name": "The Alchemist Spinningfields",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.999
+        },
+        {
+          "id": "493695EF-81F1-468F-8505-E64849B36569",
+          "name": "Dusk Til Pawn",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.96
+        },
+        {
+          "id": "06D775E4-474E-4977-99C9-F86A54C31097",
+          "name": "Menagerie",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.999
+        },
+        {
+          "id": "2058F464-4F07-4222-80F7-B655614EC2BF",
+          "name": "San Carlo Bottega - Manchester",
+          "types": [
+            "urn:entity:place"
+          ],
+          "popularity": 0.875
+        }
+      ]
+    }
+  },
+  "calls": 28
+}

@@ -77,14 +77,28 @@ export function hasQlooPopularity(partner: Partner): boolean {
   return typeof partner.scoreBasis?.popularity === "number";
 }
 
+/** Every partner on the Overview is the same blue: kind is shown by labels and filter chips,
+ * and plum is reserved for shared taste. */
+export const PARTNER_BLUE = "#4F5BFF";
+
+/** Partner colour by kind (drawer and shortlist; the Overview uses `PARTNER_BLUE`). */
+export function kindColor(kind: PartnerKind): string {
+  return KIND_META[kind]?.color ?? "#4F5BFF";
+}
+
 export function kindLabel(kind: PartnerKind): string {
   return KIND_META[kind]?.label ?? kind;
 }
 
 export function firstMessageIdea(partner: Partner, youLabel: string): string {
-  const theme = partner.sharedTags[0] ?? partner.tags[0];
+  // Only claim a shared taste when one was actually measured (never the partner's own tags).
+  const theme = partner.sharedTags[0];
   if (theme) {
-    return `Lead with ${theme} — a taste ${youLabel} and ${partner.name} already share. Propose one small joint next step.`;
+    return `Lead with ${theme.toLowerCase()} — both ${youLabel}'s crowd and ${partner.name}'s rate it highly. Propose one small joint next step.`;
+  }
+  const driver = partner.drivers?.[0];
+  if (driver) {
+    return `People who love ${driver.anchor} also rate ${partner.name} highly — open with that shared crowd, then propose one small joint next step.`;
   }
   return `Open with one specific observation about ${partner.name}, then propose a single shared next step that fits both crowds.`;
 }
@@ -106,14 +120,20 @@ export function kindCounts(partners: Partner[]): { kind: PartnerKind; count: num
     .sort((a, b) => b.count - a.count || a.kind.localeCompare(b.kind));
 }
 
-export function topThemes(partner: Partner, limit = 3): { name: string; weight: number }[] {
-  const tags = partner.sharedTags.length > 0 ? partner.sharedTags : partner.tags;
-  if (tags.length === 0) return [];
-  const base = score01(partner);
-  return tags.slice(0, limit).map((name, i) => ({
-    name,
-    weight: clamp(base * (1 - i * 0.18), 0.12, 0.95),
-  }));
+/**
+ * Shared tastes for "why they match": the measured crowd tags both sides rate highly, with
+ * Qloo's real affinity for each crowd. Partners without crowd scores (mock/snapshot runs) fall
+ * back to their shared tags with no numbers — never invented percentages.
+ */
+export function topThemes(partner: Partner, limit = 3): { name: string; you?: number; them?: number }[] {
+  if (partner.crowdTags && partner.crowdTags.length > 0) {
+    const byLabel = new Map(partner.crowdTags.map((tag) => [tag.label, tag]));
+    return partner.sharedTags.slice(0, limit).map((name) => {
+      const tag = byLabel.get(name);
+      return { name, you: tag?.you, them: tag?.them };
+    });
+  }
+  return partner.sharedTags.slice(0, limit).map((name) => ({ name }));
 }
 
 /** Circle–circle intersection area (reference `inter`). */

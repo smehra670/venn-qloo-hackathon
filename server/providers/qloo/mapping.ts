@@ -2,8 +2,10 @@ import type {
   BusinessInput,
   BusinessType,
   CityInfo,
+  CrowdTag,
   EntityType,
   EvidenceItem,
+  MatchDriver,
   Normalization,
   Partner,
   PartnerKind,
@@ -285,6 +287,9 @@ export function toProviderEntity(entity: QlooEntity, kind: PartnerKind, city?: s
   });
   const popularity = typeof entity.popularity === "number" ? entity.popularity : affinityOf(entity);
   const venueFacts = venueFactsFromEntity(entity);
+  const tagIds = (entity.tags ?? [])
+    .map((tag) => tag.tag_id ?? tag.id)
+    .filter((tagId): tagId is string => typeof tagId === "string" && tagId.length > 0);
   return {
     id,
     name: entityNameOf(entity),
@@ -298,6 +303,7 @@ export function toProviderEntity(entity: QlooEntity, kind: PartnerKind, city?: s
     city,
     neighbourhood: venueFacts?.neighbourhood,
     venueFacts,
+    ...(tagIds.length > 0 ? { tagIds } : {}),
   };
 }
 
@@ -329,12 +335,13 @@ export function surpriseFor(kind: PartnerKind, businessType: BusinessType, match
   return { surprise, isSurprising };
 }
 
+/** Tags genuinely shared by the anchors and the partner. Empty when nothing overlaps — it used
+ * to fall back to the partner's own first tags, which the UI then presented as "shared". */
 export function sharedTags(resolved: ResolvedAnchor[], entity: ProviderEntity): string[] {
   const anchorTags = new Set(resolved.flatMap((item) => item.tags.map((tag) => tag.toLowerCase())));
   const entityTags = Object.keys(entity.tags);
   const shared = entityTags.filter((tag) => anchorTags.has(tag) || anchorTags.has(tag.replace(/_/g, " ")));
-  if (shared.length > 0) return shared.slice(0, 5).map(humanizeTag);
-  return entityTags.slice(0, 3).map(humanizeTag);
+  return shared.slice(0, 5).map(humanizeTag);
 }
 
 function humanizeTag(tag: string): string {
@@ -352,9 +359,19 @@ export function buildPartner(args: {
   median: number;
   parentId?: string;
   expanded?: boolean;
+  /** False when the reverse affinity couldn't be measured; the evidence then says so. */
+  affinityFromMeasured?: boolean;
+  /** Real shared tastes (e.g. from Qloo tag insights); overrides the anchor-tag intersection. */
+  shared?: string[];
+  drivers?: MatchDriver[];
+  crowdTags?: CrowdTag[];
+  /** True for scores that are absolute Qloo affinity (x100) rather than the stretched band. */
+  absoluteScore?: boolean;
 }): Partner {
   const { entry, local, affinityTo, affinityFrom, matchScore, resolved, input, median, parentId, expanded } = args;
-  const tags = sharedTags(resolved, entry);
+  const tags = args.shared ?? sharedTags(resolved, entry);
+  const drivers = args.drivers ?? entry.drivers;
+  const reverseMeasured = args.affinityFromMeasured !== false;
   const { surprise, isSurprising } = surpriseFor(entry.kind, input.businessType, matchScore, median);
   const tagOverlap =
     tags.length === 0
@@ -369,20 +386,26 @@ export function buildPartner(args: {
   };
   const evidence: EvidenceItem[] = [
     {
-      label: "Shared tags",
-      value: tags.length > 0 ? tags.join(", ") : "Taste overlap from Qloo affinities",
+      label: "Shared tastes",
+      value: tags.length > 0 ? tags.join(", ") : "Qloo didn't report a taste both crowds rate highly for this partner.",
       origin: tags.length > 0 ? "data" : "interpretation",
     },
     {
       label: "Affinity to partner",
-      value: `${Math.round(affinityTo * 100)}% from your anchors toward ${entry.name}`,
+      value: `${Math.round(affinityTo * 100)}/100 — how strongly people who like your anchors rate ${entry.name} (Qloo).`,
       origin: "data",
     },
-    {
-      label: "Affinity from partner",
-      value: `${Math.round(affinityFrom * 100)}% from ${entry.name} back toward your category`,
-      origin: "data",
-    },
+    reverseMeasured
+      ? {
+          label: "Affinity from partner",
+          value: `${Math.round(affinityFrom * 100)}/100 — how strongly ${entry.name}'s crowd rates your anchors (Qloo).`,
+          origin: "data",
+        }
+      : {
+          label: "Affinity from partner",
+          value: `Qloo couldn't measure ${entry.name}'s crowd against your favourites, so the score uses one direction only, discounted by 10%.`,
+          origin: "interpretation",
+        },
     {
       label: "Local popularity",
       value: local ? "Appears in local place results for this city" : "Global brand or artist",
@@ -390,11 +413,22 @@ export function buildPartner(args: {
     },
     {
       label: "How Venn ranked it",
-      value: "Relative match score among partners in this search, stretched to 52–96.",
+      value: args.absoluteScore
+        ? "Mutual Qloo affinity (both directions) out of 100, so the same number means the same fit in any search."
+        : "Relative match score among partners in this search, stretched to 52–96.",
       origin: "interpretation",
     },
   ];
-  if (entry.explainabilityAnchorName) {
+  if (drivers && drivers.length > 0) {
+    evidence.push({
+      label: "Explainability",
+      value: `Qloo attributes this match to ${drivers
+        .slice(0, 3)
+        .map((driver) => `"${driver.anchor}" (${Math.round(driver.share * 100)}%)`)
+        .join(", ")}.`,
+      origin: "data",
+    });
+  } else if (entry.explainabilityAnchorName) {
     evidence.push({
       label: "Explainability",
       value: `Qloo's explainability attributes this mostly to your anchor "${entry.explainabilityAnchorName}" (${Math.round(
@@ -403,10 +437,13 @@ export function buildPartner(args: {
       origin: "data",
     });
   }
+  const topDriver = drivers?.[0];
   const reasons = [
     tags.length > 0
-      ? `Your customers and ${entry.name}'s audience both lean ${tags.slice(0, 2).join(" and ")}.`
-      : `${entry.name} overlaps with the taste signal from your anchors.`,
+      ? `Your crowd and ${entry.name}'s both rate ${tags.slice(0, 2).join(" and ")} highly.`
+      : topDriver
+        ? `People who like ${topDriver.anchor} rate ${entry.name} highly — Qloo credits ${Math.round(topDriver.share * 100)}% of the match to it.`
+        : `${entry.name} overlaps with the taste signal from your anchors.`,
     local
       ? "A local option, so a collab could happen nearby."
       : entry.kind === profileFor(input.businessType).category
@@ -434,6 +471,8 @@ export function buildPartner(args: {
     venueFacts: entry.venueFacts,
     parentId,
     expanded,
+    ...(drivers && drivers.length > 0 ? { drivers } : {}),
+    ...(args.crowdTags && args.crowdTags.length > 0 ? { crowdTags: args.crowdTags } : {}),
   };
 }
 

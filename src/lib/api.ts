@@ -1,4 +1,4 @@
-import { AnchorResolutionSchema, BriefSchema, ComparePayloadSchema, HeatmapSchema, PartnerSchema, ProofResultSchema, QlooCallRecordSchema, RunResultSchema } from "@shared/schemas";
+import { AnchorResolutionSchema, CardsRequest, CardsResponse, RefillRequest, RefillResponse, BriefSchema, ComparePayloadSchema, HeatmapSchema, PartnerSchema, ProofResultSchema, QlooCallRecordSchema, RunResultSchema } from "@shared/schemas";
 import type { AnchorResolution, Brief, BriefLength, BriefTone, BusinessInput, BusinessType, ComparePayload, ExampleInput, Heatmap, Partner, ProofResult, ProviderName, QlooCallRecord, RunResult, RunStatus } from "@shared/types";
 import { z } from "zod";
 
@@ -112,8 +112,36 @@ export function resolveAnchors(
   );
 }
 
+/** Swipe cards give up after this long; the panel then shows the "not available" fallback. */
+export const CARDS_TIMEOUT_MS = 8000;
+
+function withTimeout(signal: AbortSignal | undefined): AbortSignal {
+  const timeout = AbortSignal.timeout(CARDS_TIMEOUT_MS);
+  return signal ? AbortSignal.any([signal, timeout]) : timeout;
+}
+
+/** `POST /api/anchors/cards`: the Setup swipe deck. Request and response are both validated. */
+export function getSwipeCards(req: CardsRequest, signal?: AbortSignal): Promise<CardsResponse> {
+  const body = CardsRequest.parse(req);
+  return request("/api/anchors/cards", { method: "POST", body: JSON.stringify(body), signal: withTimeout(signal) }, (value) =>
+    CardsResponse.parse(value),
+  );
+}
+
+/** `POST /api/anchors/cards/refill`: up to 6 more cards from the person's Yeses. */
+export function getRefillCards(req: RefillRequest, signal?: AbortSignal): Promise<RefillResponse> {
+  const body = RefillRequest.parse(req);
+  return request("/api/anchors/cards/refill", { method: "POST", body: JSON.stringify(body), signal: withTimeout(signal) }, (value) =>
+    RefillResponse.parse(value),
+  );
+}
+
 export function createRun(input: BusinessInput): Promise<{ runId: string }> {
-  return request("/api/runs", { method: "POST", body: JSON.stringify(input) }, (value) =>
+  // `via` is client-side only (kept in venn:input): a swiped run sends exactly the same request as a typed one.
+  const body: BusinessInput = input.tasteAnchors
+    ? { ...input, tasteAnchors: input.tasteAnchors.map(({ via: _via, ...anchor }) => anchor) }
+    : input;
+  return request("/api/runs", { method: "POST", body: JSON.stringify(body) }, (value) =>
     z.object({ runId: z.string() }).parse(value),
   );
 }

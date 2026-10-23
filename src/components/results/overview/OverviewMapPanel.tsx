@@ -1,23 +1,47 @@
 import type { HeatSpot, Partner } from "@shared/types";
 import { divIcon } from "leaflet";
 import { useEffect, useMemo } from "react";
-import { AttributionControl, Circle, MapContainer, Marker, Tooltip, ZoomControl, useMap } from "react-leaflet";
+import { AttributionControl, CircleMarker, MapContainer, Marker, Tooltip, ZoomControl, useMap } from "react-leaflet";
 import { ChartCard, DataTable } from "@/components/results/overview/ChartCard";
 import { bindPartnerPointer, type TipLine } from "@/components/results/overview/OverviewTip";
 import { OpenFreeMapLayer } from "@/components/results/OpenFreeMapLayer";
-import { kindLabel } from "@/lib/overviewModel";
+import { partnerOpacity, tasteTipLine, useTasteFocus } from "@/components/results/overview/tasteFocus";
+import { PARTNER_BLUE, kindLabel } from "@/lib/overviewModel";
 import { cn } from "@/lib/cn";
 
 function pinIcon(partner: Partner, selected: boolean) {
   const lift = partner.popularityLift ?? 0;
   const intensity = Math.max(0.3, Math.min(1, 0.4 + Math.abs(lift) * 2 + partner.matchScore / 200));
-  const size = Math.round(12 + intensity * 12);
+  const size = Math.round((12 + intensity * 10) * rootScale());
   return divIcon({
     className: "ov-map-pin",
-    html: `<span style="display:block;width:${size}px;height:${size}px;border-radius:999px;background:#4F5BFF;opacity:${0.55 + intensity * 0.45};border:2px solid white;box-shadow:0 1px 4px rgba(20,21,26,.28)${selected ? ";outline:2px solid #14151A;outline-offset:2px" : ""}"></span>`,
+    html: `<span style="display:block;width:${size}px;height:${size}px;border-radius:999px;background:${PARTNER_BLUE};opacity:${0.55 + intensity * 0.45};border:2px solid white;box-shadow:0 1px 4px rgba(20,21,26,.28)${selected ? ";outline:2px solid #14151A;outline-offset:2px" : ""}"></span>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   });
+}
+
+/** Root font size relative to 16px, so px-sized map marks follow the fluid UI scale. */
+function rootScale(): number {
+  return (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16) / 16;
+}
+
+/**
+ * Leaflet sizes its tile/marker panes once, at mount. If the card's own box later changes size —
+ * a breakpoint, a filter reflowing the grid, or (on mobile) the browser's address bar collapsing
+ * as the page scrolls — the map doesn't know, and its panes stay the old size: tiles then render
+ * past the card's rounded corners and visually sit on top of whatever is now underneath. Watching
+ * the container and calling `invalidateSize()` keeps Leaflet's internal size in sync with the DOM.
+ */
+function MapResize() {
+  const map = useMap();
+  useEffect(() => {
+    const container = map.getContainer();
+    const ro = new ResizeObserver(() => map.invalidateSize());
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, [map]);
+  return null;
 }
 
 function FitBounds({ partners }: { partners: Partner[] }) {
@@ -67,6 +91,7 @@ export function OverviewMapPanel({
   setHover: (id: string | null) => void;
   select: (id: string | null) => void;
 }) {
+  const focus = useTasteFocus();
   const located = useMemo(
     () => partners.filter((p) => Boolean(p.venueFacts)),
     [partners],
@@ -106,7 +131,7 @@ export function OverviewMapPanel({
       legend={
         <div className="ov-key">
           <span>
-            <i style={{ background: "var(--ov-blue)" }} />
+            <i style={{ background: PARTNER_BLUE }} />
             Partner pin
           </span>
           <span>
@@ -116,7 +141,7 @@ export function OverviewMapPanel({
         </div>
       }
       chart={
-        <div>
+        <div className="ov-mapwrap">
           {located.length > 0 ? (
             <div className="ov-mapbox">
               <div className="ov-mapctl">
@@ -141,20 +166,26 @@ export function OverviewMapPanel({
                 <ZoomControl position="bottomright" />
                 <AttributionControl position="bottomleft" prefix={false} />
                 <OpenFreeMapLayer />
+                <MapResize />
                 <FitBounds partners={located} />
                 {liftOn
-                  ? heatmapSpots.map((spot) => (
-                      <Circle
-                        key={spot.id}
-                        center={[spot.lat, spot.lng]}
-                        radius={400 + 700 * Math.max(spot.overlap, spot.intensityA)}
-                        pathOptions={{
-                          stroke: false,
-                          fillColor: "#6B3FA0",
-                          fillOpacity: 0.12 + 0.34 * Math.max(spot.overlap, spot.intensityA),
-                        }}
-                      />
-                    ))
+                  ? heatmapSpots.map((spot) => {
+                      const strength = Math.min(1, Math.max(spot.overlap, spot.intensityA));
+                      return (
+                        // Pixel radius (not metres) so the glow stays a soft dot at any zoom level.
+                        <CircleMarker
+                          key={spot.id}
+                          center={[spot.lat, spot.lng]}
+                          radius={(11 + 15 * strength) * rootScale()}
+                          pathOptions={{
+                            stroke: false,
+                            fillColor: "#6B3FA0",
+                            fillOpacity: 0.1 + 0.2 * strength,
+                          }}
+                          interactive={false}
+                        />
+                      );
+                    })
                   : null}
                 {located.map((p) => {
                   const vf = p.venueFacts!;
@@ -168,10 +199,16 @@ export function OverviewMapPanel({
                         mouseover: () => setHover(p.id),
                         mouseout: () => setHover(null),
                       }}
-                      opacity={hoverId && hoverId !== p.id ? 0.35 : 1}
+                      opacity={partnerOpacity(p.id, { hoverId, focus, hoverDim: 0.35, tasteDim: 0.16 })}
                     >
                       <Tooltip>
                         {p.name} · {Math.round(p.matchScore)} overlap
+                        {tasteTipLine(focus, p) ? (
+                          <>
+                            <br />
+                            {tasteTipLine(focus, p)!.text}
+                          </>
+                        ) : null}
                       </Tooltip>
                     </Marker>
                   );
@@ -186,11 +223,15 @@ export function OverviewMapPanel({
                 const bind = bindPartnerPointer(p.id, {
                   setHover,
                   select,
-                  lines: (): TipLine[] => [
-                    { className: "v", text: `${Math.round(p.matchScore)} overlap` },
-                    { className: "l", text: `${p.name} · ${kindLabel(p.kind)}` },
-                    { className: "l", text: "No fixed location" },
-                  ],
+                  lines: (): TipLine[] => {
+                    const lines: TipLine[] = [
+                      { className: "v", text: `${Math.round(p.matchScore)} overlap` },
+                      { className: "l", text: `${p.name} · ${kindLabel(p.kind)}` },
+                      { className: "l", text: "No fixed location" },
+                    ];
+                    const taste = tasteTipLine(focus, p);
+                    return taste ? [...lines, taste] : lines;
+                  },
                 });
                 return (
                   <button
@@ -199,6 +240,7 @@ export function OverviewMapPanel({
                     className={cn(
                       hoverId === p.id && "hl",
                       selectedId === p.id && "sel",
+                      focus.taste && !focus.members.has(p.id) && hoverId !== p.id && "ov-tm-off",
                     )}
                     {...bind}
                   >

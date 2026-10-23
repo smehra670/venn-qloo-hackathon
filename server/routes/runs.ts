@@ -10,13 +10,14 @@ import {
 import type { AgentEvent, Partner, StoredEvent } from "@shared/types";
 import type { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { writeAiBrief } from "../brief/ai.js";
-import { buildCompare, normalizeCompareTags } from "../compare.js";
+import { buildCompare } from "../compare.js";
 import { config } from "../config.js";
 import { getProvider, isLiveQlooProvider } from "../providers/index.js";
 import { attachRelated, median } from "../providers/mock/engine.js";
 import { arraySink, withQlooCallSink } from "../providers/qloo/callLog.js";
-import { compareEntities, isQuotaBelowFloor } from "../providers/qloo/client.js";
-import { stretchWithNormalization } from "../providers/scoring.js";
+import { isQuotaBelowFloor } from "../providers/qloo/client.js";
+import { QlooTasteProvider } from "../providers/qloo/index.js";
+import { mutualAffinity, stretchWithNormalization } from "../providers/scoring.js";
 import { applyPopularityLift } from "../providers/taste-lift.js";
 import type { ProviderContext } from "../providers/types.js";
 import { buildProof } from "../proof.js";
@@ -325,7 +326,16 @@ export function registerRuns(app: FastifyInstance): void {
         const ranked = await withRunCallLog(run, () => provider.rankTogether(spec, [checked.id], ctx));
         const own = ranked.find((entry) => entry.entityId === checked.id);
         if (own) {
-          matchScore = stretchWithNormalization(Math.max(0, Math.min(1, own.affinity)), normalization);
+          // Absolute (live) runs score mutually: same-call forward affinity + the partner's
+          // measured reverse affinity. Legacy runs keep the stretched forward score.
+          const forward = Math.max(0, Math.min(1, own.affinity));
+          const reverse = checked.evidence.some((item) => item.label === "Affinity from partner" && item.origin === "data")
+            ? checked.signals.affinityFromPartner
+            : undefined;
+          matchScore = stretchWithNormalization(
+            normalization.absolute ? mutualAffinity(forward, reverse) : forward,
+            normalization,
+          );
         }
       } catch {
         // Keep checkPartner's own score; rankTogether is a best-effort refinement here.
@@ -345,23 +355,33 @@ export function registerRuns(app: FastifyInstance): void {
     const partner = result.partners.find((item) => item.id === parsed.data.partnerId);
     if (!partner) return reply.code(404).send({ error: "That partner is not in this search." });
 
-    // Live /v2/analysis/compare attempt: only for the real Qloo provider, and only while this
-    // run's compare budget (COMPARE_MAX_CALLS_PER_RUN) allows it. `buildCompare` degrades to
-    // the always-available computed tag intersection whenever this returns null/throws/empties.
+    // Crowd compare: your crowd's top lifestyle tags, scored for both crowds by Qloo tag
+    // insights. Reuses the run's own scores when the partner already has them; otherwise asks
+    // Qloo (live provider only, within COMPARE_MAX_CALLS_PER_RUN). `/v2/analysis/compare` isn't
+    // used: on this key its per-side lists don't overlap, so it never produced shared tags.
+    const toTags = (tags: NonNullable<Partner["crowdTags"]>) =>
+      tags.filter((tag) => tag.them !== undefined).map((tag) => ({ label: tag.label, a: tag.you, b: tag.them ?? 0 }));
     const provider = getProvider({ live: result.provider === "qloo" });
-    const canTryLive = isLiveQlooProvider(provider) && run.compareCallsUsed < config.compareMaxCallsPerRun;
-    const anchorIds = result.resolvedAnchors
-      .filter((item) => item.status === "matched" && item.entityId)
-      .map((item) => item.entityId!)
-      .slice(0, 5);
-    const tryLive =
-      canTryLive && anchorIds.length > 0
-        ? async () => {
-            run.compareCallsUsed += 1;
-            const { tags } = await withRunCallLog(run, () => compareEntities(anchorIds, [partner.id], quietContext().signal));
-            return normalizeCompareTags(tags);
-          }
-        : undefined;
+    const anchorIds = [
+      ...result.resolvedAnchors.filter((item) => item.status === "matched" && item.entityId).map((item) => item.entityId!),
+      ...result.resolvedAnchors.flatMap((item) => (item.proxies ?? []).map((proxy) => proxy.id)),
+    ].slice(0, 6);
+    let tryLive: (() => Promise<Array<{ label: string; a: number; b: number }> | null>) | undefined;
+    if (partner.crowdTags && partner.crowdTags.filter((tag) => tag.them !== undefined).length >= 3) {
+      const own = partner.crowdTags;
+      tryLive = async () => toTags(own);
+    } else if (
+      isLiveQlooProvider(provider) &&
+      provider instanceof QlooTasteProvider &&
+      run.compareCallsUsed < config.compareMaxCallsPerRun &&
+      anchorIds.length > 0
+    ) {
+      tryLive = async () => {
+        run.compareCallsUsed += 1;
+        const tags = await withRunCallLog(run, () => provider.crowdTagsFor(anchorIds, partner.id, quietContext().signal));
+        return tags && tags.length > 0 ? toTags(tags) : null;
+      };
+    }
     return buildCompare(result, partner, tryLive);
   });
 }

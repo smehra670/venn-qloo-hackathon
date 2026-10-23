@@ -4,7 +4,6 @@ import { config } from "../config.js";
 import { getLlm, type LlmClient } from "../llm/index.js";
 import { looksLikeMediaOrContent } from "./reachable.js";
 import { profileFor } from "../providers/mock/profiles.js";
-import { SCORE_MIN } from "../providers/scoring.js";
 
 function levelIndex(level: FeasibilityLevel): number {
   return FEASIBILITY_LEVELS.indexOf(level);
@@ -20,6 +19,9 @@ export function clampOneStep(from: FeasibilityLevel, suggested: FeasibilityLevel
   return FEASIBILITY_LEVELS[fromIdx + diff] ?? from;
 }
 
+/** At or below this a match is weak (bottom of the 52-96 band; also low for absolute scores). */
+const WEAK_SCORE = 56;
+
 export interface FeasibilityAssessment {
   level: FeasibilityLevel;
   reason: string;
@@ -30,7 +32,11 @@ export interface FeasibilityAssessment {
  * "long_shot" partner stays in the run; the UI just surfaces the tier before anyone reaches
  * out. Checks run in order of severity: the first one that applies wins.
  */
-export function assessFeasibility(partner: Partner, input: BusinessInput): FeasibilityAssessment {
+export function assessFeasibility(
+  partner: Partner,
+  input: BusinessInput,
+  opts: { live?: boolean } = {},
+): FeasibilityAssessment {
   const category = profileFor(input.businessType).category;
 
   if (looksLikeMediaOrContent(partner.name) || partner.entityType === "tv_show" || partner.entityType === "movie") {
@@ -51,7 +57,15 @@ export function assessFeasibility(partner: Partner, input: BusinessInput): Feasi
       reason: `${partner.name} isn't marked as local to your city — confirm you can actually visit or meet before pitching an in-person collab.`,
     };
   }
-  if (partner.sharedTags.length === 0 && partner.matchScore <= SCORE_MIN + 4) {
+  // Live Qloo only (real popularity): localPopularity is popularity x 0.7 for non-local brands,
+  // so >= 0.66 means a household name. The demo catalog's popularity isn't real, so skip it there.
+  if (opts.live && partner.entityType === "brand" && !partner.local && partner.signals.localPopularity >= 0.66) {
+    return {
+      level: "warm_intro",
+      reason: `${partner.name} is a very large, well-known brand — expect to go through a partnerships or PR team, or a local stockist, rather than a quick direct pitch.`,
+    };
+  }
+  if (partner.sharedTags.length === 0 && partner.matchScore <= WEAK_SCORE) {
     return {
       level: "long_shot",
       reason: `No strong shared tags back this match for ${partner.name}, and its match score sits near the bottom of this search's range — treat it as exploratory at best.`,
@@ -69,7 +83,7 @@ export function assessFeasibility(partner: Partner, input: BusinessInput): Feasi
       reason: `${partner.name} is flagged local but has no specific neighbourhood on file — confirm a real-world location before planning anything in person.`,
     };
   }
-  if (partner.matchScore <= SCORE_MIN + 4) {
+  if (partner.matchScore <= WEAK_SCORE) {
     return {
       level: "warm_intro",
       reason: `${partner.name}'s match score sits near the bottom of this search's range — a weaker fit than the other top picks.`,
@@ -84,12 +98,17 @@ export function assessFeasibility(partner: Partner, input: BusinessInput): Feasi
 /** Attaches a rule-based `feasibility` (origin "rule") to the partners that are in `topPicks`
  * only, leaving the rest untouched. Returns the same array (new objects for the top picks) so
  * the runner can reassign `partners` unconditionally. */
-export function applyFeasibility(partners: Partner[], topPicks: TopPick[], input: BusinessInput): Partner[] {
+export function applyFeasibility(
+  partners: Partner[],
+  topPicks: TopPick[],
+  input: BusinessInput,
+  opts: { live?: boolean } = {},
+): Partner[] {
   if (topPicks.length === 0) return partners;
   const pickedIds = new Set(topPicks.map((pick) => pick.partnerId));
   return partners.map((partner) =>
     pickedIds.has(partner.id)
-      ? { ...partner, feasibility: { ...assessFeasibility(partner, input), origin: "rule" as DecisionOrigin } }
+      ? { ...partner, feasibility: { ...assessFeasibility(partner, input, opts), origin: "rule" as DecisionOrigin } }
       : partner,
   );
 }

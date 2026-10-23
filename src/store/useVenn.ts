@@ -7,7 +7,7 @@ import { openRunStream } from "@/lib/sse";
 import { clearRunId, readInput, readRunId, saveInput, saveRunId } from "@/lib/storage";
 
 export type Stage = "setup" | "researching" | "results";
-export type ResultsView = "overview" | "shortlist" | "plan";
+export type ResultsView = "overview" | "shortlist";
 export type StepState = "waiting" | "running" | "done" | "retry";
 
 export interface StepView {
@@ -66,6 +66,9 @@ interface VennState {
   result: RunResult | null;
   selectedId: string | null;
   hoverId: string | null;
+  /** Overview taste focus (a shared taste theme id), next to the selected partner. Highlight
+   * precedence: hovered partner, then pinned taste, then nothing. */
+  tasteId: string | null;
   pinnedIds: Set<string>;
   surprise: number;
   kindFilter: Set<PartnerKind>;
@@ -95,6 +98,8 @@ interface VennState {
   reset: () => void;
   select: (id: string | null) => void;
   setHover: (id: string | null) => void;
+  setTaste: (id: string | null) => void;
+  toggleTaste: (id: string) => void;
   togglePin: (id: string) => void;
   setSurprise: (value: number) => void;
   toggleKind: (kind: PartnerKind) => void;
@@ -171,6 +176,7 @@ export const useVenn = create<VennState>((set, get) => ({
   result: null,
   selectedId: null,
   hoverId: null,
+  tasteId: null,
   pinnedIds: new Set(),
   surprise: 0.35,
   kindFilter: new Set(PARTNER_KINDS),
@@ -246,6 +252,7 @@ export const useVenn = create<VennState>((set, get) => ({
       error: null,
       settling: false,
       selectedId: null,
+      tasteId: null,
       briefOpen: false,
       briefTone: "warm",
       briefLength: "standard",
@@ -294,6 +301,7 @@ export const useVenn = create<VennState>((set, get) => ({
       error: null,
       settling: false,
       selectedId: null,
+      tasteId: null,
       briefOpen: false,
       hoverId: null,
       proof: null,
@@ -306,6 +314,8 @@ export const useVenn = create<VennState>((set, get) => ({
 
   select: (id) => set({ selectedId: id }),
   setHover: (id) => set({ hoverId: id }),
+  setTaste: (id) => set({ tasteId: id }),
+  toggleTaste: (id) => set((state) => ({ tasteId: state.tasteId === id ? null : id })),
   togglePin: (id) => {
     const next = new Set(get().pinnedIds);
     if (next.has(id)) next.delete(id);

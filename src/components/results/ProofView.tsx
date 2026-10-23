@@ -97,7 +97,7 @@ export function ProofView() {
   };
 
   return (
-    <div className="mx-auto flex h-full max-w-3xl flex-col gap-4 overflow-auto px-4 py-4 pb-28 md:px-8">
+    <div className="page-shell flex h-full w-full flex-col gap-4 overflow-auto py-4 pb-28">
       <section className="card-surface p-5">
         <h2 className="font-bold text-2xl tracking-tight">Check a partner</h2>
         <p className="mt-1 text-sm text-ink-soft">

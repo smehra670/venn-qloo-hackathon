@@ -91,6 +91,12 @@ function makeFakeProvider(rankById: Map<string, { affinity: number; popularity: 
     async heatmap() {
       return null;
     },
+    async getSwipeCards() {
+      return { status: "unavailable", cards: [] };
+    },
+    async getRefillCards() {
+      return { status: "unavailable", cards: [] };
+    },
     async checkPartner(_input, _resolved, query) {
       const id = `baseline-${query.name.toLowerCase().replace(/\s+/g, "-")}`;
       return makePartner({

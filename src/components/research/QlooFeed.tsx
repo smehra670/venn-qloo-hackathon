@@ -56,7 +56,7 @@ export function QlooFeed({ events, className }: { events: AgentEvent[]; classNam
   return (
     <section
       className={cn(
-        "rounded-3xl border border-[#E3E6EB] bg-white px-5 pb-4 pt-[18px]",
+        "rounded-3xl border border-[#E3E6EB] bg-white px-5 pb-3.5 pt-4 lg:min-h-0 lg:flex-1",
         className,
       )}
       aria-label="Qloo calls"
@@ -65,7 +65,7 @@ export function QlooFeed({ events, className }: { events: AgentEvent[]; classNam
       <p className="mb-3 mt-0.5 text-[0.88rem] text-[#596070]">
         Every request Venn makes, as it happens.
       </p>
-      <div className="grid min-h-[112px] content-start gap-2.5">
+      <div className="grid min-h-[5.5rem] content-start gap-2">
         {pairs.length === 0 ? (
           <p className="text-[0.9rem] text-[#8A91A0]">Waiting for the first call…</p>
         ) : (
@@ -73,7 +73,7 @@ export function QlooFeed({ events, className }: { events: AgentEvent[]; classNam
             <div key={`${pair.req}-${i}`} className="contents">
               <div
                 className={cn(
-                  "grid grid-cols-[18px_1fr_auto] gap-x-2 text-[0.9rem] leading-[1.35] transition-[opacity,transform] duration-[350ms]",
+                  "grid grid-cols-[1.125rem_1fr_auto] gap-x-2 text-[0.9rem] leading-[1.35] transition-[opacity,transform] duration-[350ms]",
                   pair.reqOn ? "translate-y-0 opacity-100" : "translate-y-1.5 opacity-0",
                 )}
               >
@@ -83,7 +83,7 @@ export function QlooFeed({ events, className }: { events: AgentEvent[]; classNam
               </div>
               <div
                 className={cn(
-                  "grid grid-cols-[18px_1fr_auto] gap-x-2 text-[0.9rem] leading-[1.35] transition-[opacity,transform] duration-[350ms]",
+                  "grid grid-cols-[1.125rem_1fr_auto] gap-x-2 text-[0.9rem] leading-[1.35] transition-[opacity,transform] duration-[350ms]",
                   pair.resOn ? "translate-y-0 opacity-100" : "translate-y-1.5 opacity-0",
                 )}
               >

@@ -117,6 +117,12 @@ export interface ResolvedAnchor {
   entityType?: EntityType;
   tags: string[];
   note: string;
+  /** For a topic anchor (status "keyword"): real Qloo entities that stand in for the topic's
+   * crowd, because Qloo ignores most topic tags as a signal for places and brands. E.g. "jazz"
+   * -> top jazz artists; "yoga" -> the city's most popular yoga studios. */
+  proxies?: { id: string; name: string; entityType: EntityType }[];
+  /** Place category tag the topic maps to (e.g. urn:tag:category:place:yoga_studio), if any. */
+  placeCategory?: string;
 }
 
 /** Confirmed taste signal ready for `signal.interests.entities` or `signal.interests.tags`. */
@@ -126,6 +132,9 @@ export interface TasteAnchor {
   id: string;
   type: string;
   origin: "user" | "qloo" | "ai_suggested";
+  /** How the person added it: a swiped Yes, a typed and resolved name, or an accepted AI
+   * suggestion. Client-side only; stripped before the run request is sent. */
+  via?: "swipe" | "typed" | "ai";
 }
 
 /**
@@ -148,6 +157,9 @@ export interface TasteAnchorCandidate {
   type: string;
   /** 0-1 name similarity; never surface below 0.6. */
   score: number;
+  /** Qloo popularity (0-1) for entity candidates, used to tell "Aesop" the brand from an
+   * obscure place that happens to share a generic name. */
+  popularity?: number;
 }
 
 export interface AiAnchorSuggestion {
@@ -200,6 +212,27 @@ export interface EvidenceItem {
 export interface Normalization {
   minRaw: number;
   maxRaw: number;
+  /** When true, scores are absolute (raw Qloo affinity x 100) instead of stretched to the
+   * 52-96 band — so a 90 means the same thing in every search. Live Qloo runs use this. */
+  absolute?: boolean;
+}
+
+/** How much of a partner's Qloo affinity came from one of your anchors, from Qloo's
+ * `feature.explainability` (0-1 shares). */
+export interface MatchDriver {
+  anchor: string;
+  share: number;
+}
+
+/** One of your crowd's top tastes (Qloo tag insights on your anchors, 0-1 affinity in `you`).
+ * `onPartner`: Qloo also tags this partner with it — that's what makes it a shared taste.
+ * `them`: the partner's own crowd affinity for it, only when Qloo could score that crowd
+ * (bigger brands; Qloo returns nothing for most places). */
+export interface CrowdTag {
+  label: string;
+  you: number;
+  onPartner?: boolean;
+  them?: number;
 }
 
 export interface Partner {
@@ -252,6 +285,11 @@ export interface Partner {
    * it never changes `matchScore`. Recomputed whenever the batch changes (new run, expand,
    * check-a-partner), so it is only comparable to other partners from the same recomputation. */
   popularityLift?: number;
+  /** Which of your anchors drove this match, from Qloo explainability (largest first). */
+  drivers?: MatchDriver[];
+  /** Real shared-taste evidence: your crowd's top tastes, flagged where Qloo also tags this
+   * partner with them (`sharedTags` lists those). Absent for mock/snapshot runs. */
+  crowdTags?: CrowdTag[];
 }
 
 /** Outreach-readiness tiers for a top-pick partner, from easiest to hardest. "long_shot" is a
@@ -581,4 +619,9 @@ export interface QlooCallRecord {
   params: Record<string, string>;
   status: "ok" | "error";
   ms: number;
+  /** HTTP status for failed calls (0 = network), or undefined when the failure was ours
+   * (e.g. a response that didn't match the expected shape). */
+  httpStatus?: number;
+  /** Short reason for a failed call, e.g. "rate limited" or "unexpected response shape". */
+  error?: string;
 }

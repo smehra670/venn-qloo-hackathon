@@ -194,6 +194,7 @@ const EvidenceSchema = z.object({
 const NormalizationSchema = z.object({
   minRaw: z.number(),
   maxRaw: z.number(),
+  absolute: z.boolean().optional(),
 });
 
 const ScoreBasisSchema = z.object({
@@ -227,6 +228,8 @@ export const QlooCallRecordSchema = z.object({
   params: z.record(z.string(), z.string()),
   status: z.enum(["ok", "error"]),
   ms: z.number(),
+  httpStatus: z.number().optional(),
+  error: z.string().optional(),
 });
 
 export const PartnerSchema = z.object({
@@ -261,6 +264,10 @@ export const PartnerSchema = z.object({
     .optional(),
   venueFacts: VenueFactsSchema.optional(),
   popularityLift: z.number().optional(),
+  drivers: z.array(z.object({ anchor: z.string(), share: z.number() })).optional(),
+  crowdTags: z
+    .array(z.object({ label: z.string(), you: z.number(), onPartner: z.boolean().optional(), them: z.number().optional() }))
+    .optional(),
 });
 
 const TopPickSchema = z.object({
@@ -284,6 +291,8 @@ const ResolvedAnchorSchema = z.object({
   entityType: EntityTypeSchema.optional(),
   tags: z.array(z.string()),
   note: z.string(),
+  proxies: z.array(z.object({ id: z.string(), name: z.string(), entityType: EntityTypeSchema })).optional(),
+  placeCategory: z.string().optional(),
 });
 
 export const RunResultSchema = z.object({
@@ -517,6 +526,7 @@ const TasteAnchorCandidateSchema = z.object({
   kind: z.enum(["entity", "tag"]),
   type: z.string(),
   score: z.number(),
+  popularity: z.number().optional(),
 });
 
 const TasteAnchorSchema = z.object({
@@ -525,6 +535,7 @@ const TasteAnchorSchema = z.object({
   id: z.string(),
   type: z.string(),
   origin: z.enum(["user", "qloo", "ai_suggested"]),
+  via: z.enum(["swipe", "typed", "ai"]).optional(),
 });
 
 const AiAnchorSuggestionSchema = z.object({
@@ -551,3 +562,70 @@ export const AnchorResolutionSchema = z.object({
 export function parseBusinessInput(value: unknown): BusinessInput {
   return BusinessInputSchema.parse(value);
 }
+
+// ---------- Swipe cards (Setup "Swipe your crowd") ----------
+
+const BusinessTypeSchema = z.enum(BUSINESS_TYPES);
+
+export const CardKind = z.enum(["brand", "artist", "place", "topic"]);
+export type CardKind = z.infer<typeof CardKind>;
+
+/** Where a card came from. The server sets this; the UI turns it into the provenance line. */
+export const CardProvenance = z.enum([
+  "qloo_local", // live Qloo, location verified to change results
+  "qloo_seed", // seeded name, id resolved on Qloo ahead of time
+  "qloo_refill", // live Qloo, signalled by the person's Yeses
+  "snapshot", // recorded from Qloo (snapshot provider)
+  "sample", // mock provider, NOT from Qloo
+]);
+export type CardProvenance = z.infer<typeof CardProvenance>;
+
+export const SwipeCard = z.object({
+  id: z.string().min(1).max(80),
+  name: z.string().min(1).max(48),
+  kind: CardKind,
+  provenance: CardProvenance,
+  /** Refill only: the name of the Yes that caused it. */
+  because: z.string().max(48).optional(),
+  /** Exactly what becomes a chip if the person says Yes. */
+  anchor: z.object({
+    kind: z.enum(["entity", "tag"]),
+    id: z.string().min(1).max(120),
+    // Short form, exactly as the typed resolver writes it: "brand", "artist", "place", "topic"…
+    // (see shared/anchorType.ts), so a swiped run and a typed run send the same request.
+    type: z.string().max(80),
+  }),
+});
+export type SwipeCard = z.infer<typeof SwipeCard>;
+
+const CardCitySchema = z
+  .string()
+  .transform((value) => cleaned(value))
+  .pipe(z.string().min(2, "Enter a city.").max(80));
+
+export const CardsRequest = z.object({
+  businessType: BusinessTypeSchema,
+  city: CardCitySchema,
+});
+export type CardsRequest = z.infer<typeof CardsRequest>;
+
+export const CardsResponse = z.object({
+  status: z.enum(["ok", "unsupported_city", "unavailable"]),
+  cards: z.array(SwipeCard).max(20),
+  note: z.string().max(160).optional(),
+});
+export type CardsResponse = z.infer<typeof CardsResponse>;
+
+export const RefillRequest = z.object({
+  businessType: BusinessTypeSchema,
+  city: CardCitySchema,
+  likedIds: z.array(z.string().min(1).max(120)).min(1).max(6),
+  excludeIds: z.array(z.string().min(1).max(120)).max(40),
+});
+export type RefillRequest = z.infer<typeof RefillRequest>;
+
+export const RefillResponse = z.object({
+  status: z.enum(["ok", "unavailable"]),
+  cards: z.array(SwipeCard).max(6),
+});
+export type RefillResponse = z.infer<typeof RefillResponse>;

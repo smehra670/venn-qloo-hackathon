@@ -13,6 +13,8 @@ import type {
 } from "@shared/types";
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
+import type { CardsRequest, CardsResponse, RefillRequest, RefillResponse } from "@shared/schemas";
+import { createSnapshotCardSource } from "../../anchors/cards.js";
 import type { Candidate, ProviderContext, ProviderEntity, TasteProvider } from "../types.js";
 import { hashInput } from "./hash.js";
 import { latestSnapshotDate, snapshotDirPath } from "./manifest.js";
@@ -61,6 +63,17 @@ export class SnapshotTasteProvider implements TasteProvider {
   readonly label: string;
 
   private readonly cache = new Map<string, SnapshotFile | null>();
+
+  /** Recorded decks for the example (business type, city) pairs; other pairs are unsupported. */
+  private readonly cards = createSnapshotCardSource();
+
+  getSwipeCards(req: CardsRequest): Promise<CardsResponse> {
+    return this.cards.getSwipeCards(req);
+  }
+
+  getRefillCards(req: RefillRequest): Promise<RefillResponse> {
+    return this.cards.getRefillCards(req);
+  }
 
   constructor() {
     const date = latestSnapshotDate();

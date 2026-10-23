@@ -47,7 +47,7 @@ export function ShareView({ token }: { token: string }) {
   };
 
   return (
-    <div className="mx-auto flex min-h-dvh max-w-5xl flex-col gap-4 px-4 py-6 md:px-8">
+    <div className="page-shell flex min-h-dvh w-full min-w-full flex-col gap-4 py-6">
       <header className="flex flex-wrap items-center gap-3">
         <Logo />
         <Badge>Shared · read-only</Badge>

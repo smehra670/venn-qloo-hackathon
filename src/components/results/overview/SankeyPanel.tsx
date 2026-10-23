@@ -2,7 +2,9 @@ import { useMemo } from "react";
 import type { Partner } from "@shared/types";
 import { ChartCard, DataTable } from "@/components/results/overview/ChartCard";
 import { bindPartnerPointer, tipHide, tipMove, tipShow, type TipLine } from "@/components/results/overview/OverviewTip";
+import { useTasteFocus } from "@/components/results/overview/tasteFocus";
 import { kindLabel, score01 } from "@/lib/overviewModel";
+import { tasteId, type Taste } from "@/lib/tastes";
 import { cn } from "@/lib/cn";
 
 const SK = { W: 820, H: 440, top: 44, bot: 12, gap: 12, nw: 14, x: [128, 372, 632] as const };
@@ -53,6 +55,7 @@ export function SankeyPanel({
   hoverId,
   setHover,
   select,
+  allTastes,
 }: {
   anchors: string[];
   partners: Partner[];
@@ -60,7 +63,11 @@ export function SankeyPanel({
   hoverId: string | null;
   setHover: (id: string | null) => void;
   select: (id: string | null) => void;
+  /** Every shared taste with its per-partner weights (`allTastes()` in src/lib/tastes.ts). */
+  allTastes: Taste[];
 }) {
+  const focus = useTasteFocus();
+  const tasteById = useMemo(() => new Map(allTastes.map((taste) => [taste.id, taste])), [allTastes]);
   const top = partners.slice(0, 6);
   const themes = useMemo(() => collectThemes(top), [top]);
 
@@ -72,8 +79,12 @@ export function SankeyPanel({
     for (const p of top) {
       const tags = p.sharedTags.filter((t) => themes.includes(t));
       if (tags.length === 0) continue;
-      const share = score01(p) / tags.length;
       for (const t of tags) {
+        // Same numbers as the taste tray and tooltips: Qloo affinity share on live runs,
+        // otherwise an equal split (membership only).
+        const taste = tasteById.get(tasteId(t));
+        const weight = taste?.hasStrength ? (taste.weights[p.id] ?? 0) : 1 / tags.length;
+        const share = score01(p) * weight;
         themeWeight.set(t, (themeWeight.get(t) ?? 0) + share);
         themePartner.push({ t, p: p.id, v: share });
       }
@@ -192,20 +203,12 @@ export function SankeyPanel({
       .sort((a, b) => (themeWeight.get(b) ?? 0) - (themeWeight.get(a) ?? 0));
 
     return { A, T, P, links, sortedThemes, themeWeight, themePartner, total };
-  }, [anchors, themes, top]);
+  }, [anchors, themes, top, tasteById]);
 
-  if (!model) return null;
-
-  const { A, T, P, links, sortedThemes, themeWeight, themePartner, total } = model;
-  const nodes = [...A, ...T, ...P];
-
-  const title =
-    sortedThemes.length > 1
-      ? `Most of the match runs through ${sortedThemes[0]!.toLowerCase()}, then ${sortedThemes[1]!.toLowerCase()}`
-      : `The match runs through ${sortedThemes[0]!.toLowerCase()}`;
-  const subtitle = `Top ${top.length} partners. A thicker flow means more of the overlap comes from that theme.`;
-
-  const hlKey = hoverId ? `p:${hoverId}` : selectedId ? `p:${selectedId}` : null;
+  const links = model?.links ?? [];
+  // Hover on a partner wins, then the pinned taste, then the selected partner.
+  const focusedTheme = focus.taste ? themes.find((t) => tasteId(t) === focus.taste!.id) : undefined;
+  const hlKey = hoverId ? `p:${hoverId}` : focus.taste ? (focusedTheme ? `t:${focusedTheme}` : null) : selectedId ? `p:${selectedId}` : null;
 
   const linkedKeys = useMemo(() => {
     if (!hlKey) return null;
@@ -242,6 +245,17 @@ export function SankeyPanel({
     return hl;
   }, [hlKey, links]);
 
+  if (!model) return null;
+
+  const { A, T, P, sortedThemes, themeWeight, themePartner, total } = model;
+  const nodes = [...A, ...T, ...P];
+
+  const title =
+    sortedThemes.length > 1
+      ? `Most of the match runs through ${sortedThemes[0]!.toLowerCase()}, then ${sortedThemes[1]!.toLowerCase()}`
+      : `The match runs through ${sortedThemes[0]!.toLowerCase()}`;
+  const subtitle = `Top ${top.length} partners. A thicker flow means more of the overlap comes from that theme.`;
+
   return (
     <ChartCard
       id="c-sank"
@@ -270,7 +284,7 @@ export function SankeyPanel({
             <svg
               viewBox={`0 0 ${SK.W} ${SK.H}`}
               style={{ minWidth: NARROW ? 640 : undefined }}
-              role="img"
+              role="group"
               aria-label="Flow from your anchors, through shared taste themes, to partners"
             >
               <defs>
@@ -297,7 +311,7 @@ export function SankeyPanel({
                     stroke={`url(#${l.grad})`}
                     strokeOpacity={0.42}
                     strokeWidth={Math.max(l.w, 1)}
-                    style={{ opacity: on ? 1 : 0.1 }}
+                    style={{ opacity: on ? 1 : 0.16 }}
                   />
                 );
               })}
@@ -335,12 +349,13 @@ export function SankeyPanel({
                 return (
                   <g
                     key={n.key}
-                    className={cn("ov-sk", n.col === 2 && "ov-pn")}
+                    className={cn("ov-sk", n.col === 2 && "ov-pn", n.col === 1 && "is-taste")}
                     data-id={n.col === 2 ? n.id : undefined}
                     tabIndex={0}
                     role="button"
-                    aria-label={n.name}
-                    style={{ opacity: dim ? 0.3 : 1 }}
+                    aria-label={n.col === 1 ? `${n.name}, shared taste. Press to light it up in every chart.` : n.name}
+                    aria-pressed={n.col === 1 ? focus.taste?.id === tasteId(n.name) : undefined}
+                    style={{ opacity: dim ? 0.55 : 1 }}
                     {...(partnerBind ?? {
                       onMouseEnter: (e: React.MouseEvent) => {
                         tipShow(
@@ -373,6 +388,17 @@ export function SankeyPanel({
                       },
                       onBlur: () => tipHide(),
                     })}
+                    {...(n.col === 1
+                      ? {
+                          onClick: () => focus.toggle(tasteId(n.name)),
+                          onKeyDown: (e: React.KeyboardEvent) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault();
+                              focus.toggle(tasteId(n.name));
+                            }
+                          },
+                        }
+                      : {})}
                   >
                     <rect
                       x={n.x}

@@ -16,6 +16,23 @@ export const BUSINESS_TYPE_LABELS: Record<BusinessType, string> = {
   other: "business",
 };
 
+/** Plural of BUSINESS_TYPE_LABELS, for the swipe card provenance line ("Suggested for cafés"). */
+export const BUSINESS_TYPE_PLURALS: Record<BusinessType, string> = {
+  cafe: "cafés",
+  restaurant: "restaurants",
+  bar: "bars",
+  music_venue: "music venues",
+  gym_studio: "gyms and studios",
+  retail_shop: "shops",
+  fashion_brand: "fashion brands",
+  bakery: "bakeries",
+  bookshop: "bookshops",
+  salon_spa: "salons and spas",
+  hotel: "hotels",
+  coworking: "coworking spaces",
+  other: "businesses",
+};
+
 export const STEP_TITLES: Record<StepId, string> = {
   resolve: "Understanding your customers' taste",
   plan: "Choosing where to look",

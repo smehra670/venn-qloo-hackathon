@@ -1,0 +1,869 @@
+{
+  "generatedAt": "2026-10-17T17:32:54.522Z",
+  "entries": {
+    "artist:air": {
+      "name": "Air",
+      "kind": "artist",
+      "id": "D2F4960C-AA8F-4245-AB52-1887EFDB90A3",
+      "type": "urn:entity:artist"
+    },
+    "artist:arctic monkeys": {
+      "name": "Arctic Monkeys",
+      "kind": "artist",
+      "id": "E3CF515E-C3EA-46DF-92DD-64A0DC360C90",
+      "type": "urn:entity:artist"
+    },
+    "artist:beyoncé": {
+      "name": "Beyoncé",
+      "kind": "artist",
+      "id": "F6754C46-B3E7-457F-8B7E-06C613597320",
+      "type": "urn:entity:artist"
+    },
+    "artist:bicep": {
+      "name": "Bicep",
+      "kind": "artist",
+      "id": "78AA0492-B692-47A8-8BC6-78CB0721AF2F",
+      "type": "urn:entity:artist"
+    },
+    "artist:bon iver": {
+      "name": "Bon Iver",
+      "kind": "artist",
+      "id": "E51DB8F2-7A93-4746-A283-E55B5216FDE1",
+      "type": "urn:entity:artist"
+    },
+    "artist:bonobo": {
+      "name": "Bonobo",
+      "kind": "artist",
+      "id": "5861FE97-122C-4A14-B5A6-0150B105D45F",
+      "type": "urn:entity:artist"
+    },
+    "artist:calvin harris": {
+      "name": "Calvin Harris",
+      "kind": "artist",
+      "id": "8C215FA9-DD4E-4A87-BC72-578887686325",
+      "type": "urn:entity:artist"
+    },
+    "artist:disclosure": {
+      "name": "Disclosure",
+      "kind": "artist",
+      "id": "9FB7395E-11E3-46A0-8322-B5A7BEB5E927",
+      "type": "urn:entity:artist"
+    },
+    "artist:dua lipa": {
+      "name": "Dua Lipa",
+      "kind": "artist",
+      "id": "1D792A35-7D72-4D57-88D0-C3A4F3E73EF6",
+      "type": "urn:entity:artist"
+    },
+    "artist:fka twigs": {
+      "name": "FKA twigs",
+      "kind": "artist",
+      "id": "FD7E4822-C2DA-4F78-896E-D5F2E22CFFC8",
+      "type": "urn:entity:artist"
+    },
+    "artist:fleetwood mac": {
+      "name": "Fleetwood Mac",
+      "kind": "artist",
+      "id": "B1414851-6A23-4C52-B647-2A0249B664F9",
+      "type": "urn:entity:artist"
+    },
+    "artist:floating points": {
+      "name": "Floating Points",
+      "kind": "artist",
+      "id": "4F87DE42-3B65-4ED1-B1C8-D015920E8E10",
+      "type": "urn:entity:artist"
+    },
+    "artist:fontaines d.c.": {
+      "name": "Fontaines D.C.",
+      "kind": "artist",
+      "id": "B11A0C7D-59E5-4911-8273-4879B4A3EA77",
+      "type": "urn:entity:artist"
+    },
+    "artist:four tet": {
+      "name": "Four Tet",
+      "kind": "artist",
+      "id": "1FCE26EB-24C4-4AD9-85E0-6F6BC8D262B8",
+      "type": "urn:entity:artist"
+    },
+    "artist:frank ocean": {
+      "name": "Frank Ocean",
+      "kind": "artist",
+      "id": "2B134C93-39EB-4A08-A72D-5F8F1167FDAA",
+      "type": "urn:entity:artist"
+    },
+    "artist:fred again..": {
+      "name": "Fred again..",
+      "kind": "artist",
+      "id": "D723CAE9-2A15-4F4B-A8CE-E49F1706D7ED",
+      "type": "urn:entity:artist"
+    },
+    "artist:idles": {
+      "name": "IDLES",
+      "kind": "artist",
+      "id": "0351A75F-C0A1-4812-8A7F-87EE28EF910B",
+      "type": "urn:entity:artist"
+    },
+    "artist:jamie xx": {
+      "name": "Jamie xx",
+      "kind": "artist",
+      "id": "DBFF3527-BCE7-4984-854A-03DC88D5C7CF",
+      "type": "urn:entity:artist"
+    },
+    "artist:joni mitchell": {
+      "name": "Joni Mitchell",
+      "kind": "artist",
+      "id": "1A9BE260-F41E-4592-9EAF-BDD6AE774F69",
+      "type": "urn:entity:artist"
+    },
+    "artist:jorja smith": {
+      "name": "Jorja Smith",
+      "kind": "artist",
+      "id": "142D27A8-DC79-4531-8177-EF5B7CA0DB5C",
+      "type": "urn:entity:artist"
+    },
+    "artist:joy division": {
+      "name": "Joy Division",
+      "kind": "artist",
+      "id": "B8FE4F27-5AC7-46C8-81BC-28313D225FDA",
+      "type": "urn:entity:artist"
+    },
+    "artist:jungle": {
+      "name": "Jungle",
+      "kind": "artist",
+      "id": "061CE350-5D95-49F0-8C09-3D13B2E2D056",
+      "type": "urn:entity:artist"
+    },
+    "artist:khruangbin": {
+      "name": "Khruangbin",
+      "kind": "artist",
+      "id": "BAF6317A-DF94-4C90-92AE-63F86560C21B",
+      "type": "urn:entity:artist"
+    },
+    "artist:lana del rey": {
+      "name": "Lana Del Rey",
+      "kind": "artist",
+      "id": "63BBE4D8-D721-466F-907C-D0007E9B6665",
+      "type": "urn:entity:artist"
+    },
+    "artist:leonard cohen": {
+      "name": "Leonard Cohen",
+      "kind": "artist",
+      "id": "E8ECE508-FBAB-4527-B355-B5F458372320",
+      "type": "urn:entity:artist"
+    },
+    "artist:little simz": {
+      "name": "Little Simz",
+      "kind": "artist",
+      "id": "823E245F-17E1-49B2-95F8-255130700E2B",
+      "type": "urn:entity:artist"
+    },
+    "artist:mac demarco": {
+      "name": "Mac DeMarco",
+      "kind": "artist",
+      "id": "B58E846A-D1F1-4C6A-AFA7-9230F74CAEE0",
+      "type": "urn:entity:artist"
+    },
+    "artist:massive attack": {
+      "name": "Massive Attack",
+      "kind": "artist",
+      "id": "E57B2F09-8078-4EDE-BEC0-4B02794A8D9E",
+      "type": "urn:entity:artist"
+    },
+    "artist:nick drake": {
+      "name": "Nick Drake",
+      "kind": "artist",
+      "id": "9FDC44C4-D40D-484C-AAAC-88E1C2B13998",
+      "type": "urn:entity:artist"
+    },
+    "artist:nina simone": {
+      "name": "Nina Simone",
+      "kind": "artist",
+      "id": "AEB7DA4D-D5A8-43F1-9881-74DA17D8D521",
+      "type": "urn:entity:artist"
+    },
+    "artist:norah jones": {
+      "name": "Norah Jones",
+      "kind": "artist",
+      "id": "CFB97CDA-1B2D-4F1A-B707-415E76AFC016",
+      "type": "urn:entity:artist"
+    },
+    "artist:phoebe bridgers": {
+      "name": "Phoebe Bridgers",
+      "kind": "artist",
+      "id": "AFBC71A7-9439-4AB0-AB68-D14B11AAF836",
+      "type": "urn:entity:artist"
+    },
+    "artist:radiohead": {
+      "name": "Radiohead",
+      "kind": "artist",
+      "id": "70CAE5BF-2F4C-445C-A3E5-4EDACFC3591C",
+      "type": "urn:entity:artist"
+    },
+    "artist:rosalía": {
+      "name": "Rosalía",
+      "kind": "artist",
+      "id": "8BE95420-BCDA-4B00-871F-247A55D35594",
+      "type": "urn:entity:artist"
+    },
+    "artist:sade": {
+      "name": "Sade",
+      "kind": "artist",
+      "id": "65726539-EA36-4283-914C-6EC71001F1F1",
+      "type": "urn:entity:artist"
+    },
+    "artist:solange": {
+      "name": "Solange",
+      "kind": "artist",
+      "id": "9BC770A7-3369-4BB8-A79E-E3440D308489",
+      "type": "urn:entity:artist"
+    },
+    "artist:sza": {
+      "name": "SZA",
+      "kind": "artist",
+      "id": "E2E58680-EE3F-4D1D-88B6-B79F87205B2C",
+      "type": "urn:entity:artist"
+    },
+    "artist:the strokes": {
+      "name": "The Strokes",
+      "kind": "artist",
+      "id": "1A44C04F-7251-4809-809B-6C885FFD68EB",
+      "type": "urn:entity:artist"
+    },
+    "artist:tycho": {
+      "name": "Tycho",
+      "kind": "artist",
+      "id": "D43A50C6-754B-444E-9289-57EBE9146279",
+      "type": "urn:entity:artist"
+    },
+    "artist:wet leg": {
+      "name": "Wet Leg",
+      "kind": "artist",
+      "id": "E2C8357C-1928-4CC8-A24D-874862A1583E",
+      "type": "urn:entity:artist"
+    },
+    "brand:ace hotel": {
+      "name": "Ace Hotel",
+      "kind": "brand",
+      "id": "DD515B0F-B984-49F1-B639-0FD3E1FC65D7",
+      "type": "urn:entity:brand"
+    },
+    "brand:acne studios": {
+      "name": "Acne Studios",
+      "kind": "brand",
+      "id": "C90E3920-BF05-4537-903F-085BFE2E41AC",
+      "type": "urn:entity:brand"
+    },
+    "brand:aesop": {
+      "name": "Aesop",
+      "kind": "brand",
+      "id": "32F867B9-E6DF-44C3-BCE4-40160C7ED5E4",
+      "type": "urn:entity:brand"
+    },
+    "brand:airbnb": {
+      "name": "Airbnb",
+      "kind": "brand",
+      "id": "A5269DD4-5BCE-4EC7-BD50-355B29F3079F",
+      "type": "urn:entity:brand"
+    },
+    "brand:aperol": {
+      "name": "Aperol",
+      "kind": "brand",
+      "id": "A5EB07F2-F0FA-4E19-9791-89E340CB8A73",
+      "type": "urn:entity:brand"
+    },
+    "brand:apple": {
+      "name": "Apple",
+      "kind": "brand",
+      "id": "D5B78065-6DBB-4DDB-80DF-6495B9B1006B",
+      "type": "urn:entity:brand"
+    },
+    "brand:arket": {
+      "name": "Arket",
+      "kind": "brand",
+      "id": "C4E6B787-F993-4568-B6ED-498321F64388",
+      "type": "urn:entity:brand"
+    },
+    "brand:bandcamp": {
+      "name": "Bandcamp",
+      "kind": "brand",
+      "id": "99E05093-D17A-4AB5-B480-AE0DFBC819B4",
+      "type": "urn:entity:brand"
+    },
+    "brand:beavertown": {
+      "name": "Beavertown",
+      "kind": "brand",
+      "id": "016F7629-169D-4310-AFC8-486D80C67A48",
+      "type": "urn:entity:brand"
+    },
+    "brand:bon appétit": {
+      "name": "Bon Appétit",
+      "kind": "brand",
+      "id": "282126EF-20A7-41E1-9860-70F6BE45B8BE",
+      "type": "urn:entity:brand"
+    },
+    "brand:brewdog": {
+      "name": "BrewDog",
+      "kind": "brand",
+      "id": "6B62EE34-63B6-45EB-B4D0-002EB0455D16",
+      "type": "urn:entity:brand"
+    },
+    "brand:brooks running": {
+      "name": "Brooks Running",
+      "kind": "brand",
+      "id": "3C923277-0187-43D2-B2C1-DC6C02F7C2CD",
+      "type": "urn:entity:brand"
+    },
+    "brand:carhartt": {
+      "name": "Carhartt",
+      "kind": "brand",
+      "id": "2D69DB33-B4DF-4879-B3DC-308E3402A1FD",
+      "type": "urn:entity:brand"
+    },
+    "brand:converse": {
+      "name": "Converse",
+      "kind": "brand",
+      "id": "7FFF01CF-7B0E-405A-A232-14176B165E60",
+      "type": "urn:entity:brand"
+    },
+    "brand:cos": {
+      "name": "COS",
+      "kind": "brand",
+      "id": "2CA2569D-223D-42D6-BB2F-F8B5D36B9AEC",
+      "type": "urn:entity:brand"
+    },
+    "brand:diptyque": {
+      "name": "Diptyque",
+      "kind": "brand",
+      "id": "EE6E5064-E9B8-4EB2-AD63-2E082EBF7726",
+      "type": "urn:entity:brand"
+    },
+    "brand:dishoom": {
+      "name": "Dishoom",
+      "kind": "brand",
+      "id": "9BAB7C7F-68F4-4A31-B5DA-8346C1E9563D",
+      "type": "urn:entity:brand"
+    },
+    "brand:dr. martens": {
+      "name": "Dr. Martens",
+      "kind": "brand",
+      "id": "F59D6DB5-5A85-48C6-A2EC-CAAE334D4348",
+      "type": "urn:entity:brand"
+    },
+    "brand:dyson": {
+      "name": "Dyson",
+      "kind": "brand",
+      "id": "024D42B8-AB39-49C6-BF6F-C2C65F6FDA70",
+      "type": "urn:entity:brand"
+    },
+    "brand:fender": {
+      "name": "Fender",
+      "kind": "brand",
+      "id": "4584672D-C702-4E58-AEE3-D8DE584C36C8",
+      "type": "urn:entity:brand"
+    },
+    "brand:folio society": {
+      "name": "Folio Society",
+      "kind": "brand",
+      "id": "3A721D6E-ED86-4734-8261-BCA8D1118701",
+      "type": "urn:entity:brand"
+    },
+    "brand:fortnum & mason": {
+      "name": "Fortnum & Mason",
+      "kind": "brand",
+      "id": "1987ED89-C7E7-4871-895E-1F3F207EE11A",
+      "type": "urn:entity:brand"
+    },
+    "brand:garmin": {
+      "name": "Garmin",
+      "kind": "brand",
+      "id": "6D76F9E7-E567-4BC8-847B-0341F676BF1D",
+      "type": "urn:entity:brand"
+    },
+    "brand:glossier": {
+      "name": "Glossier",
+      "kind": "brand",
+      "id": "742FBE1B-B70F-471F-AD07-A55C9A903628",
+      "type": "urn:entity:brand"
+    },
+    "brand:gymshark": {
+      "name": "Gymshark",
+      "kind": "brand",
+      "id": "C0B8080F-C989-4301-ACC1-7255619A5BDA",
+      "type": "urn:entity:brand"
+    },
+    "brand:hendrick's": {
+      "name": "Hendrick's",
+      "kind": "brand",
+      "id": "49848AED-9A76-4D76-8802-E6E48FA7464F",
+      "type": "urn:entity:brand"
+    },
+    "brand:huel": {
+      "name": "Huel",
+      "kind": "brand",
+      "id": "1A91A46A-3764-4720-973D-C25951E4484C",
+      "type": "urn:entity:brand"
+    },
+    "brand:ikea": {
+      "name": "IKEA",
+      "kind": "brand",
+      "id": "7E9A2E74-1CB5-43E9-8B74-69CA8283BFBD",
+      "type": "urn:entity:brand"
+    },
+    "brand:kindle": {
+      "name": "Kindle",
+      "kind": "brand",
+      "id": "8DF79FF0-0B15-4277-AFCC-83BF44922209",
+      "type": "urn:entity:brand"
+    },
+    "brand:kinfolk": {
+      "name": "Kinfolk",
+      "kind": "brand",
+      "id": "0044C2D6-C96D-4571-8EFE-E81E8CF722D4",
+      "type": "urn:entity:brand"
+    },
+    "brand:kitchenaid": {
+      "name": "KitchenAid",
+      "kind": "brand",
+      "id": "D1E19FBE-F99D-4549-9B95-A3FD560E77E6",
+      "type": "urn:entity:brand"
+    },
+    "brand:le labo": {
+      "name": "Le Labo",
+      "kind": "brand",
+      "id": "25C88914-2BC2-4E6B-A787-A8DD2DD4F45E",
+      "type": "urn:entity:brand"
+    },
+    "brand:levi's": {
+      "name": "Levi's",
+      "kind": "brand",
+      "id": "EE2B58FF-37F6-4521-912F-55EBC25D83E2",
+      "type": "urn:entity:brand"
+    },
+    "brand:lululemon": {
+      "name": "Lululemon",
+      "kind": "brand",
+      "id": "D9B9B404-7B35-4E4B-A0CE-4CAB8155FE9E",
+      "type": "urn:entity:brand"
+    },
+    "brand:michelin guide": {
+      "name": "Michelin Guide",
+      "kind": "brand",
+      "id": "BFB1806F-68DC-45F2-9197-25070357D80E",
+      "type": "urn:entity:brand"
+    },
+    "brand:moleskine": {
+      "name": "Moleskine",
+      "kind": "brand",
+      "id": "AB06A58F-6962-4663-80A7-EF7D9208969A",
+      "type": "urn:entity:brand"
+    },
+    "brand:muji": {
+      "name": "Muji",
+      "kind": "brand",
+      "id": "E12201A5-CC50-40AF-97AE-C54A2CA303F7",
+      "type": "urn:entity:brand"
+    },
+    "brand:new balance": {
+      "name": "New Balance",
+      "kind": "brand",
+      "id": "D271BA64-5A65-42E3-ADF2-7342222248BD",
+      "type": "urn:entity:brand"
+    },
+    "brand:nike": {
+      "name": "Nike",
+      "kind": "brand",
+      "id": "C70CE2B8-0AD1-4150-BF18-5A6347F2E860",
+      "type": "urn:entity:brand"
+    },
+    "brand:notion": {
+      "name": "Notion",
+      "kind": "brand",
+      "id": "233A4F29-9585-46B8-81A4-400469312E75",
+      "type": "urn:entity:brand"
+    },
+    "brand:oatly": {
+      "name": "Oatly",
+      "kind": "brand",
+      "id": "012081EE-E2BA-420E-9904-417CAF65214B",
+      "type": "urn:entity:brand"
+    },
+    "brand:patagonia": {
+      "name": "Patagonia",
+      "kind": "brand",
+      "id": "DB4CE34E-3A63-4947-946F-9D52502C5762",
+      "type": "urn:entity:brand"
+    },
+    "brand:peloton": {
+      "name": "Peloton",
+      "kind": "brand",
+      "id": "E8AE27B9-1528-4A58-97BD-30AF0BFE8859",
+      "type": "urn:entity:brand"
+    },
+    "brand:penguin books": {
+      "name": "Penguin Books",
+      "kind": "brand",
+      "id": "638DF38A-5A0E-4D90-AE5C-4C669B0F2B18",
+      "type": "urn:entity:brand"
+    },
+    "brand:polaroid": {
+      "name": "Polaroid",
+      "kind": "brand",
+      "id": "62926E8D-2D7E-4428-819E-BF2477D3233F",
+      "type": "urn:entity:brand"
+    },
+    "brand:riedel": {
+      "name": "Riedel",
+      "kind": "brand",
+      "id": "E9DD16EE-FBA8-4CC1-83BF-DA3AEBC48D3F",
+      "type": "urn:entity:brand"
+    },
+    "brand:rimowa": {
+      "name": "Rimowa",
+      "kind": "brand",
+      "id": "C1824880-DE8B-43BB-948E-B5347689A8BD",
+      "type": "urn:entity:brand"
+    },
+    "brand:rituals": {
+      "name": "Rituals",
+      "kind": "brand",
+      "id": "AA174E0D-71AF-438E-A39E-429487223E66",
+      "type": "urn:entity:brand"
+    },
+    "brand:rough trade": {
+      "name": "Rough Trade",
+      "kind": "brand",
+      "id": "BF9A9FDA-3726-49FC-93D6-81F314C975A3",
+      "type": "urn:entity:brand"
+    },
+    "brand:sephora": {
+      "name": "Sephora",
+      "kind": "brand",
+      "id": "2C5054E1-8691-4F52-83CD-310D029BA6A3",
+      "type": "urn:entity:brand"
+    },
+    "brand:slack": {
+      "name": "Slack",
+      "kind": "brand",
+      "id": "7E8DE6C5-C965-430A-B361-E0FAD394C262",
+      "type": "urn:entity:brand"
+    },
+    "brand:smeg": {
+      "name": "Smeg",
+      "kind": "brand",
+      "id": "072332E1-E62F-49A2-88A6-60DA7A849D52",
+      "type": "urn:entity:brand"
+    },
+    "brand:soho house": {
+      "name": "Soho House",
+      "kind": "brand",
+      "id": "AFD6CD41-7888-413D-885D-E119DB00DE68",
+      "type": "urn:entity:brand"
+    },
+    "brand:sonos": {
+      "name": "Sonos",
+      "kind": "brand",
+      "id": "9847B888-65A3-404C-82DB-80F37DB5DF59",
+      "type": "urn:entity:brand"
+    },
+    "brand:strava": {
+      "name": "Strava",
+      "kind": "brand",
+      "id": "36A715FC-7000-4977-A6CB-965B5856E193",
+      "type": "urn:entity:brand"
+    },
+    "brand:stüssy": {
+      "name": "Stüssy",
+      "kind": "brand",
+      "id": "92384FD1-363D-4423-926C-EAF478CE079B",
+      "type": "urn:entity:brand"
+    },
+    "brand:the new yorker": {
+      "name": "The New Yorker",
+      "kind": "brand",
+      "id": "399654ED-B417-49C5-A9AA-8682BE35A85D",
+      "type": "urn:entity:brand"
+    },
+    "brand:uniqlo": {
+      "name": "Uniqlo",
+      "kind": "brand",
+      "id": "46C9F889-EC89-4715-A767-DEABACF52C41",
+      "type": "urn:entity:brand"
+    },
+    "brand:vans": {
+      "name": "Vans",
+      "kind": "brand",
+      "id": "AC8F9047-F23D-4A54-BBAA-A3CBD2991C02",
+      "type": "urn:entity:brand"
+    },
+    "brand:waitrose": {
+      "name": "Waitrose",
+      "kind": "brand",
+      "id": "6806CB60-7B54-44DD-A9A6-9F594BB34B07",
+      "type": "urn:entity:brand"
+    },
+    "place:bristol:clifton suspension bridge": {
+      "name": "Clifton Suspension Bridge",
+      "kind": "place",
+      "id": "25D376EC-0F92-4671-B5B0-43DB8E5EEE9F",
+      "type": "urn:entity:place"
+    },
+    "place:bristol:watershed": {
+      "name": "Watershed",
+      "kind": "place",
+      "id": "DE245D45-8217-4FF0-A09E-5E0A3345A41A",
+      "type": "urn:entity:place"
+    },
+    "place:london:barbican centre": {
+      "name": "Barbican Centre",
+      "kind": "place",
+      "id": "CC51B695-943C-4451-9724-3BF40858BF01",
+      "type": "urn:entity:place"
+    },
+    "place:london:columbia road flower market": {
+      "name": "Columbia Road Flower Market",
+      "kind": "place",
+      "id": "658AAD4F-0A3A-4046-A325-8007638D78CF",
+      "type": "urn:entity:place"
+    },
+    "place:manchester:albert hall": {
+      "name": "Albert Hall",
+      "kind": "place",
+      "id": "77E6C4E7-49EC-48DB-A7EE-E36AA98A7E95",
+      "type": "urn:entity:place"
+    },
+    "place:manchester:band on the wall": {
+      "name": "Band on the Wall",
+      "kind": "place",
+      "id": "E45F4596-70B4-4910-9D69-67FF2FAD3284",
+      "type": "urn:entity:place"
+    },
+    "place:manchester:manchester art gallery": {
+      "name": "Manchester Art Gallery",
+      "kind": "place",
+      "id": "069C2257-E652-4AF4-A441-4A5749D10E7B",
+      "type": "urn:entity:place"
+    },
+    "topic:afternoon tea": {
+      "name": "Afternoon tea",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:afternoon_tea",
+      "type": "tag"
+    },
+    "topic:architecture": {
+      "name": "Architecture",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:architecture",
+      "type": "tag"
+    },
+    "topic:board games": {
+      "name": "Board games",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:board_games",
+      "type": "tag"
+    },
+    "topic:cocktails": {
+      "name": "Cocktails",
+      "kind": "topic",
+      "id": "urn:tag:keyword:qloo:cocktails",
+      "type": "tag"
+    },
+    "topic:cold water swimming": {
+      "name": "Cold water swimming",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:cold_water_swimming",
+      "type": "tag"
+    },
+    "topic:craft beer": {
+      "name": "Craft beer",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:craft_beer",
+      "type": "tag"
+    },
+    "topic:farmers markets": {
+      "name": "Farmers markets",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:farmers_markets",
+      "type": "tag"
+    },
+    "topic:food markets": {
+      "name": "Food markets",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:food_markets",
+      "type": "tag"
+    },
+    "topic:graphic design": {
+      "name": "Graphic design",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:graphic_design",
+      "type": "tag"
+    },
+    "topic:houseplants": {
+      "name": "Houseplants",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:houseplants",
+      "type": "tag"
+    },
+    "topic:interior design": {
+      "name": "Interior design",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:interior_design",
+      "type": "tag"
+    },
+    "topic:literary festivals": {
+      "name": "Literary festivals",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:literary_festivals",
+      "type": "tag"
+    },
+    "topic:live music": {
+      "name": "Live music",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:live_music",
+      "type": "tag"
+    },
+    "topic:meal prep": {
+      "name": "Meal prep",
+      "kind": "topic",
+      "id": "urn:tag:lifestyle:qloo:meal_prep",
+      "type": "tag"
+    },
+    "topic:meditation": {
+      "name": "Meditation",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:meditation",
+      "type": "tag"
+    },
+    "topic:music festivals": {
+      "name": "Music festivals",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:music_festivals",
+      "type": "tag"
+    },
+    "topic:natural wine": {
+      "name": "Natural wine",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:natural_wine",
+      "type": "tag"
+    },
+    "topic:photography": {
+      "name": "Photography",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:photography",
+      "type": "tag"
+    },
+    "topic:podcasts": {
+      "name": "Podcasts",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:podcasts",
+      "type": "tag"
+    },
+    "topic:poetry": {
+      "name": "Poetry",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:poetry",
+      "type": "tag"
+    },
+    "topic:productivity": {
+      "name": "Productivity",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:productivity",
+      "type": "tag"
+    },
+    "topic:pub quizzes": {
+      "name": "Pub quizzes",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:pub_quizzes",
+      "type": "tag"
+    },
+    "topic:record collecting": {
+      "name": "Record collecting",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:record_collecting",
+      "type": "tag"
+    },
+    "topic:self care": {
+      "name": "Self care",
+      "kind": "topic",
+      "id": "urn:tag:lifestyle:qloo:self_care",
+      "type": "tag"
+    },
+    "topic:skincare": {
+      "name": "Skincare",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:skincare",
+      "type": "tag"
+    },
+    "topic:slow travel": {
+      "name": "Slow travel",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:slow_travel",
+      "type": "tag"
+    },
+    "topic:sourdough baking": {
+      "name": "Sourdough baking",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:sourdough_baking",
+      "type": "tag"
+    },
+    "topic:specialty coffee": {
+      "name": "Specialty coffee",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:specialty_coffee",
+      "type": "tag"
+    },
+    "topic:startups": {
+      "name": "Startups",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:startups",
+      "type": "tag"
+    },
+    "topic:street food": {
+      "name": "Street food",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:street_food",
+      "type": "tag"
+    },
+    "topic:streetwear": {
+      "name": "Streetwear",
+      "kind": "topic",
+      "id": "urn:tag:lifestyle:qloo:streetwear",
+      "type": "tag"
+    },
+    "topic:sustainable fashion": {
+      "name": "Sustainable fashion",
+      "kind": "topic",
+      "id": "urn:tag:lifestyle:qloo:sustainable_fashion",
+      "type": "tag"
+    },
+    "topic:trail running": {
+      "name": "Trail running",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:trail_running",
+      "type": "tag"
+    },
+    "topic:vintage fashion": {
+      "name": "Vintage fashion",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:vintage_fashion",
+      "type": "tag"
+    },
+    "topic:vinyl records": {
+      "name": "Vinyl records",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:vinyl_records",
+      "type": "tag"
+    },
+    "topic:wine tasting": {
+      "name": "Wine tasting",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:wine_tasting",
+      "type": "tag"
+    },
+    "topic:yoga": {
+      "name": "Yoga",
+      "kind": "topic",
+      "id": "urn:tag:interests:qloo:yoga",
+      "type": "tag"
+    }
+  }
+}

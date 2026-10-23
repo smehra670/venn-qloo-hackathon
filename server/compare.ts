@@ -11,17 +11,17 @@ function median(values: number[]): number {
 }
 
 const SIGNAL_LABELS: { key: keyof Partner["signals"]; label: string }[] = [
-  { key: "affinityToPartner", label: "Your anchors \u2192 partner" },
-  { key: "affinityFromPartner", label: "Partner \u2192 your category" },
-  { key: "tagOverlap", label: "Tag overlap" },
+  { key: "affinityToPartner", label: "Your crowd \u2192 partner" },
+  { key: "affinityFromPartner", label: "Their crowd \u2192 your favourites" },
+  { key: "tagOverlap", label: "Shared tastes" },
   { key: "localPopularity", label: "Local popularity" },
-  { key: "trend", label: "Trend" },
+  // No "trend" bar: Qloo's trending endpoint isn't available on this key, so it was a constant.
 ];
 
 const COMPUTED_NOTE =
   "Built from this search's existing taste signals (forward + reverse affinity probes already used to score this partner); no extra calls.";
 const QLOO_TAGS_NOTE =
-  "Shared tags from Qloo's /v2/analysis/compare (A = your matched anchors, B = this partner), scored both ways.";
+  "Your crowd's top tastes, scored for both crowds by Qloo tag insights (your favourites vs this partner).";
 
 export interface CompareQlooTag {
   label: string;
@@ -118,7 +118,12 @@ export async function buildCompare(
     try {
       const liveTags = await tryLive();
       if (liveTags && liveTags.length > 0) {
-        const withBoth = liveTags.filter((tag) => tag.a > 0 && tag.b > 0).map((tag) => tag.label);
+        // A taste counts as shared when the partner's crowd also rates it highly (same 0.8
+        // floor the run uses for sharedTags), strongest shared first.
+        const withBoth = liveTags
+          .filter((tag) => tag.a > 0 && tag.b >= 0.8)
+          .sort((x, y) => Math.min(y.a, y.b) - Math.min(x.a, x.b))
+          .map((tag) => tag.label);
         sharedTags = (withBoth.length > 0 ? withBoth : liveTags.map((tag) => tag.label)).slice(0, 8);
         source = "qloo_tags";
         note = QLOO_TAGS_NOTE;

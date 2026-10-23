@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { ResultsHeader } from "@/components/results/ResultsHeader";
 import { OverviewFilters } from "@/components/results/overview/OverviewFilters";
 import { OrbitPanel } from "@/components/results/overview/OrbitPanel";
 import { PicksPanel } from "@/components/results/overview/PicksPanel";
@@ -6,38 +7,37 @@ import { SelectedCard } from "@/components/results/overview/SelectedCard";
 import { ScatterPanel } from "@/components/results/overview/ScatterPanel";
 import { OverviewMapPanel } from "@/components/results/overview/OverviewMapPanel";
 import { SankeyPanel } from "@/components/results/overview/SankeyPanel";
-import { CompareBarsPanel } from "@/components/results/overview/CompareBarsPanel";
-import { QlooWaterfallPanel } from "@/components/results/overview/QlooWaterfallPanel";
+import { CompareBarsPanel, compareHasRows } from "@/components/results/overview/CompareBarsPanel";
+import { ThemesPanel } from "@/components/results/overview/ThemesPanel";
 import { OverviewTipHost } from "@/components/results/overview/OverviewTip";
 import {
-  distFor,
   filterPartners,
   heroCopy,
   OVERVIEW_MAX,
-  overlapFraction,
   prefersStaticMotion,
+  reachLevel,
   type OverviewKindFilter,
 } from "@/lib/overviewModel";
+import { businessLabel } from "@/lib/format";
 import { matchResearchCity } from "@/lib/researchCities";
+import { TasteFocusContext } from "@/components/results/overview/tasteFocus";
+import { useOverviewTasteFocus } from "@/components/results/overview/useOverviewTasteFocus";
 import { useVenn } from "@/store/useVenn";
 
-function HeroMiniVenn({ fraction }: { fraction: number }) {
-  const R = 26;
-  const d = distFor(fraction, R, R);
-  const W = 4 * R + 10;
-  const H = 2 * R + 8;
-  const cy = H / 2;
+type Stat = { value: string; label: string; hint?: string };
+
+/** Four at-a-glance numbers, all derived from the ranked partners on screen. */
+function StatStrip({ stats }: { stats: Stat[] }) {
   return (
-    <svg width={110} height={74} viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
-      <defs>
-        <clipPath id="hero-you-clip">
-          <circle cx={R + 5} cy={cy} r={R} />
-        </clipPath>
-      </defs>
-      <circle cx={R + 5} cy={cy} r={R} fill="#FF6B57" />
-      <circle cx={R + 5 + d} cy={cy} r={R} fill="#4F5BFF" />
-      <circle cx={R + 5 + d} cy={cy} r={R} fill="#6B3FA0" clipPath="url(#hero-you-clip)" />
-    </svg>
+    <dl className="ov-stats-strip" aria-label="Summary">
+      {stats.map((stat) => (
+        <div key={stat.label} className="ov-stat">
+          <dt>{stat.label}</dt>
+          <dd>{stat.value}</dd>
+          {stat.hint ? <span>{stat.hint}</span> : null}
+        </div>
+      ))}
+    </dl>
   );
 }
 
@@ -57,9 +57,6 @@ export function OverviewPage() {
   const heatmaps = useVenn((s) => s.heatmaps);
   const compare = useVenn((s) => s.compare);
   const compareLoading = useVenn((s) => s.compareLoading);
-  const calls = useVenn((s) => s.calls);
-  const openCallLog = useVenn((s) => s.openCallLog);
-  const reset = useVenn((s) => s.reset);
 
   const [kind, setKind] = useState<OverviewKindFilter>("all");
   const [realistic, setRealistic] = useState(false);
@@ -87,17 +84,10 @@ export function OverviewPage() {
     void loadHeatmap(selected.id);
   }, [selected?.id, loadCompare, loadHeatmap]);
 
-  // Prefetch real call log for the waterfall (never invent timings)
-  useEffect(() => {
-    if (!result) return;
-    if ((result.calls?.length ?? 0) > 0) return;
-    if (calls.length > 0) return;
-    void openCallLog();
-  }, [result?.runId, result?.calls, calls.length, openCallLog]);
+  const { focus, announce, everyTaste, pinnedTaste } = useOverviewTasteFocus(ranked, result);
 
   const heatSpots = selected ? heatmaps[selected.id]?.spots ?? [] : [];
   const comparePayload = selected ? compare[selected.id] ?? null : null;
-  const callRows = (result?.calls?.length ? result.calls : calls) ?? [];
 
   const cityCenter = useMemo((): [number, number] => {
     if (result?.city?.hasLocalData && result.city.center) {
@@ -106,11 +96,7 @@ export function OverviewPage() {
     return matchResearchCity(result?.input.city ?? "")?.center ?? [51.5074, -0.1278];
   }, [result]);
 
-  const youName =
-    result?.input.businessName?.trim() ||
-    result?.input.businessTypeCustom?.trim() ||
-    result?.input.businessType ||
-    "You";
+  const youName = result ? businessLabel(result.input) : "You";
 
   const anchors = useMemo(() => {
     const fromTaste = (result?.input.tasteAnchors ?? []).map((a) => a.name);
@@ -130,79 +116,49 @@ export function OverviewPage() {
     return () => document.body.classList.remove("hl-on");
   }, [hoverId]);
 
+  const stats = useMemo((): Stat[] => {
+    const best = ranked[0];
+    const distances = ranked
+      .map((p) => p.venueFacts?.distanceM)
+      .filter((d): d is number => typeof d === "number");
+    const near = distances.filter((d) => d <= 3000).length;
+    const easy = ranked.filter((p) => reachLevel(p) === "easy").length;
+    const kinds = new Set(ranked.map((p) => p.kind)).size;
+    return [
+      { value: String(ranked.length), label: "Partners ranked", hint: `${kinds} kind${kinds === 1 ? "" : "s"}` },
+      {
+        value: best ? String(Math.round(best.matchScore)) : "—",
+        label: "Best overlap",
+        hint: best ? best.name : undefined,
+      },
+      { value: String(easy), label: "Easy to reach", hint: `of ${ranked.length}` },
+      {
+        value: distances.length ? String(near) : "—",
+        label: "Within 3 km",
+        hint: distances.length ? `of ${distances.length} local` : "no local places",
+      },
+    ];
+  }, [ranked]);
+
   if (!result) return null;
 
-  const queryBits = [
-    result.input.businessTypeCustom || result.input.businessType,
-    result.input.city,
-    anchors.slice(0, 2).join(", "),
-  ].filter(Boolean);
-
   return (
-    <div className={`ov-page${staticMotion ? " ov-static" : ""}`}>
+    <TasteFocusContext.Provider value={focus}>
+    <div className={`ov-page${staticMotion ? " ov-static" : ""}${pinnedTaste ? " is-tastefocus" : ""}`}>
       <OverviewTipHost />
+      <div className="sr-only" aria-live="polite" role="status">
+        {announce}
+      </div>
 
-      <header className="ov-bar">
-        <div className="ov-bar-in">
-          <a className="ov-brand" href="#/" aria-label="Venn home">
-            <svg width="38" height="26" viewBox="0 0 40 28" aria-hidden="true">
-              <defs>
-                <clipPath id="ov-mk">
-                  <circle cx="14" cy="14" r="13" />
-                </clipPath>
-              </defs>
-              <circle cx="14" cy="14" r="13" fill="#FF6B57" />
-              <circle cx="26" cy="14" r="13" fill="#4F5BFF" />
-              <circle cx="26" cy="14" r="13" fill="#6B3FA0" clipPath="url(#ov-mk)" />
-            </svg>
-            Venn
-          </a>
-          <div className="ov-q" aria-label="Your search">
-            {queryBits.map((b, i) => (
-              <span key={`${b}-${i}`}>
-                {i > 0 ? <i /> : null}
-                {b}
-              </span>
-            ))}
-          </div>
-          <nav className="ov-tabs" aria-label="Views">
-            <button type="button" className="on" aria-current="page">
-              Overview
-            </button>
-            <button type="button" onClick={() => useVenn.getState().setView("shortlist")}>
-              Shortlist
-            </button>
-            <button type="button" onClick={() => useVenn.getState().setView("plan")}>
-              Plan
-            </button>
-          </nav>
-          <div className="ov-bar-r">
-            <button type="button" className="ov-link" onClick={() => void useVenn.getState().shareRun()}>
-              Share
-            </button>
-            <button type="button" className="ov-btn" onClick={reset}>
-              New search
-            </button>
-          </div>
-        </div>
-      </header>
+      <ResultsHeader />
 
       <main className="ov-wrap">
         <section className="ov-hero" aria-labelledby="ov-h1">
-          <div>
+          <div className="ov-hero-copy">
             <h1 id="ov-h1">{heroTitle}</h1>
             <p className="ov-lede">{heroLede}</p>
           </div>
-          {selected ? (
-            <div className="ov-fig" aria-live="polite">
-              <HeroMiniVenn fraction={overlapFraction(selected)} />
-              <div className="ov-fig-n">{Math.round(selected.matchScore)}</div>
-              <div className="ov-fig-cap">
-                <b>{selected.name}</b>
-                taste overlap with you, from Qloo
-              </div>
-            </div>
-          ) : null}
+          <StatStrip stats={stats} />
         </section>
 
         <OverviewFilters
@@ -224,27 +180,28 @@ export function OverviewPage() {
             setHover={setHover}
             select={select}
           />
-          <div className="ov-col">
-            <PicksPanel
-              ranked={ranked}
-              surprise={surprise}
-              selectedId={selectedId}
-              hoverId={hoverId}
-              setHover={setHover}
-              select={select}
-            />
-            <SelectedCard
-              partner={selected}
-              youLabel={youName}
-              pinned={selected ? pinnedIds.has(selected.id) : false}
-              onDraft={() => {
-                if (selected) void openBrief(selected.id);
-              }}
-              onTogglePin={() => {
-                if (selected) togglePin(selected.id);
-              }}
-            />
-          </div>
+          <PicksPanel
+            ranked={ranked}
+            surprise={surprise}
+            selectedId={selectedId}
+            hoverId={hoverId}
+            setHover={setHover}
+            select={select}
+          />
+        </section>
+
+        <section className="ov-row ov-row-sel">
+          <SelectedCard
+            partner={selected}
+            youLabel={youName}
+            pinned={selected ? pinnedIds.has(selected.id) : false}
+            onDraft={() => {
+              if (selected) void openBrief(selected.id);
+            }}
+            onTogglePin={() => {
+              if (selected) togglePin(selected.id);
+            }}
+          />
         </section>
 
         <section className="ov-row ov-row-b">
@@ -278,16 +235,17 @@ export function OverviewPage() {
             hoverId={hoverId}
             setHover={setHover}
             select={select}
+            allTastes={everyTaste}
           />
-          <CompareBarsPanel
-            partner={selected}
-            payload={comparePayload}
-            loading={compareLoading && !!selected && !comparePayload}
-          />
-        </section>
-
-        <section className="ov-row">
-          <QlooWaterfallPanel calls={callRows} partners={partners} anchors={anchors} />
+          {compareLoading || compareHasRows(comparePayload) ? (
+            <CompareBarsPanel
+              partner={selected}
+              payload={comparePayload}
+              loading={compareLoading && !!selected && !comparePayload}
+            />
+          ) : (
+            <ThemesPanel partners={ranked} selectedId={selectedId} hoverId={hoverId} setHover={setHover} />
+          )}
         </section>
 
         <footer className="ov-footer">
@@ -296,5 +254,6 @@ export function OverviewPage() {
         </footer>
       </main>
     </div>
+    </TasteFocusContext.Provider>
   );
 }

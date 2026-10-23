@@ -2,6 +2,7 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Partner, StepId } from "@shared/types";
 import { PercentGauge } from "@/components/research/PercentGauge";
+import { KIND_META, kindTint } from "@/lib/kinds";
 import { maplibregl } from "@/lib/maplibre";
 import { RESEARCH_RADIUS_M } from "@/lib/researchCities";
 import {
@@ -23,8 +24,16 @@ const CAMERA_EASE_MS = 1900;
 
 type LngLat = { lng: number; lat: number };
 
+const DEFAULT_PIN_COLOR = "#4F5BFF";
+
+/** Each partner takes its kind's colour (same palette as the results graphs). */
+function kindColor(p: Partner): string {
+  return KIND_META[p.kind]?.color ?? DEFAULT_PIN_COLOR;
+}
+
 interface MapPartner {
   partner: Partner;
+  color: string;
   lngLat: LngLat;
   score: number;
   closed: boolean;
@@ -46,6 +55,19 @@ function isClosedPartner(p: Partner): boolean {
   return /\bpermanently closed\b/.test(blurb);
 }
 
+/** matchScore / popularityLift arrive as 0-100 from the server (0-1 in older fixtures); visuals expect 0-1. */
+function unit(value: number | undefined): number {
+  if (value == null || !Number.isFinite(value)) return 0;
+  const v = value > 1 ? value / 100 : value;
+  return Math.min(1, Math.max(0, v));
+}
+
+/** Current root font size relative to 16px, so px-based overlay maths follows the fluid UI scale. */
+function rootScale(): number {
+  if (typeof window === "undefined") return 1;
+  return (parseFloat(getComputedStyle(document.documentElement).fontSize) || 16) / 16;
+}
+
 interface OverlayLabel {
   id: string;
   text: string;
@@ -54,6 +76,7 @@ interface OverlayLabel {
   y: number;
   opacity: number;
   rank?: number;
+  color?: string;
 }
 
 function collidePlace(
@@ -128,6 +151,7 @@ export function ResearchMap({
   const partnerMarkersRef = useRef<Map<string, maplibregl.Marker>>(new Map());
   const ringSourceReady = useRef(false);
   const [size, setSize] = useState({ w: 800, h: 640 });
+  const [u, setU] = useState(rootScale);
   const [tick, setTick] = useState(0);
   const [mapReady, setMapReady] = useState(false);
   const [arrivedIds, setArrivedIds] = useState<Set<string>>(new Set());
@@ -147,8 +171,9 @@ export function ResearchMap({
       if (!ll) continue;
       withCoords.push({
         partner: p,
+        color: kindColor(p),
         lngLat: ll,
-        score: p.matchScore,
+        score: unit(p.matchScore),
         closed: isClosedPartner(p),
         rank: 0,
         arrivedAt: 0,
@@ -198,6 +223,7 @@ export function ResearchMap({
     const ro = new ResizeObserver(() => {
       const r = el.getBoundingClientRect();
       setSize({ w: r.width, h: r.height });
+      setU(rootScale());
       mapRef.current?.resize();
     });
     ro.observe(el);
@@ -268,7 +294,7 @@ export function ResearchMap({
         source: "research-heat",
         paint: {
           "circle-radius": ["get", "r"],
-          "circle-color": "#6B3FA0",
+          "circle-color": ["get", "color"],
           "circle-opacity": 0,
           "circle-blur": 0.85,
         },
@@ -284,7 +310,7 @@ export function ResearchMap({
         type: "line",
         source: "research-lines",
         paint: {
-          "line-color": "#6B3FA0",
+          "line-color": ["get", "color"],
           "line-width": ["get", "width"],
           "line-opacity": ["get", "opacity"],
         },
@@ -380,7 +406,7 @@ export function ResearchMap({
       .filter((m) => arrivedIds.has(m.partner.id) || visualDone)
       .sort(
         (a, b) =>
-          (b.partner.popularityLift ?? b.score) - (a.partner.popularityLift ?? a.score),
+          unit(b.partner.popularityLift ?? b.score) - unit(a.partner.popularityLift ?? a.score),
       )
       .slice(0, 3);
     const heatFeatures =
@@ -388,9 +414,10 @@ export function ResearchMap({
         ? heatSources.map((m, i) => ({
             type: "Feature" as const,
             properties: {
+              color: m.color,
               r:
-                48 +
-                (m.partner.popularityLift ?? m.score) * 36 +
+                48 * u +
+                unit(m.partner.popularityLift ?? m.score) * 36 * u +
                 (reduced ? 0 : 2.4 * Math.sin(Date.now() / 650 + i * 1.9)),
             },
             geometry: {
@@ -422,6 +449,7 @@ export function ResearchMap({
               return {
                 type: "Feature" as const,
                 properties: {
+                  color: m.color,
                   width: 1.2 + m.score * 2.4,
                   opacity: (0.22 + 0.5 * m.score) * dim * closedFade,
                 },
@@ -448,6 +476,7 @@ export function ResearchMap({
         // Outer el is owned by MapLibre (transform = translate). Scale/opacity live on .inner.
         const el = document.createElement("div");
         el.className = "research-partner-pin";
+        el.style.setProperty("--pin", m.color);
         el.innerHTML = `<span class="research-partner-inner"><span class="research-partner-halo"></span><span class="research-partner-dot"></span><span class="research-partner-tick" hidden></span></span>`;
         marker = new maplibregl.Marker({ element: el, anchor: "center" })
           .setLngLat([m.lngLat.lng, m.lngLat.lat])
@@ -501,11 +530,11 @@ export function ResearchMap({
       bounds.extend([you.lng, you.lat]);
       topFive.forEach((m) => bounds.extend([m.lngLat.lng, m.lngLat.lat]));
       if (reduced) {
-        map.fitBounds(bounds, { padding: 80, maxZoom: workingZoomCap(map), duration: 0 });
+        map.fitBounds(bounds, { padding: { top: 90 * u, left: 80 * u, right: 80 * u, bottom: 120 * u }, maxZoom: finalZoomCap(map), duration: 0 });
       } else {
         map.fitBounds(bounds, {
-          padding: 80,
-          maxZoom: workingZoomCap(map),
+          padding: { top: 90 * u, left: 80 * u, right: 80 * u, bottom: 120 * u },
+          maxZoom: finalZoomCap(map),
           duration: 1100,
           easing: easeInOut,
         });
@@ -532,21 +561,21 @@ export function ResearchMap({
     const vw = size.w;
     const vh = size.h;
     const obstacles: { x: number; y: number; w: number; h: number }[] = [
-      { x: 16, y: 16, w: 200, h: 44 },
-      { x: vw - 140, y: 16, w: 124, h: 50 },
+      { x: 16 * u, y: 16 * u, w: 230 * u, h: 48 * u },
+      { x: vw - 150 * u, y: 16 * u, w: 134 * u, h: 56 * u },
     ];
     const out: OverlayLabel[] = [];
     const youPt = map.project([you.lng, you.lat]);
 
     if (vIdx >= 0 || visualDone) {
       const pos = collidePlace(
-        120,
-        28,
+        120 * u,
+        28 * u,
         [
-          [youPt.x - 60, youPt.y - 40],
-          [youPt.x - 60, youPt.y + 20],
-          [youPt.x + 18, youPt.y - 14],
-          [youPt.x - 138, youPt.y - 14],
+          [youPt.x - 60 * u, youPt.y - 40 * u],
+          [youPt.x - 60 * u, youPt.y + 20 * u],
+          [youPt.x + 18 * u, youPt.y - 14 * u],
+          [youPt.x - 138 * u, youPt.y - 14 * u],
         ],
         obstacles,
         vw,
@@ -570,8 +599,8 @@ export function ResearchMap({
         id: "radius",
         text: `${radiusKm} km`,
         kind: "radius",
-        x: pt.x - 28,
-        y: pt.y - 13,
+        x: pt.x - 28 * u,
+        y: pt.y - 13 * u,
         opacity: 1,
       });
     }
@@ -589,21 +618,22 @@ export function ResearchMap({
             ? 1
             : easeOut(Math.max(0, (Date.now() - stepStartedAt - i * 160) / 400));
         if (stagger <= 0.02) return;
-        const w = Math.min(180, 28 + m.partner.name.length * 7);
+        const w = Math.min(190 * u, (30 + m.partner.name.length * 7.6) * u);
         const pos = collidePlace(
           w,
-          28,
-          sideCandidates(pt.x, pt.y, 10, w, 28),
+          28 * u,
+          sideCandidates(pt.x, pt.y, 10 * u, w, 28 * u),
           obstacles,
           vw,
           vh,
         );
-        obstacles.push({ x: pos.x, y: pos.y, w, h: 28 });
+        obstacles.push({ x: pos.x, y: pos.y, w, h: 28 * u });
         out.push({
           id: `rank-${m.partner.id}`,
           text: m.partner.name,
           kind: "rank",
           rank: i + 1,
+          color: m.color,
           x: pos.x,
           y: pos.y,
           opacity: stagger,
@@ -620,16 +650,16 @@ export function ResearchMap({
         const local = Math.min(1, Math.max(0, (since - i * 120) / 900));
         const op = local < 0.2 ? easeOut(local / 0.2) : local > 0.75 ? 1 - (local - 0.75) / 0.25 : 1;
         if (op <= 0.02) return;
-        const w = Math.min(180, 28 + m.partner.name.length * 7);
+        const w = Math.min(190 * u, (30 + m.partner.name.length * 7.6) * u);
         const pos = collidePlace(
           w,
-          28,
-          sideCandidates(pt.x, pt.y, 10, w, 28),
+          28 * u,
+          sideCandidates(pt.x, pt.y, 10 * u, w, 28 * u),
           obstacles,
           vw,
           vh,
         );
-        obstacles.push({ x: pos.x, y: pos.y, w, h: 28 });
+        obstacles.push({ x: pos.x, y: pos.y, w, h: 28 * u });
         out.push({
           id: `name-${m.partner.id}`,
           text: m.partner.name,
@@ -647,9 +677,13 @@ export function ResearchMap({
         .forEach((m) => {
           const pt = map.project([m.lngLat.lng, m.lngLat.lat]);
           const pos = collidePlace(
-            64,
-            26,
-            [[pt.x - 32, pt.y + 14], [pt.x - 32, pt.y - 36]],
+            64 * u,
+            26 * u,
+            [
+              [pt.x - 32 * u, pt.y + 14 * u],
+              [pt.x - 32 * u, pt.y - 36 * u],
+              ...sideCandidates(pt.x, pt.y, 12 * u, 64 * u, 26 * u),
+            ],
             obstacles,
             vw,
             vh,
@@ -684,6 +718,7 @@ export function ResearchMap({
     reduced,
     stepStartedAt,
     since,
+    u,
   ]);
 
   const kindsOn = plannedKinds.length
@@ -763,7 +798,7 @@ export function ResearchMap({
     <section
       ref={sectionRef}
       className={cn(
-        "relative sticky top-4 h-[clamp(520px,calc(100vh-290px),660px)] overflow-hidden rounded-3xl border border-[#E3E6EB] bg-[#F4F5F7]",
+        "relative h-[clamp(30rem,70dvh,48rem)] overflow-hidden rounded-3xl border border-[#E3E6EB] bg-[#F4F5F7] lg:h-full lg:min-h-[30rem]",
         className,
       )}
       aria-label={`Animated map of ${cityName}`}
@@ -849,7 +884,7 @@ export function ResearchMap({
         <span>
           {cityName}
           {showKinds ? (
-            <small className="ml-1 inline-block max-w-[240px] overflow-hidden align-bottom text-[0.88rem] font-medium text-[#596070] max-[560px]:hidden">
+            <small className="ml-1 inline-block max-w-[15rem] overflow-hidden align-bottom text-[0.88rem] font-medium text-[#596070] max-[560px]:hidden">
               {" "}
               · {radiusKm} km around {businessName || "you"}
             </small>
@@ -863,12 +898,12 @@ export function ResearchMap({
           {anchors.slice(0, 4).map((a, i) => {
             const stagger = Math.min(1, Math.max(0, (flyProgress * 1.15 - i * 0.12)));
             const docked = anchorsFlown && (!resolveActive || flyProgress >= 0.95);
-            const startX = 120 + i * 90;
-            const startY = -48;
-            const midX = size.w * 0.52 + (i % 2 === 0 ? -70 : 70);
-            const midY = size.h * 0.42 + (i - 1) * 28;
-            const endX = 16;
-            const endY = 58 + i * 42;
+            const startX = (120 + i * 90) * u;
+            const startY = -48 * u;
+            const midX = size.w * 0.52 + (i % 2 === 0 ? -70 : 70) * u;
+            const midY = size.h * 0.42 + (i - 1) * 28 * u;
+            const endX = 16 * u;
+            const endY = (58 + i * 42) * u;
             const t = docked ? 1 : stagger;
             // Arc: header → map (ease), then dock under pill
             const dockT = docked ? 1 : Math.max(0, (stagger - 0.72) / 0.28);
@@ -878,12 +913,12 @@ export function ResearchMap({
               : startX + (midX - startX) * easeOut(flyT);
             const y = dockT > 0
               ? midY + (endY - midY) * easeOut(dockT)
-              : startY + (midY - startY) * easeOut(flyT) - 36 * Math.sin(Math.PI * flyT);
+              : startY + (midY - startY) * easeOut(flyT) - 36 * u * Math.sin(Math.PI * flyT);
             const showTick = stagger > 0.55 || docked;
             return (
               <span
                 key={a}
-                className="absolute inline-flex h-[34px] items-center gap-1.5 rounded-full bg-[#FFE8E3] px-3.5 text-[0.95rem] font-semibold text-[#14151A] shadow-[0_0_0_1px_rgba(255,107,87,.35),0_1px_2px_rgba(20,21,26,.06),0_8px_22px_rgba(20,21,26,.09)]"
+                className="absolute inline-flex h-[2.125rem] items-center gap-1.5 rounded-full bg-[#FFE8E3] px-3.5 text-[0.95rem] font-semibold text-[#14151A] shadow-[0_0_0_1px_rgba(255,107,87,.35),0_1px_2px_rgba(20,21,26,.06),0_8px_22px_rgba(20,21,26,.09)]"
                 style={{
                   transform: `translate(${x}px, ${y}px)`,
                   opacity: t > 0.02 ? 1 : 0,
@@ -893,10 +928,10 @@ export function ResearchMap({
                 <span
                   className="inline-block size-0 rounded-full bg-[#FF6B57] bg-center bg-no-repeat transition-[width] duration-200"
                   style={{
-                    width: showTick ? 16 : 0,
-                    height: 16,
+                    width: showTick ? "1rem" : 0,
+                    height: "1rem",
                     backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.6 8.3l2.2 2.2 4.6-4.9' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")`,
-                    backgroundSize: "16px",
+                    backgroundSize: "1rem",
                   }}
                 />
               </span>
@@ -915,22 +950,27 @@ export function ResearchMap({
             const revealed = on && kindReveal > kindsOn.findIndex((x) => x.toLowerCase() === k.toLowerCase());
             const fadeUnused = vIdx > stepIndex("plan") || visualDone;
             if (!on && fadeUnused) return null;
+            const kindKey = k.toLowerCase() as keyof typeof KIND_META;
+            const color = KIND_META[kindKey]?.color ?? DEFAULT_PIN_COLOR;
             return (
               <span
                 key={k}
-                className={cn(
-                  "inline-flex h-[30px] items-center gap-1.5 rounded-full px-3 text-[0.88rem] font-semibold shadow-[0_1px_2px_rgba(20,21,26,.06),0_8px_22px_rgba(20,21,26,.09)] transition-[background-color,color,opacity] duration-300",
+                style={
                   revealed
-                    ? "bg-[#E7E9FF] text-[#14151A] shadow-[0_0_0_1px_rgba(79,91,255,.22),0_1px_2px_rgba(20,21,26,.06),0_8px_22px_rgba(20,21,26,.09)]"
+                    ? { backgroundColor: kindTint(kindKey, 0.2), boxShadow: `0 0 0 1px ${color}55, 0 1px 2px rgba(20,21,26,.06), 0 8px 22px rgba(20,21,26,.09)` }
+                    : undefined
+                }
+                className={cn(
+                  "inline-flex h-[1.875rem] items-center gap-1.5 rounded-full px-3 text-[0.88rem] font-semibold shadow-[0_1px_2px_rgba(20,21,26,.06),0_8px_22px_rgba(20,21,26,.09)] transition-[background-color,color,opacity] duration-300",
+                  revealed
+                    ? "text-[#14151A]"
                     : "bg-white/92 text-[#8A91A0]",
                   !on && "opacity-40",
                 )}
               >
                 <i
-                  className={cn(
-                    "size-2 rounded-full",
-                    revealed ? "bg-[#4F5BFF]" : "bg-[#C4C9D2]",
-                  )}
+                  className={cn("size-2 rounded-full", !revealed && "bg-[#C4C9D2]")}
+                  style={revealed ? { backgroundColor: color } : undefined}
                 />
                 {k}
               </span>
@@ -941,7 +981,7 @@ export function ResearchMap({
 
       {/* Brands without location — small chips above the counter */}
       {brands.length > 0 && (vIdx >= stepIndex("discover") || visualDone) ? (
-        <div className="pointer-events-none absolute bottom-[60px] right-4 z-10 flex max-w-[min(320px,70%)] flex-wrap justify-end gap-1.5">
+        <div className="pointer-events-none absolute bottom-[3.75rem] right-4 z-10 flex max-w-[min(20rem,70%)] flex-wrap justify-end gap-1.5">
           <span className="w-full text-right text-[0.8rem] font-medium text-[#596070]">
             Brands (no location)
           </span>
@@ -963,7 +1003,7 @@ export function ResearchMap({
           tabIndex={counter.cta ? 0 : -1}
           onClick={counter.cta ? onSeePartners : undefined}
           className={cn(
-            "absolute bottom-4 right-4 z-10 flex h-11 items-center gap-2.5 rounded-full px-[18px] text-[0.98rem] font-semibold tracking-[-0.01em] tabular-nums shadow-[0_1px_2px_rgba(20,21,26,.06),0_8px_22px_rgba(20,21,26,.09)]",
+            "absolute bottom-4 right-4 z-10 flex h-11 items-center gap-2.5 rounded-full px-[1.125rem] text-[0.98rem] font-semibold tracking-[-0.01em] tabular-nums shadow-[0_1px_2px_rgba(20,21,26,.06),0_8px_22px_rgba(20,21,26,.09)]",
             counter.cta
               ? "cursor-pointer bg-[#14151A] text-white shadow-[0_2px_4px_rgba(20,21,26,.16),0_10px_24px_rgba(20,21,26,.22)] hover:bg-black"
               : "pointer-events-none bg-white/92 text-[#14151A] backdrop-blur-[8px]",
@@ -987,11 +1027,14 @@ export function ResearchMap({
           style={{
             transform: `translate(${l.x}px, ${l.y}px)`,
             opacity: l.opacity,
-            height: l.kind === "radius" ? 26 : 28,
+            height: `${(l.kind === "radius" ? 26 : 28) / 16}rem`,
           }}
         >
           {l.kind === "rank" && l.rank != null ? (
-            <span className="-ml-1 grid size-[19px] place-items-center rounded-full bg-[#4F5BFF] text-[0.72rem] font-bold text-white">
+            <span
+              className="-ml-1 grid size-[1.1875rem] place-items-center rounded-full text-[0.72rem] font-bold text-white"
+              style={{ backgroundColor: l.color ?? DEFAULT_PIN_COLOR }}
+            >
               {l.rank}
             </span>
           ) : null}
@@ -1000,18 +1043,18 @@ export function ResearchMap({
       ))}
 
       <style>{`
-        .research-you-pin { position: relative; width: 28px; height: 28px; }
+        .research-you-pin { width: 1.75rem; height: 1.75rem; }
         .research-you-dot {
-          position: absolute; inset: 4px; border-radius: 50%;
-          background: #FF6B57; border: 3px solid #fff;
+          position: absolute; inset: 0.25rem; border-radius: 50%;
+          background: #FF6B57; border: 0.1875rem solid #fff;
           box-shadow: 0 1px 3px rgba(20,21,26,.28);
         }
         .research-you-halo {
-          position: absolute; inset: -6px; border-radius: 50%;
+          position: absolute; inset: -0.375rem; border-radius: 50%;
           background: rgba(255,107,87,.16);
         }
         .research-you-ripple {
-          position: absolute; inset: 2px; border-radius: 50%;
+          position: absolute; inset: 0.125rem; border-radius: 50%;
           border: 1.5px solid #FF6B57; opacity: 0;
           animation: research-ripple 2.4s ease-out infinite;
         }
@@ -1020,27 +1063,27 @@ export function ResearchMap({
           0% { transform: scale(1); opacity: 0.35; }
           100% { transform: scale(3.2); opacity: 0; }
         }
-        .research-partner-pin { position: relative; width: 22px; height: 22px; }
+        .research-partner-pin { width: 1.375rem; height: 1.375rem; }
         .research-partner-inner {
-          display: block; position: relative; width: 22px; height: 22px;
+          display: block; position: relative; width: 1.375rem; height: 1.375rem;
           will-change: transform, opacity; transform-origin: center center;
         }
         .research-partner-dot {
-          position: absolute; inset: 3px; border-radius: 50%;
-          background: #4F5BFF; border: 2.5px solid #fff;
+          position: absolute; inset: 0.1875rem; border-radius: 50%;
+          background: var(--pin, #4F5BFF); border: 0.1562rem solid #fff;
           box-shadow: 0 1px 3px rgba(20,21,26,.28);
         }
         .research-partner-halo {
-          position: absolute; inset: -4px; border-radius: 50%;
-          background: rgba(79,91,255,.16);
+          position: absolute; inset: -0.25rem; border-radius: 50%;
+          background: color-mix(in srgb, var(--pin, #4F5BFF) 20%, transparent);
         }
         .research-partner-pin.is-closed .research-partner-dot { background: #9AA1AF; }
         .research-partner-pin.is-closed .research-partner-halo { opacity: 0; }
         .research-partner-tick {
-          position: absolute; right: -2px; top: -2px; width: 12px; height: 12px;
-          border-radius: 50%; background: #fff; border: 1.2px solid #4F5BFF;
-          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6.2l2 2 4-4.2' fill='none' stroke='%234F5BFF' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
-          background-size: 12px;
+          position: absolute; right: -0.125rem; top: -0.125rem; width: 0.75rem; height: 0.75rem;
+          border-radius: 50%; background-color: var(--pin, #4F5BFF); border: 1.5px solid #fff;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 6.2l2 2 4-4.2' fill='none' stroke='white' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+          background-size: 0.75rem;
         }
         @media (prefers-reduced-motion: reduce) {
           .research-you-ripple { animation: none; opacity: 0; }
@@ -1050,8 +1093,9 @@ export function ResearchMap({
   );
 }
 
-function workingZoomCap(map: maplibregl.Map) {
-  return Math.max(map.getZoom(), 12);
+/** Final fit may zoom past the search-ring view so the top picks spread out and their labels stay readable. */
+function finalZoomCap(map: maplibregl.Map) {
+  return Math.max(map.getZoom() + 1.5, 14);
 }
 
 function ringGeoJSON(
@@ -1124,7 +1168,7 @@ function sideCandidates(
   w: number,
   h: number,
 ): [number, number][] {
-  const prefRight = sx < 400;
+  const prefRight = sx < 400 * (o / 10);
   const R = (dy: number): [number, number] => [sx + o, sy - h / 2 + dy];
   const L = (dy: number): [number, number] => [sx - o - w, sy - h / 2 + dy];
   return prefRight

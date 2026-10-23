@@ -1,14 +1,16 @@
 import { DECISION_ORIGIN_LABELS, FEASIBILITY_LABELS, MAX_PARTNERS } from "@shared/constants";
-import { ExternalLink, MapPin, X } from "lucide-react";
+import { ExternalLink, MapPin, Pin, PinOff, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { AudienceCompare } from "@/components/results/AudienceCompare";
 import { EvidencePanel } from "@/components/results/EvidencePanel";
-import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/cn";
 import { goalFitLabel } from "@/lib/goals";
-import { KIND_META, kindTint } from "@/lib/kinds";
+import { kindColor, kindLabel } from "@/lib/overviewModel";
 import { useVenn } from "@/store/useVenn";
 
+const LEVEL_CLASS = { easy: "easy", warm_intro: "warm", long_shot: "long" } as const;
+
+/** Partner detail panel for the Shortlist tab (dashboard styling, `ov-*` / `dw-*`). */
 export function PartnerDrawer() {
   const result = useVenn((state) => state.result);
   const selectedId = useVenn((state) => state.selectedId);
@@ -32,6 +34,11 @@ export function PartnerDrawer() {
     const focusable = dialog?.querySelector<HTMLElement>("button, [href], input, select, textarea");
     focusable?.focus();
     const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        select(null);
+        return;
+      }
       if (event.key !== "Tab" || !dialog) return;
       const items = [...dialog.querySelectorAll<HTMLElement>("button, [href], input, select, textarea")];
       const first = items[0];
@@ -50,223 +57,175 @@ export function PartnerDrawer() {
       document.removeEventListener("keydown", onKey);
       previous?.focus();
     };
-  }, [partner]);
+  }, [partner, select]);
 
   if (!result || !partner) return null;
   const atCap = result.partners.length >= MAX_PARTNERS;
   const goalChip = goalFitLabel(partner, result.input.goals);
-  const color = KIND_META[partner.kind].color;
-  const tint = kindTint(partner.kind, 0.22);
+  const color = kindColor(partner.kind);
+  const isPinned = pinned.has(partner.id);
+  const dist = partner.venueFacts?.distanceM;
+  const where =
+    typeof dist === "number"
+      ? `${(dist / 1000).toFixed(1)} km away`
+      : partner.local
+        ? partner.locationLabel
+          ? `Local · ${partner.locationLabel}`
+          : "Local place"
+        : "Brand · no fixed location";
+  const level = partner.feasibility?.level;
+  const compareOpen = compareOpenId === partner.id;
 
   return (
-    <aside
-      ref={ref}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="partner-title"
-      className="fixed inset-x-0 bottom-0 z-30 flex max-h-[88dvh] flex-col overflow-hidden rounded-t-[20px] border border-ink bg-paper md:inset-y-0 md:right-0 md:left-auto md:max-h-none md:w-[400px] md:rounded-none md:border-y-0 md:border-l md:border-r-0"
-    >
-      {/* Kind colour accent */}
-      <div className="h-1.5 w-full shrink-0" style={{ background: color }} aria-hidden="true" />
-
-      <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-ink/15 md:hidden" aria-hidden="true" />
-
-      <div className="min-h-0 flex-1 overflow-auto px-5 pb-4 pt-3">
-        <div className="flex items-start justify-between gap-3">
-          <div className="min-w-0">
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-ink-soft">Partner</p>
-            <h2 id="partner-title" className="mt-1 text-2xl font-bold tracking-tight text-ink md:text-[1.65rem]">
-              {partner.name}
-            </h2>
+    <>
+      <button type="button" className="dw-scrim" aria-label="Close partner details" onClick={() => select(null)} />
+      <aside ref={ref} role="dialog" aria-modal="true" aria-labelledby="partner-title" className="dw">
+        <div className="dw-body">
+          <div className="dw-head">
+            <div className="dw-id">
+              <p className="dw-eyebrow">
+                <i style={{ background: color }} aria-hidden="true" />
+                {kindLabel(partner.kind)}
+              </p>
+              <h2 id="partner-title">{partner.name}</h2>
+              <p className="dw-where">{where}</p>
+            </div>
+            <button type="button" aria-label="Close" onClick={() => select(null)} className="dw-close">
+              <X size={16} />
+            </button>
           </div>
-          <button
-            type="button"
-            aria-label="Close"
-            onClick={() => select(null)}
-            className="min-h-10 min-w-10 shrink-0 rounded-full border border-line p-2 text-ink-soft transition hover:border-ink hover:text-ink"
-          >
-            <X size={16} />
-          </button>
-        </div>
 
-        {/* Score + meta row */}
-        <div className="mt-4 flex items-center gap-4 rounded-[14px] border border-line p-3" style={{ background: tint }}>
-          <div
-            className="relative grid h-16 w-16 shrink-0 place-items-center rounded-full"
-            style={{ background: `conic-gradient(${color} ${partner.matchScore * 3.6}deg, #eef0f4 0)` }}
-            aria-hidden="true"
-          >
-            <div className="absolute inset-[5px] grid place-items-center rounded-full bg-paper">
-              <span className="font-mono text-xl font-extrabold tabular-nums leading-none text-ink">{partner.matchScore}</span>
+          <div className="dw-score">
+            <div className="dw-score-n">
+              {Math.round(partner.matchScore)}
+              <small>/100</small>
+            </div>
+            <div className="dw-score-cap">
+              <b>Match</b>
+              {result.normalization?.absolute ? "Mutual Qloo affinity: your crowd and theirs" : "Relative to this search"}
             </div>
           </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-ink-soft">Match · this search</p>
-            <p className="mt-1 text-sm font-bold text-ink">{KIND_META[partner.kind].label}</p>
-            <p className="mt-0.5 text-xs text-ink-soft">
-              {partner.local
-                ? partner.locationLabel
-                  ? `Local · ${partner.locationLabel}`
-                  : "Local partner"
-                : "Brand partner"}
-            </p>
+
+          <div className="dw-pills">
+            {level ? (
+              <span className={cn("ov-lvl", LEVEL_CLASS[level])}>
+                {partner.feasibility?.origin === "ai" ? `${FEASIBILITY_LABELS[level]} · ${DECISION_ORIGIN_LABELS.ai}` : FEASIBILITY_LABELS[level]}
+              </span>
+            ) : null}
+            {partner.userAdded ? <span className="sl-tag">Your pick</span> : null}
+            {goalChip ? <span className="sl-tag">{goalChip}</span> : null}
+            {isPinned ? <span className="sl-tag on">On your shortlist</span> : null}
           </div>
-        </div>
 
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {partner.feasibility ? (
-            <MetaPill
-              label={
-                partner.feasibility.origin === "ai"
-                  ? `${FEASIBILITY_LABELS[partner.feasibility.level]} · ${DECISION_ORIGIN_LABELS.ai}`
-                  : FEASIBILITY_LABELS[partner.feasibility.level]
-              }
-              tone={partner.feasibility.level === "easy" ? "good" : partner.feasibility.level === "long_shot" ? "warn" : "neutral"}
-            />
-          ) : null}
-          {partner.userAdded ? <MetaPill label="Your pick" tone="neutral" /> : null}
-          {goalChip ? <MetaPill label={goalChip} tone="neutral" /> : null}
-        </div>
+          <p className="dw-blurb">{partner.blurb}</p>
+          {partner.feasibility ? <p className="ov-first dw-note">{partner.feasibility.reason}</p> : null}
 
-        <p className="mt-4 text-sm leading-relaxed text-ink">{partner.blurb}</p>
-        {partner.feasibility ? (
-          <p className="mt-2 border-l-2 pl-3 text-sm leading-relaxed text-ink-soft" style={{ borderColor: color }}>
-            {partner.feasibility.reason}
-          </p>
-        ) : null}
-
-        <section className="mt-6">
-          <h3 className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-soft">Why this fits</h3>
-          <ul className="mt-2 space-y-2">
-            {partner.reasons.map((reason) => (
-              <li key={reason} className="flex gap-2 text-sm leading-relaxed text-ink">
-                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: color }} aria-hidden="true" />
-                <span>{reason}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        <section className="mt-6">
-          <h3 className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-soft">Shared taste</h3>
-          {partner.sharedTags.length === 0 ? (
-            <p className="mt-2 text-sm text-ink-soft">No strong shared tags in this search.</p>
-          ) : (
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {partner.sharedTags.map((tag, index) => (
-                <span
-                  key={tag}
-                  className="rounded-full border border-transparent px-2.5 py-1 text-xs font-bold text-ink"
-                  style={{ background: kindTint(partner.kind, 0.2 + (index % 3) * 0.08) }}
-                >
-                  {tag}
-                </span>
+          <section className="dw-sec">
+            <h3>Why this fits</h3>
+            <ul className="dw-reasons">
+              {partner.reasons.map((reason) => (
+                <li key={reason}>
+                  <i style={{ background: color }} aria-hidden="true" />
+                  {reason}
+                </li>
               ))}
-            </div>
-          )}
-        </section>
+            </ul>
+          </section>
 
-        {partner.venueFacts ? (
-          <section className="mt-6 rounded-[14px] border border-line p-3">
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-soft">Venue</h3>
-            <div className="mt-2 space-y-1.5 text-sm text-ink">
+          <section className="dw-sec">
+            <h3>Shared tastes</h3>
+            {partner.sharedTags.length === 0 ? (
+              <p className="ov-why-note">No taste both crowds rate highly was reported for this partner.</p>
+            ) : (
+              <div>
+                {partner.sharedTags.map((tag) => (
+                  <span key={tag} className="ov-why-chip">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+            {partner.drivers && partner.drivers.length > 0 ? (
+              <p className="ov-drivers">
+                Driven by{" "}
+                {partner.drivers.slice(0, 3).map((driver, index) => (
+                  <span key={driver.anchor}>
+                    {index > 0 ? ", " : ""}
+                    <b>{driver.anchor}</b> {Math.round(driver.share * 100)}%
+                  </span>
+                ))}
+                <small> · Qloo explainability</small>
+              </p>
+            ) : null}
+          </section>
+
+          {partner.venueFacts ? (
+            <section className="dw-sec dw-venue">
+              <h3>Venue</h3>
               {partner.venueFacts.address ? (
-                <p className="flex items-start gap-2">
-                  <MapPin size={14} className="mt-0.5 shrink-0 text-ink-soft" aria-hidden="true" />
+                <p>
+                  <MapPin size={14} aria-hidden="true" />
                   <span>{partner.venueFacts.address}</span>
                 </p>
               ) : null}
-              {partner.venueFacts.distanceM !== undefined ? (
-                <p className="pl-6 text-ink-soft">{Math.round(partner.venueFacts.distanceM)}m from your search centre</p>
-              ) : null}
               {partner.venueFacts.website ? (
-                <a
-                  href={partner.venueFacts.website}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-1.5 pl-6 font-medium text-ink underline decoration-ink/30 underline-offset-2 hover:decoration-ink"
-                >
+                <a href={partner.venueFacts.website} target="_blank" rel="noreferrer">
                   Website
                   <ExternalLink size={12} aria-hidden="true" />
                 </a>
               ) : null}
-            </div>
-          </section>
-        ) : null}
+            </section>
+          ) : null}
 
-        <div className="mt-6">
+          {compareOpen ? <AudienceCompare payload={compare[partner.id]} loading={compareLoading && !compare[partner.id]} /> : null}
+
           <EvidencePanel items={partner.evidence} provider={result.provider} limits={result.limits} />
+
+          {partner.relatedIds.length > 0 ? (
+            <section className="dw-sec">
+              <h3>Also pairs well with</h3>
+              <div className="dw-related">
+                {partner.relatedIds.map((id) => {
+                  const related = result.partners.find((item) => item.id === id);
+                  if (!related) return null;
+                  return (
+                    <button key={id} type="button" onClick={() => select(id)}>
+                      <i style={{ background: kindColor(related.kind) }} aria-hidden="true" />
+                      {related.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+          ) : null}
         </div>
 
-        {compareOpenId === partner.id ? (
-          <AudienceCompare payload={compare[partner.id]} loading={compareLoading && !compare[partner.id]} />
-        ) : null}
-
-        {partner.relatedIds.length > 0 ? (
-          <section className="mt-6">
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-soft">Also pairs well with</h3>
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {partner.relatedIds.map((id) => {
-                const related = result.partners.find((item) => item.id === id);
-                if (!related) return null;
-                return (
-                  <button
-                    key={id}
-                    type="button"
-                    onClick={() => select(id)}
-                    className="rounded-full border border-line bg-paper px-3 py-1.5 text-xs font-bold text-ink transition hover:border-ink"
-                  >
-                    {related.name}
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-        ) : null}
-      </div>
-
-      {/* Sticky actions */}
-      <div className="shrink-0 border-t border-ink bg-paper px-5 py-3">
-        <div className="flex flex-col gap-2">
-          <Button type="button" onClick={() => void openBrief(partner.id)}>
+        <div className="dw-acts">
+          <button type="button" className="ov-btn" onClick={() => void openBrief(partner.id)}>
             Create partner brief
-          </Button>
-          <div className="grid grid-cols-2 gap-2">
-            <Button type="button" variant="secondary" onClick={() => togglePin(partner.id)}>
-              {pinned.has(partner.id) ? "Unpin" : "Pin"}
-            </Button>
-            <Button
+          </button>
+          <div className="dw-acts-row">
+            <button type="button" className={cn("ov-btn ov-btn-ghost", isPinned && "dw-on")} onClick={() => togglePin(partner.id)}>
+              {isPinned ? <PinOff size={15} aria-hidden="true" /> : <Pin size={15} aria-hidden="true" />}
+              {isPinned ? "Unpin" : "Add to shortlist"}
+            </button>
+            <button
               type="button"
-              variant="secondary"
+              className="ov-btn ov-btn-ghost"
               onClick={() => {
-                if (compareOpenId === partner.id) closeCompare();
+                if (compareOpen) closeCompare();
                 else void loadCompare(partner.id);
               }}
             >
-              {compareOpenId === partner.id ? "Hide compare" : "Compare"}
-            </Button>
+              {compareOpen ? "Hide compare" : "Compare crowds"}
+            </button>
           </div>
-          <Button type="button" variant="ghost" disabled={atCap} onClick={() => void expandPartner(partner.id)}>
-            Expand connections
-          </Button>
-          {atCap ? <p className="text-xs text-ink-soft">This map already has 28 partners (the limit).</p> : null}
+          <button type="button" className="ov-link dw-expand" disabled={atCap} onClick={() => void expandPartner(partner.id)}>
+            Find more like this
+          </button>
+          {atCap ? <p className="ov-why-note">This search already has {MAX_PARTNERS} partners (the limit).</p> : null}
         </div>
-      </div>
-    </aside>
-  );
-}
-
-function MetaPill({ label, tone }: { label: string; tone: "good" | "warn" | "neutral" }) {
-  return (
-    <span
-      className={cn(
-        "rounded-full border px-2.5 py-1 text-[11px] font-bold",
-        tone === "good" && "border-transparent bg-[#d8f3ec] text-ink",
-        tone === "warn" && "border-transparent bg-coral-soft text-ink",
-        tone === "neutral" && "border-line bg-paper text-ink-soft",
-      )}
-    >
-      {label}
-    </span>
+      </aside>
+    </>
   );
 }

@@ -1,10 +1,9 @@
 import { BriefSheet } from "@/components/results/BriefSheet";
 import { OverviewPage } from "@/components/results/overview/OverviewPage";
 import { PartnerDrawer } from "@/components/results/PartnerDrawer";
-import { PlanView } from "@/components/results/PlanView";
 import { QlooCallLog } from "@/components/results/QlooCallLog";
+import { ResultsHeader } from "@/components/results/ResultsHeader";
 import { ShortlistView } from "@/components/results/ShortlistView";
-import { MobileTabs, TopBar } from "@/components/results/TopBar";
 import { useVenn } from "@/store/useVenn";
 import { useEffect } from "react";
 
@@ -15,6 +14,20 @@ export function ResultsScreen() {
   const closeBrief = useVenn((state) => state.closeBrief);
   const select = useVenn((state) => state.select);
   const selectedId = useVenn((state) => state.selectedId);
+
+  // Every results tab opts into the fluid root font size (see index.css) so type and charts
+  // scale with the screen, matching the cover and research stages.
+  useEffect(() => {
+    document.documentElement.classList.add("fluid-ui");
+    return () => document.documentElement.classList.remove("fluid-ui");
+  }, []);
+
+  // The Overview always has a partner selected (it drives every chart). On Shortlist a
+  // selection opens the drawer, so start that tab with nothing selected; the Overview picks
+  // its top partner again when you come back.
+  useEffect(() => {
+    if (view !== "overview") useVenn.getState().select(null);
+  }, [view]);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
@@ -41,16 +54,15 @@ export function ResultsScreen() {
     );
   }
 
+  // Shortlist shares the dashboard's page, bar and card styling (`ov-*`).
   return (
-    <div className="flex h-dvh flex-col bg-paper">
-      <TopBar />
-      <div className="relative min-h-0 flex-1 overflow-auto pb-16 md:pb-3">
+    <div className="ov-page">
+      <ResultsHeader />
+      <main className="ov-wrap">
         {view === "shortlist" ? <ShortlistView /> : null}
-        {view === "plan" ? <PlanView /> : null}
-        <PartnerDrawer />
-        <QlooCallLog />
-      </div>
-      <MobileTabs />
+      </main>
+      <PartnerDrawer />
+      <QlooCallLog />
       <BriefSheet />
     </div>
   );

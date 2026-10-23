@@ -7,8 +7,10 @@ import { ExampleChips } from "@/components/setup/ExampleChips";
 import { FineTune } from "@/components/setup/FineTune";
 import { SampleGraph } from "@/components/setup/SampleGraph";
 import { SentenceForm, validationMessage } from "@/components/setup/SentenceForm";
+import { SwipePanel } from "@/components/setup/swipe/SwipePanel";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { useSwipe } from "@/store/useSwipe";
 import { useVenn } from "@/store/useVenn";
 
 const FALLBACK: ExampleInput[] = [
@@ -29,6 +31,19 @@ export function SetupScreen() {
   const reason = validationMessage(input);
   const examples = meta?.examples.length ? meta.examples : FALLBACK;
   const cities = meta?.demoCities ?? ["London", "Manchester", "New York"];
+  const deckOpen = useSwipe((state) => state.mode !== "idle");
+
+  // A deck is built for one business type and city: changing either closes it and drops the cards.
+  useEffect(() => {
+    const swipe = useSwipe.getState();
+    if (swipe.mode !== "idle" || swipe.deckKey) swipe.invalidate();
+  }, [input.businessType, input.city]);
+
+  // The cover opts into the fluid root font size (see index.css); other stages keep 16px.
+  useEffect(() => {
+    document.documentElement.classList.add("fluid-ui");
+    return () => document.documentElement.classList.remove("fluid-ui");
+  }, []);
 
   useEffect(() => {
     const syncHash = () => setAboutOpen(window.location.hash === "#about");
@@ -62,8 +77,8 @@ export function SetupScreen() {
     });
   };
 
-  const submit = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const submit = async (event?: React.FormEvent) => {
+    event?.preventDefault();
     if (reason || busy) return;
     const cleaned: BusinessInput = {
       ...input,
@@ -83,9 +98,9 @@ export function SetupScreen() {
   };
 
   return (
-    <div className="relative min-h-dvh overflow-x-hidden bg-paper">
+    <div className="relative flex min-h-dvh w-full min-w-full flex-col overflow-x-hidden bg-paper">
       <AmbientCircles />
-      <header className="relative z-10 mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-5 md:px-8">
+      <header className="page-shell relative z-10 flex shrink-0 items-center justify-between gap-3 py-3 lg:py-4">
         <Logo />
         <nav className="flex items-center gap-5 text-sm text-ink-soft" aria-label="Primary">
           <button type="button" className="min-h-11 hover:text-ink" onClick={() => setAboutOpen(true)}>
@@ -102,20 +117,25 @@ export function SetupScreen() {
         </nav>
       </header>
 
-      <main className="relative z-10">
-        <section className="mx-auto grid max-w-6xl gap-10 px-4 pb-14 pt-2 md:grid-cols-[1.05fr_0.95fr] md:gap-12 md:px-8 md:pb-20 md:pt-4">
-          <div>
+      {/*
+        Cover layout: below lg the stages stack and the page scrolls. From lg up the
+        form column and the example card sit side by side, sized in rem against the
+        fluid root font size, so the whole cover fits one screen at any laptop/desktop size.
+      */}
+      <main className="relative z-10 flex w-full min-w-0 flex-1 flex-col">
+        <section className="page-shell grid flex-1 grid-cols-1 items-center gap-8 py-4 lg:grid-cols-[minmax(0,40rem)_minmax(0,1fr)] lg:gap-[3.5rem] lg:py-3">
+          <div className="min-w-0 w-full">
             <p className="text-xs font-bold uppercase tracking-[0.14em] text-ink-soft">
               Taste collaboration agent · powered by Qloo
             </p>
-            <h1 className="mt-3 max-w-xl text-[clamp(2rem,4.5vw,3.25rem)] font-bold leading-[1.08] tracking-tight text-ink">
+            <h1 className="mt-3 w-full text-balance text-[2.25rem] font-bold leading-[1.06] tracking-tight text-ink sm:text-[2.75rem] lg:text-[3rem]">
               Find partners whose audiences already overlap with yours.
             </h1>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-ink-soft md:text-[1.05rem]">
+            <p className="mt-3 w-full text-base leading-relaxed text-ink-soft lg:mt-3.5 lg:text-[1.05rem]">
               Name your business and a few brands, artists or places your customers love. Venn searches public taste data, ranks nearby collab fits by shared crowd, and drafts the pitch you can send.
             </p>
 
-            <form className="mt-8 flex flex-col gap-5" onSubmit={(event) => void submit(event)}>
+            <form className="mt-5 flex w-full flex-col gap-3.5 lg:mt-6" onSubmit={(event) => void submit(event)}>
               <SentenceForm
                 input={input}
                 cities={cities}
@@ -124,35 +144,44 @@ export function SetupScreen() {
               />
               <FineTune input={input} onChange={handleInputChange} />
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <Button type="submit" disabled={Boolean(reason) || busy} className="min-h-12 px-7 text-base">
+                <Button type="submit" disabled={Boolean(reason) || busy} className="min-h-12 shrink-0 px-7 text-base">
                   {busy ? "Starting…" : "Find my partners"}
                 </Button>
-                <p className="max-w-xs text-sm leading-relaxed text-ink-soft">
-                  No CRM upload. Only public taste signals — then a shortlist, map, and ready-to-send brief.
+                <p className="max-w-sm text-sm leading-snug text-ink-soft">
+                  {input.anchors.length < 1 ? "Add at least one taste to start." : input.anchors.length < 3 ? "You can go now. 3 or more works best." : "Ready."}
                 </p>
               </div>
-              {reason ? <p className="text-sm text-ink-soft">{reason}</p> : null}
+              {reason && input.anchors.length > 0 ? <p className="text-sm text-ink-soft">{reason}</p> : null}
               <ExampleChips examples={examples} onPick={fillExample} />
             </form>
           </div>
 
-          <div className="min-w-0">
-            <SampleGraph />
+          {/* From lg the card is pinned to the visible area (viewport minus header, footer and padding) */}
+          <div
+            className={
+              deckOpen
+                ? "min-w-0 w-full lg:sticky lg:top-3 lg:self-start lg:flex lg:justify-center"
+                : "min-w-0 w-full lg:sticky lg:top-3 lg:self-start lg:h-[calc(100dvh-var(--cover-chrome))] lg:min-h-[28rem]"
+            }
+          >
+            <SwipePanel onFind={() => void submit()}>
+              <SampleGraph />
+            </SwipePanel>
           </div>
         </section>
       </main>
 
-      <footer className="relative z-10 border-t border-line bg-paper/80 px-4 py-6 text-sm text-ink-soft backdrop-blur-sm md:px-8">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+      <footer className="relative z-10 shrink-0 border-t border-line bg-paper/80 py-3 text-sm text-ink-soft backdrop-blur-sm">
+        <div className="page-shell flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
           <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
             <span>Venn, a taste collaboration agent, powered by Qloo data.</span>
             <Badge tone="sky">Qloo Agentic Hackathon 2026 Entry</Badge>
           </div>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-            <button type="button" className="link-underline min-h-11" onClick={() => setAboutOpen(true)}>
+            <button type="button" className="link-underline" onClick={() => setAboutOpen(true)}>
               About
             </button>
-            <a className="link-underline min-h-11 inline-flex items-center" href="https://github.com/smehra670/venn-inhouse" target="_blank" rel="noreferrer">
+            <a className="link-underline inline-flex items-center" href="https://github.com/smehra670/venn-inhouse" target="_blank" rel="noreferrer">
               Source code
             </a>
           </div>

@@ -12,6 +12,32 @@ function fail(message) {
   process.exit(1);
 }
 
+// Swipe cards: a deck, then one refill from the first card.
+const cardsRes = await fetch(`${base}/api/anchors/cards`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ businessType: input.businessType, city: input.city }),
+});
+if (!cardsRes.ok) fail(`POST /api/anchors/cards failed: ${cardsRes.status}`);
+const deck = await cardsRes.json();
+if (deck.status === "ok") {
+  if (!Array.isArray(deck.cards) || deck.cards.length < 8) fail("Swipe deck has fewer than 8 cards");
+  const refillRes = await fetch(`${base}/api/anchors/cards/refill`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      businessType: input.businessType,
+      city: input.city,
+      likedIds: [deck.cards[0].anchor.id],
+      excludeIds: deck.cards.map((card) => card.id),
+    }),
+  });
+  if (!refillRes.ok) fail(`POST /api/anchors/cards/refill failed: ${refillRes.status}`);
+  console.log(`cards ok: ${deck.cards.length} cards (${deck.cards[0].provenance}), refill ${(await refillRes.json()).status}`);
+} else {
+  console.log(`cards: ${deck.status}${deck.note ? ` (${deck.note})` : ""}`);
+}
+
 const created = await fetch(`${base}/api/runs`, {
   method: "POST",
   headers: { "Content-Type": "application/json" },

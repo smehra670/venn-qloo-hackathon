@@ -8,7 +8,6 @@ import { useVenn, type ResultsView } from "@/store/useVenn";
 const OPTIONS: { value: ResultsView; label: string }[] = [
   { value: "overview", label: "Overview" },
   { value: "shortlist", label: "Shortlist" },
-  { value: "plan", label: "Plan" },
 ];
 
 export function TopBar() {
@@ -22,7 +21,7 @@ export function TopBar() {
   const openCallLog = useVenn((state) => state.openCallLog);
   if (!result) return null;
   return (
-    <header className="flex flex-wrap items-center gap-3 border-b border-line bg-paper px-4 py-3">
+    <header className="page-shell flex flex-wrap items-center gap-3 border-b border-line bg-paper py-3">
       <Logo />
       <span className="rounded-[12px] border border-line bg-paper px-3 py-1.5 text-sm text-ink-soft">
         {summaryLine(result.input)}

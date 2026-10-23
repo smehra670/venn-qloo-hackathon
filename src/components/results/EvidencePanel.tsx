@@ -1,6 +1,9 @@
 import type { EvidenceItem, ProviderName } from "@shared/types";
+import { ChevronDown } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/cn";
 
+/** Collapsible evidence list in the partner drawer: Qloo data first, then Venn's own read. */
 export function EvidencePanel({
   items,
   provider,
@@ -16,22 +19,20 @@ export function EvidencePanel({
   const source = provider === "qloo" ? "Qloo" : "Demo dataset";
 
   return (
-    <section className="border-t border-ink pt-4">
-      <button
-        type="button"
-        className="flex w-full items-center justify-between text-left"
-        aria-expanded={open}
-        onClick={() => setOpen((value) => !value)}
-      >
-        <span className="text-[10px] font-bold uppercase tracking-[0.12em] text-ink-soft">Evidence</span>
-        <span className="text-xs font-medium text-ink-soft">{open ? "Hide" : "Show"}</span>
+    <section className="dw-sec dw-evidence">
+      <button type="button" className="dw-evidence-toggle" aria-expanded={open} onClick={() => setOpen((value) => !value)}>
+        <h3>Evidence</h3>
+        <span>
+          {open ? "Hide" : `Show ${items.length}`}
+          <ChevronDown size={14} className={cn("dw-chev", open && "open")} aria-hidden="true" />
+        </span>
       </button>
       {open ? (
-        <div className="mt-3 space-y-4">
-          <Group title={`Taste data · ${source}`} items={data} />
+        <div className="dw-evidence-body">
+          <Group title={`From ${source}`} items={data} />
           <Group title="Venn's read" items={interpretation} />
           {limits.slice(0, 2).map((limit) => (
-            <p key={limit} className="text-xs leading-relaxed text-ink-soft">
+            <p key={limit} className="ov-why-note">
               {limit}
             </p>
           ))}
@@ -45,12 +46,12 @@ function Group({ title, items }: { title: string; items: EvidenceItem[] }) {
   if (items.length === 0) return null;
   return (
     <div>
-      <h3 className="text-xs font-bold text-ink">{title}</h3>
-      <dl className="mt-2 space-y-2.5">
+      <h4>{title}</h4>
+      <dl>
         {items.map((item) => (
-          <div key={item.label} className="grid gap-0.5 border-l-2 border-line pl-3">
-            <dt className="text-sm font-medium text-ink">{item.label}</dt>
-            <dd className="text-xs leading-relaxed text-ink-soft">{item.value}</dd>
+          <div key={item.label}>
+            <dt>{item.label}</dt>
+            <dd>{item.value}</dd>
           </div>
         ))}
       </dl>

@@ -7,6 +7,8 @@ Venn finds the businesses whose audiences overlap with yours, draws that overlap
 - You describe a business in one sentence: type, city, and a few taste anchors.
 - An agent resolves those anchors, plans partner kinds, discovers candidates, scores the overlap, and assembles a shortlist.
 - Results show a Venn graph, a neighbourhood map for the demo cities, a sortable shortlist, and a one-page brief you can copy or print.
+- Swipe your crowd: Setup can build the anchors from a deck of Qloo-checked taste cards (`POST /api/anchors/cards`, `/cards/refill`); see `docs/ANCHORS.md`.
+- Taste magnets: press or drag a shared taste on the Overview to light it up in every chart and pull the partners who share it.
 - Every taste number in this build comes from the mock provider and is labelled **Demo data**.
 
 ## Architecture
@@ -45,6 +47,8 @@ Open http://localhost:5173. The API listens on http://localhost:8787. Vite proxi
 | `npm start` | Production server on port 8787 |
 | `npm run smoke` | Hits a running server with the London cafe example |
 | `npm run og` | Regenerates `public/og.png` |
+| `npm run cards:seed` | Resolves swipe-card seeds to exact Qloo ids (`server/anchors/seed-ids.json`) |
+| `npm run e2e:swipe` | Swipe flow smoke at 1440px and 390px against a running mock app |
 
 ## Environment
 

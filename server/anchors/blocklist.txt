@@ -1,0 +1,38 @@
+# Swipe-card blocklist: one term per line, matched case-insensitively as a whole word anywhere
+# in a card name. Lines starting with # are comments. Add terms freely; no code change needed.
+porn
+porno
+pornhub
+onlyfans
+xxx
+sex
+sexy
+erotic
+erotica
+escort
+escorts
+stripper
+strip club
+brothel
+fetish
+bdsm
+adult
+playboy
+hustler
+nude
+nudes
+naked
+casino
+gambling
+betting
+bet365
+vape
+cannabis
+marijuana
+weed
+cocaine
+gun
+guns
+firearms
+ammunition
+nazi

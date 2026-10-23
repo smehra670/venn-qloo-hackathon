@@ -12,6 +12,14 @@ export default defineConfig({
   sourcemap: true,
   clean: false,
   tsconfig: "tsconfig.server.json",
+  // Swipe-card data files are read at runtime from next to the bundle (server/anchors/cardData.ts).
+  onSuccess: async () => {
+    const { copyFileSync, existsSync } = await import("node:fs");
+    for (const name of ["blocklist.txt", "seed-ids.json", "cards-snapshot.json"]) {
+      const from = path.resolve(root, "server/anchors", name);
+      if (existsSync(from)) copyFileSync(from, path.resolve(root, "dist/server", name));
+    }
+  },
   esbuildPlugins: [
     {
       name: "shared-alias",

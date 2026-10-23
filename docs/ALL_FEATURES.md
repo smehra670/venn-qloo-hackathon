@@ -14,7 +14,6 @@ flowchart LR
   Results --> Map[Map]
   Results --> Shortlist[Shortlist]
   Results --> Proof[Proof]
-  Results --> Plan[Plan board]
   Results --> Brief[Collab brief]
   Results --> Share[Share link]
 ```
@@ -105,7 +104,6 @@ flowchart TB
     M[Map]
     S[Shortlist]
     P[Proof]
-    B[Plan board]
   end
   Drawer[Partner drawer] --> Brief[Brief sheet]
   Drawer --> Compare[Audience compare]

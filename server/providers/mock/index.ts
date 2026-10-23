@@ -10,6 +10,8 @@ import type {
   ResolvedAnchor,
   RunResult,
 } from "@shared/types";
+import type { CardsRequest, CardsResponse, RefillRequest, RefillResponse } from "@shared/schemas";
+import { createMockCardSource } from "../../anchors/cards.js";
 import type { Candidate, ProviderContext, TasteProvider } from "../types.js";
 import { tagLabel } from "./taxonomy.js";
 import {
@@ -45,6 +47,17 @@ async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T, index: nu
 export class MockTasteProvider implements TasteProvider {
   readonly name = "mock" as const;
   readonly label = "Demo data";
+
+  /** Offline sample cards (`mock:<slug>` ids, provenance "sample": never claims Qloo). */
+  private readonly cards = createMockCardSource();
+
+  getSwipeCards(req: CardsRequest): Promise<CardsResponse> {
+    return this.cards.getSwipeCards(req);
+  }
+
+  getRefillCards(req: RefillRequest): Promise<RefillResponse> {
+    return this.cards.getRefillCards(req);
+  }
 
   async resolveAnchors(input: BusinessInput, ctx: ProviderContext): Promise<ResolvedAnchor[]> {
     const resolved = await Promise.all(

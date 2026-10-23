@@ -74,7 +74,14 @@ export function redactQlooParams(params: Record<string, unknown>): Record<string
  * context (see `withQlooStep`), not passed by the caller, so every function that calls
  * `qlooGet` — `searchEntities`, `insights`, `searchTags`, `compareEntities` — gets step
  * attribution for free. */
-export function recordQlooCall(entry: { path: string; params: Record<string, unknown>; status: "ok" | "error"; ms: number }): void {
+export function recordQlooCall(entry: {
+  path: string;
+  params: Record<string, unknown>;
+  status: "ok" | "error";
+  ms: number;
+  httpStatus?: number;
+  error?: string;
+}): void {
   const current = als.getStore();
   if (!current) return;
   current.sink.record({
@@ -82,6 +89,8 @@ export function recordQlooCall(entry: { path: string; params: Record<string, unk
     params: redactQlooParams(entry.params),
     status: entry.status,
     ms: entry.ms,
+    ...(entry.httpStatus !== undefined ? { httpStatus: entry.httpStatus } : {}),
+    ...(entry.error !== undefined ? { error: entry.error } : {}),
     ...(current.step !== undefined ? { step: current.step } : {}),
   });
 }

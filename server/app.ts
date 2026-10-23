@@ -51,7 +51,10 @@ export async function buildApp() {
     global: true,
     max: config.rateLimitMax,
     timeWindow: "1 minute",
-    errorResponseBuilder: () => ({ error: "Too many requests. Wait a minute and try again." }),
+    // Thrown by the plugin, so it must be an Error carrying the status: a plain object reached
+    // the error handler below as a 500 instead of a 429.
+    errorResponseBuilder: (_request, context) =>
+      Object.assign(new Error("Too many requests. Wait a minute and try again."), { statusCode: context.statusCode }),
   });
 
   registerHealth(app);

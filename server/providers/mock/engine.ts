@@ -1,3 +1,4 @@
+import { anchorEntityType } from "@shared/anchorType";
 import { DEMO_LIMITS, UNKNOWN_CITY_LIMIT } from "@shared/constants";
 import type {
   BusinessInput,
@@ -224,13 +225,16 @@ export function resolveOne(raw: string): ResolvedAnchor {
 export function resolveAnchors(input: BusinessInput): ResolvedAnchor[] {
   if (input.tasteAnchors && input.tasteAnchors.length > 0) {
     return input.tasteAnchors.map((anchor) => {
+      // Swiped sample cards carry synthetic `mock:<slug>` ids; read them by name against the
+      // demo catalog, exactly as a typed anchor would be.
+      if (anchor.id.startsWith("mock:")) return resolveOne(anchor.name);
       if (anchor.kind === "entity") {
         return {
           input: anchor.name,
           status: "matched" as const,
           entityId: anchor.id,
           entityName: anchor.name,
-          entityType: (anchor.type as import("@shared/types").EntityType) || undefined,
+          entityType: anchorEntityType(anchor.type),
           tags: [],
           note: `Confirmed ${anchor.name} from setup.`,
         };
